@@ -4,6 +4,7 @@ import 'dart:convert';
 
 /// Package import
 import 'package:intl/intl.dart';
+import 'package:shimmer/shimmer.dart';
 
 import 'package:flutter/services.dart';
 import 'package:nanosat/models/sensor_readings.dart';
@@ -20,12 +21,14 @@ class Altitude extends StatefulWidget {
 }
 
 class _AltitudeState extends State<Altitude> {
-
- List<SensorReading> reading;
-   bool isLoading = false;
+  List<SensorReading> reading;
+  bool isLoading = false;
   @override
   void initState() {
-    Provider.of<SensorReadingsProvider>(context, listen: false).altitude.length > 0
+    Provider.of<SensorReadingsProvider>(context, listen: false)
+                .altitude
+                .length >
+            0
         ? print('ALready fetched')
         : Future.delayed(Duration.zero, () {
             Provider.of<SensorReadingsProvider>(context, listen: false)
@@ -35,10 +38,7 @@ class _AltitudeState extends State<Altitude> {
     super.initState();
   }
 
-
-
- Future<void> _refresh() async {
-   
+  Future<void> _refresh() async {
     await Future.delayed(Duration.zero, () {
       Provider.of<SensorReadingsProvider>(context, listen: false)
           .getAltitudeReadings()
@@ -52,52 +52,144 @@ class _AltitudeState extends State<Altitude> {
 
   @override
   Widget build(BuildContext context) {
-    return 
-      Column(
-                children: <Widget>[
-                  Expanded(
-                    child: Consumer<SensorReadingsProvider>(
-                      builder: (context, model, child) {
-                        Widget content =
-                            Center(child: Text('Error fetching data. Check your Internet connection'));
+    return ListView(
+        children: <Widget>[
+     Consumer<SensorReadingsProvider>(
+            builder: (context, model, child) {
+              Widget content = Center(
+                  child: Text(
+                      'Error fetching data. Check your Internet connection'));
 
-                        if (model.isLoading) {
-                          print(model.altitude);
-                          content = Center(child: CircularProgressIndicator());
-                        } else if ((model.altitude.length == 0 &&
-                            !model.isLoading)) {
-                          content =
-                              Center(child: Text('No graph data yet'));
-                        } else if ((model.altitude.length > 0 &&
-                            !model.isLoading)) {
-                          content = GraphWidget(
-                                      readings: model.altitude,
-                                      );
-                        }
+              if (model.isLoading) {
+                print(model.altitude);
+                 content =ShimmerLoader();
+              } else if ((model.altitude.length == 0 && !model.isLoading)) {
+                content = Center(child: Text('No graph data yet'));
+              } else if ((model.altitude.length > 0 && !model.isLoading)) {
+                content = GraphWidget(
+                  readings: model.altitude,
+                );
+              }
 
-                        return content;
-                      },
-                    ),
-                  ),
-                ],
+              return content;
+            },
+          ),
+      
+       Consumer<SensorReadingsProvider>(
+            builder: (context, model, child) {
+              Widget content = Center(
+                  child: Text(
+                      'Error fetching data. Check your Internet connection'));
+
+              if (model.isLoading) {
+                print(model.altitude);
+                  content =ShimmerLoader();
+              } else if ((model.altitude.length == 0 && !model.isLoading)) {
+                content = Center(child: Text('No graph data yet'));
+              } else if ((model.altitude.length > 0 && !model.isLoading)) {
+                content = GraphWidget(
+                  readings: model.altitude,
+                );
+              }
+
+              return content;
+            },
+          ),
+        
+         Consumer<SensorReadingsProvider>(
+            builder: (context, model, child) {
+              Widget content = Center(
+                  child: Text(
+                      'Error fetching data. Check your Internet connection'));
+
+              if (model.isLoading) {
+                print(model.altitude);
+                   content =ShimmerLoader();
+              } else if ((model.altitude.length == 0 && !model.isLoading)) {
+                content = Center(child: Text('No graph data yet'));
+              } else if ((model.altitude.length > 0 && !model.isLoading)) {
+                content = GraphWidget(
+                  readings: model.altitude,
+                );
+              }
+
+              return content;
+            },
+        
+        ),
+      ],
+    );
+  }
+}
+
+class ShimmerLoader extends StatelessWidget {
+  const ShimmerLoader({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  height: 250,
+                  width: 150,
+                  child: Shimmer.fromColors(
+       child: Column(
+         crossAxisAlignment: CrossAxisAlignment.center,
+         children: <Widget>[
+           Padding(
+             padding: const EdgeInsets.all(8.0),
+             child: Container(
+               width: width/2,
+               height: 150.0,
+               color: Colors.blueGrey,
+             ),
+           ),
+           SizedBox(
+             height: 15,
+           ),
+           Container(
+             width: double.infinity,
+             height: 8.0,
+             color: Colors.blueGrey,
+           ),
+           const Padding(
+             padding: EdgeInsets.symmetric(vertical: 2.0),
+           ),
+           Container(
+             width: double.infinity,
+             height: 8.0,
+             color: Colors.blueGrey,
+           ),
+           const Padding(
+             padding: EdgeInsets.symmetric(vertical: 2.0),
+           ),
+           Container(
+             width: 40.0,
+             height: 8.0,
+             color: Colors.blueGrey,
+           ),
+         ],
+       ),
+       baseColor: Colors.grey[300],
+       highlightColor: Colors.grey[100],
+       enabled: true),
+                ),
               );
-
-
-    
   }
 }
 
 class GraphWidget extends StatelessWidget {
   final List<SensorReading> readings;
 
-
   GraphWidget({this.readings});
-
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Theme.of(context).cardColor,
+      color: Theme.of(context).canvasColor,
       padding: const EdgeInsets.all(5.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -117,7 +209,8 @@ class GraphWidget extends StatelessWidget {
                     Navigator.push(
                         context,
                         CupertinoPageRoute(
-                            builder: (context) => ExpandedTemp()));
+                            builder: (context) =>
+                                ExpandedTemp(readings: readings)));
                   },
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
@@ -125,7 +218,7 @@ class GraphWidget extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Text(
-                            'Altitude',
+                            'Today',
                             textAlign: TextAlign.left,
                             softWrap: true,
                             textScaleFactor: 1,
@@ -147,7 +240,7 @@ class GraphWidget extends StatelessWidget {
                                   padding:
                                       const EdgeInsets.fromLTRB(5, 0, 5, 5),
                                   child: Icon(Icons.open_in_full_outlined,
-                                      color: Colors.purple),
+                                      color: Colors.deepPurple[300]),
                                 ),
                               ),
                             ],
@@ -174,8 +267,7 @@ class GraphWidget extends StatelessWidget {
 }
 
 class SampleView extends StatefulWidget {
-   final List<SensorReading> readings;
-
+  final List<SensorReading> readings;
 
   SampleView({this.readings});
   @override
@@ -187,16 +279,13 @@ class _SampleViewState extends State<SampleView> {
 
   List<SensorReading> chartData = <SensorReading>[];
 
-
   Future loadSalesData() async {
-  
     setState(() {
       // ignore: always_specify_types
       widget.readings.forEach((reading) {
-           chartData.add(reading); 
+        chartData.add(reading);
       });
-       // Deserialization step 3
-      
+      // Deserialization step 3
     });
   }
 
@@ -236,9 +325,8 @@ class _SampleViewState extends State<SampleView> {
           edgeLabelPlacement: EdgeLabelPlacement.shift,
           intervalType: DateTimeIntervalType.auto,
           dateFormat: DateFormat.Hms(),
-      
           name: 'Seconds',
-            title: AxisTitle(
+          title: AxisTitle(
               text: 'Time',
               textStyle: TextStyle(
                 fontFamily: 'Roboto',
@@ -263,7 +351,8 @@ class _SampleViewState extends State<SampleView> {
     return <LineSeries<SensorReading, DateTime>>[
       LineSeries<SensorReading, DateTime>(
         dataSource: chartData,
-        xValueMapper: (SensorReading reading, _) => DateTime.parse(reading.date + " " + reading.time),
+        xValueMapper: (SensorReading reading, _) =>
+            DateTime.parse(reading.date + " " + reading.time),
         yValueMapper: (SensorReading reading, _) => reading.val,
         name: 'Altitude',
       ),
@@ -274,6 +363,9 @@ class _SampleViewState extends State<SampleView> {
 //Expanded Altitude
 
 class ExpandedTemp extends StatefulWidget {
+  final List<SensorReading> readings;
+
+  ExpandedTemp({this.readings});
   @override
   _ExpandedTempState createState() => _ExpandedTempState();
 }
@@ -281,22 +373,15 @@ class ExpandedTemp extends StatefulWidget {
 class _ExpandedTempState extends State<ExpandedTemp> {
   TrackballBehavior _trackballBehavior;
 
-  List<_SampleData> chartData = <_SampleData>[];
-
-  // Method to load Json file from assets.
-  Future<String> _loadTempData() async {
-    return await rootBundle.loadString('assets/data/sample_data.json');
-  }
+  List<SensorReading> chartData = <SensorReading>[];
 
   Future loadSalesData() async {
-    final String jsonString = await _loadTempData(); // Deserialization  step 1
-    final dynamic jsonResponse =
-        json.decode(jsonString); // Deserialization  step 2
     setState(() {
       // ignore: always_specify_types
-      for (final Map i in jsonResponse) {
-        chartData.add(_SampleData.fromJson(i)); // Deserialization step 3
-      }
+      widget.readings.forEach((reading) {
+        chartData.add(reading);
+      });
+      // Deserialization step 3
     });
   }
 
@@ -333,33 +418,28 @@ class _ExpandedTempState extends State<ExpandedTemp> {
     return SfCartesianChart(
       key: GlobalKey(),
       plotAreaBorderWidth: 0,
-      title: ChartTitle(text: 'Altitude Against Time'),
+      title: ChartTitle(text: 'Altitude Readings'),
       legend:
           Legend(isVisible: false, overflowMode: LegendItemOverflowMode.wrap),
       primaryXAxis: DateTimeAxis(
           edgeLabelPlacement: EdgeLabelPlacement.shift,
-          intervalType: DateTimeIntervalType.years,
-          dateFormat: DateFormat.y(),
+          intervalType: DateTimeIntervalType.auto,
+          dateFormat: DateFormat.Hms(),
+          name: 'Seconds',
           title: AxisTitle(
-              text: 'Years',
+              text: 'Time',
               textStyle: TextStyle(
                 fontFamily: 'Roboto',
-                fontSize: 18,
+                fontSize: 16,
               )),
-          name: 'Years',
-
-          placeLabelsNearAxisLine: true,
           majorGridLines: const MajorGridLines(width: 0)),
       primaryYAxis: NumericAxis(
           rangePadding: ChartRangePadding.none,
-          name: 'Temp',
-          labelFormat: '{value}°C',
-          
-          minimum: 70,
+          name: 'Altitude',
+          minimum: 10,
           maximum: 110,
           interval: 10,
           axisLine: const AxisLine(width: 0),
-          associatedAxisName: 'Temp in degrees celsius',
           majorTickLines: const MajorTickLines(color: Colors.transparent)),
       series: _getDefaultLineSeries(),
       trackballBehavior: _trackballBehavior,
@@ -367,13 +447,14 @@ class _ExpandedTempState extends State<ExpandedTemp> {
   }
 
   /// The method returns line series to chart.
-  List<LineSeries<_SampleData, DateTime>> _getDefaultLineSeries() {
-    return <LineSeries<_SampleData, DateTime>>[
-      LineSeries<_SampleData, DateTime>(
+  List<LineSeries<SensorReading, DateTime>> _getDefaultLineSeries() {
+    return <LineSeries<SensorReading, DateTime>>[
+      LineSeries<SensorReading, DateTime>(
         dataSource: chartData,
-        xValueMapper: (_SampleData sales, _) => sales.date,
-        yValueMapper: (_SampleData sales, _) => sales.altitude,
-        name: '',
+        xValueMapper: (SensorReading reading, _) =>
+            DateTime.parse(reading.date + " " + reading.time),
+        yValueMapper: (SensorReading reading, _) => reading.val,
+        name: 'Altitude',
       ),
     ];
   }

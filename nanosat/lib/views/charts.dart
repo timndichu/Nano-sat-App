@@ -74,13 +74,13 @@ class _ChartsState extends State<Charts> with TickerProviderStateMixin {
                       fontSize: 16,
                         fontFamily: 'InterRegular'
                     ),
-                    indicatorColor: Colors.deepPurple,
+                    indicatorColor: Colors.deepPurple[300],
                     labelStyle: TextStyle(
                         color: Colors.black,
                         fontSize: 16,
                         // fontWeight: FontWeight.w600,
                         fontFamily: 'InterRegular'),
-                    labelColor: Colors.deepPurple,
+                    labelColor: Colors.deepPurple[300],
                     onTap: (int index) {
                       setState(() {
                         _activeTabIndex = index;
