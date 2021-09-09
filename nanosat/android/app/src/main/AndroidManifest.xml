@@ -1,5 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.nanosat">
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
    <application
         android:label="nanosat"
         android:icon="@mipmap/launcher_icon">
@@ -40,6 +43,6 @@
             android:value="2" />
         <meta-data 
             android:name="com.google.android.geo.API_KEY"
-            android:value="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" />
+            android:value="AIzaSyBycR9DDH2gGGupONK5jJvNF2wdhWMqdrQ" />
     </application>
 </manifest>

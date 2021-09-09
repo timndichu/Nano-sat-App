@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
-import '../../services/themeprovider.dart';
+import '../../../services/themeprovider.dart';
 
 class Settings extends StatefulWidget {
   @override

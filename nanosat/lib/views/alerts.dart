@@ -2,13 +2,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nanosat/widgets/drawer.dart';
-import '../models/service.dart';
+
 import '../providers/shop_provider.dart';
 import '../views/landing_page.dart';
 import '../views/user_login.dart';
 import 'package:provider/provider.dart';
 
-import 'products.dart';
 import 'profile.dart';
 
 

@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nanosat/icons/nano_icons_icons.dart';
-import 'package:nanosat/views/settings.dart';
-
-
+import 'package:nanosat/views/charts.dart';
+import 'package:nanosat/views/home_page.dart';
+import 'package:nanosat/views/imaging.dart';
+import 'package:nanosat/views/misc/about.dart';
+import 'package:nanosat/views/misc/help.dart';
+import 'package:nanosat/views/misc/settings.dart';
 
 class MainDrawer extends StatelessWidget {
   @override
@@ -36,8 +39,30 @@ class MainDrawer extends StatelessWidget {
                 ),
               ),
             ),
-            ListTile(title: Text('Home'), leading: Icon(NanoIcons.home)),
-            ListTile(title: Text('Thermal Imaging'), leading: Icon(NanoIcons.solar)),
+            ListTile(
+              title: Text('Home'),
+              leading: Icon(NanoIcons.home),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                        builder: (context) => Homepage(
+                              index: 0,
+                            )));
+              },
+            ),
+            ListTile(
+              title: Text('Thermal Imaging'),
+              leading: Icon(NanoIcons.solar),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                        builder: (context) => Imaging(
+                              initialIndex: 0,
+                            )));
+              },
+            ),
             ExpansionTile(
               title: Text('Charts'),
               leading: Icon(
@@ -47,27 +72,69 @@ class MainDrawer extends StatelessWidget {
               children: <Widget>[
                 ListTile(
                   title: Text('Temperature'),
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                            builder: (context) => Charts(
+                                  initialIndex: 0,
+                                )));
+                  },
                 ),
                 ListTile(
                   title: Text('Altitude'),
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                            builder: (context) => Charts(
+                                  initialIndex: 1,
+                                )));
+                  },
                 ),
                 ListTile(
                   title: Text('Battery Info'),
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                            builder: (context) => Charts(
+                                  initialIndex: 2,
+                                )));
+                  },
                 ),
                 ListTile(
                   title: Text('Magnetometer'),
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                            builder: (context) => Charts(
+                                  initialIndex: 3,
+                                )));
+                  },
                 ),
                 ListTile(
                   title: Text('Accelerometer'),
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                            builder: (context) => Charts(
+                                  initialIndex: 4,
+                                )));
+                  },
                 ),
-                  ListTile(
+                ListTile(
                   title: Text('Gyroscope'),
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                            builder: (context) => Charts(
+                                  initialIndex: 5,
+                                )));
+                  },
                 ),
                 ListTile(
                   title: Text(
@@ -76,81 +143,100 @@ class MainDrawer extends StatelessWidget {
                   ),
                   trailing: Icon(Icons.arrow_forward, color: Colors.deepPurple),
                   onTap: () {
-                    //   Navigator.push(
-                    //   context,
-                    //   CupertinoPageRoute(builder: (context) => Category()),
-                    // );
+                 Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  builder: (context) => Charts(
+                                        initialIndex: 0,
+                                      )));
                   },
                 ),
               ],
             ),
-               ListTile(
-                   leading: Icon(
+            ListTile(
+              leading: Icon(
                 NanoIcons.bell,
                 // color: Theme.of(context).iconTheme.color,
               ),
-                  title: Text('Alerts'),
-                  onTap: () {},
-                ),
+              title: Text('Alerts'),
+              onTap: () {
+                  Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                            builder: (context) => Homepage(
+                                  index: 3,
+                                )));
+              },
+            ),
             ListTile(
-               leading: Icon(
+              leading: Icon(
                 NanoIcons.water,
                 // color: Theme.of(context).iconTheme.color,
               ),
               title: Text('Water bodies'),
-              onTap: () => {
-                // Navigator.push(
-                //   context,
-                //   CupertinoPageRoute(builder: (context) => Booking()),
-                // )
+              onTap: () {
+                Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                        builder: (context) => Imaging(
+                              initialIndex: 2,
+                            )));
               },
             ),
-              ListTile(
-               leading: Icon(
+            ListTile(
+              leading: Icon(
                 NanoIcons.electricity_tower,
                 // color: Theme.of(context).iconTheme.color,
               ),
               title: Text('Rural Lighting'),
-              onTap: () => {
-                // Navigator.push(
-                //   context,
-                //   CupertinoPageRoute(builder: (context) => Booking()),
-                // )
+              onTap: () {
+                Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                        builder: (context) => Imaging(
+                              initialIndex: 1,
+                            )));
               },
             ),
-      
-              ListTile(
-               leading: Icon(
+            ListTile(
+              leading: Icon(
                 NanoIcons.trees,
                 // color: Theme.of(context).iconTheme.color,
               ),
               title: Text('Vegetation Cover'),
-              onTap: () => {
-                // Navigator.push(
-                //   context,
-                //   CupertinoPageRoute(builder: (context) => Booking()),
-                // )
+              onTap: () {
+                Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                        builder: (context) => Imaging(
+                              initialIndex: 3,
+                            )));
               },
             ),
-         
             Divider(color: Colors.blueGrey),
             ListTile(
               leading: Icon(Icons.info),
               title: Text('About the Nano Sat'),
-              onTap: () => {},
+              onTap: ()  {
+                  Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                            builder: (context) => About(
+                                 
+                                )));
+              },
             ),
             ListTile(
               leading: Icon(Icons.help),
               title: Text('Help'),
               onTap: () => {
-                // Navigator.push(
-                //   context,
-                //   CupertinoPageRoute(builder: (context) => Uploads()),
-                // )
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(builder: (context) => Help()),
+                )
               },
             ),
-            Divider(color: Colors.blueGrey),
-           
+        
             ListTile(
               leading: Icon(Icons.settings),
               title: Text('Settings'),
@@ -161,7 +247,7 @@ class MainDrawer extends StatelessWidget {
                 )
               },
             ),
-         Divider(color: Colors.blueGrey),
+            Divider(color: Colors.blueGrey),
             ListTile(
               leading: Icon(Icons.exit_to_app),
               title: Text('Log Out'),

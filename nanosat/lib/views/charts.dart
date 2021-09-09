@@ -6,7 +6,7 @@ import 'package:nanosat/views/chart_types/accelerometer.dart';
 import 'package:nanosat/views/chart_types/gyroscope.dart';
 import 'package:nanosat/views/chart_types/magnetometer.dart';
 import 'package:nanosat/widgets/drawer.dart';
-import '../models/service.dart';
+
 import '../providers/shop_provider.dart';
 import '../views/landing_page.dart';
 import '../views/user_login.dart';
@@ -15,12 +15,13 @@ import 'package:provider/provider.dart';
 import 'chart_types/altitude.dart';
 import 'chart_types/battery_info.dart';
 import 'chart_types/temperature.dart';
-import 'products.dart';
+
 import 'profile.dart';
 
 class Charts extends StatefulWidget {
 
-
+   final int initialIndex;
+  Charts({this.initialIndex});
   @override
   _ChartsState createState() => _ChartsState();
 }
@@ -36,7 +37,7 @@ class _ChartsState extends State<Charts> with TickerProviderStateMixin {
     super.initState();
 
     _controller =
-        TabController(vsync: this, length: 6, initialIndex: _activeTabIndex);
+        TabController(vsync: this, length: 6, initialIndex: widget.initialIndex ?? _activeTabIndex);
   }
 
 

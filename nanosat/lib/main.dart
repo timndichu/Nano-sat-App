@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nanosat/providers/sensor_readings_provider.dart';
 import 'package:nanosat/views/home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import './providers/user_provider.dart';
@@ -26,9 +27,9 @@ void main() {
               return UserProvider();
             },
           ),
-          ChangeNotifierProvider<ShopProvider>(
+          ChangeNotifierProvider<SensorReadingsProvider>(
             create: (BuildContext context) {
-              return ShopProvider();
+              return SensorReadingsProvider();
             },
           ),
     ]));
