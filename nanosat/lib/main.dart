@@ -50,7 +50,7 @@ class MyApp extends StatelessWidget {
         theme: value.getTheme(),
       title: 'Nano Sat',
     
-      home: Homepage(),
+      home: WelcomePage(),
     );
   });}
 }

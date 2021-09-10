@@ -1,9 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
+import 'dart:async';
+import 'dart:io';
+import 'dart:ui' as dart_ui;
+import 'package:path_provider/path_provider.dart';
 
 /// Package import
 import 'package:intl/intl.dart';
+import 'package:nanosat/helper/helper.dart';
 import 'package:shimmer/shimmer.dart';
 
 import 'package:flutter/services.dart';
@@ -11,6 +16,7 @@ import 'package:nanosat/models/sensor_readings.dart';
 import 'package:nanosat/providers/sensor_readings_provider.dart';
 import 'package:nanosat/services/themeprovider.dart';
 import 'package:provider/provider.dart';
+import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 /// Chart import
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -53,69 +59,66 @@ class _AltitudeState extends State<Altitude> {
   @override
   Widget build(BuildContext context) {
     return ListView(
-        children: <Widget>[
-     Consumer<SensorReadingsProvider>(
-            builder: (context, model, child) {
-              Widget content = Center(
-                  child: Text(
-                      'Error fetching data. Check your Internet connection'));
+      children: <Widget>[
+        Consumer<SensorReadingsProvider>(
+          builder: (context, model, child) {
+            Widget content = Center(
+                child: Text(
+                    'Error fetching data. Check your Internet connection'));
 
-              if (model.isLoading) {
-                print(model.altitude);
-                 content =ShimmerLoader();
-              } else if ((model.altitude.length == 0 && !model.isLoading)) {
-                content = Center(child: Text('No graph data yet'));
-              } else if ((model.altitude.length > 0 && !model.isLoading)) {
-                content = GraphWidget(
-                  readings: model.altitude,
-                );
-              }
+            if (model.isLoading) {
+              print(model.altitude);
+              content = ShimmerLoader();
+            } else if ((model.altitude.length == 0 && !model.isLoading)) {
+              content = Center(child: Text('No graph data yet'));
+            } else if ((model.altitude.length > 0 && !model.isLoading)) {
+              content = GraphWidget(
+                readings: model.altitude,
+              );
+            }
 
-              return content;
-            },
-          ),
-      
-       Consumer<SensorReadingsProvider>(
-            builder: (context, model, child) {
-              Widget content = Center(
-                  child: Text(
-                      'Error fetching data. Check your Internet connection'));
+            return content;
+          },
+        ),
+        Consumer<SensorReadingsProvider>(
+          builder: (context, model, child) {
+            Widget content = Center(
+                child: Text(
+                    'Error fetching data. Check your Internet connection'));
 
-              if (model.isLoading) {
-                print(model.altitude);
-                  content =ShimmerLoader();
-              } else if ((model.altitude.length == 0 && !model.isLoading)) {
-                content = Center(child: Text('No graph data yet'));
-              } else if ((model.altitude.length > 0 && !model.isLoading)) {
-                content = GraphWidget(
-                  readings: model.altitude,
-                );
-              }
+            if (model.isLoading) {
+              print(model.altitude);
+              content = ShimmerLoader();
+            } else if ((model.altitude.length == 0 && !model.isLoading)) {
+              content = Center(child: Text('No graph data yet'));
+            } else if ((model.altitude.length > 0 && !model.isLoading)) {
+              content = GraphWidget(
+                readings: model.altitude,
+              );
+            }
 
-              return content;
-            },
-          ),
-        
-         Consumer<SensorReadingsProvider>(
-            builder: (context, model, child) {
-              Widget content = Center(
-                  child: Text(
-                      'Error fetching data. Check your Internet connection'));
+            return content;
+          },
+        ),
+        Consumer<SensorReadingsProvider>(
+          builder: (context, model, child) {
+            Widget content = Center(
+                child: Text(
+                    'Error fetching data. Check your Internet connection'));
 
-              if (model.isLoading) {
-                print(model.altitude);
-                   content =ShimmerLoader();
-              } else if ((model.altitude.length == 0 && !model.isLoading)) {
-                content = Center(child: Text('No graph data yet'));
-              } else if ((model.altitude.length > 0 && !model.isLoading)) {
-                content = GraphWidget(
-                  readings: model.altitude,
-                );
-              }
+            if (model.isLoading) {
+              print(model.altitude);
+              content = ShimmerLoader();
+            } else if ((model.altitude.length == 0 && !model.isLoading)) {
+              content = Center(child: Text('No graph data yet'));
+            } else if ((model.altitude.length > 0 && !model.isLoading)) {
+              content = GraphWidget(
+                readings: model.altitude,
+              );
+            }
 
-              return content;
-            },
-        
+            return content;
+          },
         ),
       ],
     );
@@ -131,53 +134,53 @@ class ShimmerLoader extends StatelessWidget {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  height: 250,
-                  width: 150,
-                  child: Shimmer.fromColors(
-       child: Column(
-         crossAxisAlignment: CrossAxisAlignment.center,
-         children: <Widget>[
-           Padding(
-             padding: const EdgeInsets.all(8.0),
-             child: Container(
-               width: width/2,
-               height: 150.0,
-               color: Colors.blueGrey,
-             ),
-           ),
-           SizedBox(
-             height: 15,
-           ),
-           Container(
-             width: double.infinity,
-             height: 8.0,
-             color: Colors.blueGrey,
-           ),
-           const Padding(
-             padding: EdgeInsets.symmetric(vertical: 2.0),
-           ),
-           Container(
-             width: double.infinity,
-             height: 8.0,
-             color: Colors.blueGrey,
-           ),
-           const Padding(
-             padding: EdgeInsets.symmetric(vertical: 2.0),
-           ),
-           Container(
-             width: 40.0,
-             height: 8.0,
-             color: Colors.blueGrey,
-           ),
-         ],
-       ),
-       baseColor: Colors.grey[300],
-       highlightColor: Colors.grey[100],
-       enabled: true),
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        height: 250,
+        width: 150,
+        child: Shimmer.fromColors(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    width: width / 2,
+                    height: 150.0,
+                    color: Colors.blueGrey,
+                  ),
                 ),
-              );
+                SizedBox(
+                  height: 15,
+                ),
+                Container(
+                  width: double.infinity,
+                  height: 8.0,
+                  color: Colors.blueGrey,
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 2.0),
+                ),
+                Container(
+                  width: double.infinity,
+                  height: 8.0,
+                  color: Colors.blueGrey,
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 2.0),
+                ),
+                Container(
+                  width: 40.0,
+                  height: 8.0,
+                  color: Colors.blueGrey,
+                ),
+              ],
+            ),
+            baseColor: Colors.grey[300],
+            highlightColor: Colors.grey[100],
+            enabled: true),
+      ),
+    );
   }
 }
 
@@ -372,7 +375,7 @@ class ExpandedTemp extends StatefulWidget {
 
 class _ExpandedTempState extends State<ExpandedTemp> {
   TrackballBehavior _trackballBehavior;
-
+  final GlobalKey<SfCartesianChartState> _chartKey = GlobalKey();
   List<SensorReading> chartData = <SensorReading>[];
 
   Future loadSalesData() async {
@@ -408,15 +411,68 @@ class _ExpandedTempState extends State<ExpandedTemp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('Altitude as of 20th September')),
+        appBar: AppBar(
+          title: Text('Altitude as of 20th September'),
+          actions: [
+            IconButton(
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  behavior: SnackBarBehavior.floating,
+                  duration: Duration(milliseconds: 2000),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(5))),
+                  content: Text('Chart is being exported as PDF document'),
+                ));
+                _renderPdf();
+              },
+              icon: const Icon(Icons.picture_as_pdf, color: Colors.white),
+            ),
+          ],
+        ),
         body: Container(
             height: MediaQuery.of(context).size.height,
             child: _buildDefaultLineChart()));
   }
 
+  Future<List<int>> _readImageData() async {
+    final dart_ui.Image data =
+        await _chartKey.currentState.toImage(pixelRatio: 3.0);
+    final ByteData bytes =
+        await data.toByteData(format: dart_ui.ImageByteFormat.png);
+    return bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes);
+  }
+
+  Future<void> _renderPdf() async {
+    final PdfDocument document = PdfDocument();
+    final PdfBitmap bitmap = PdfBitmap(await _readImageData());
+    document.pageSettings.orientation =
+        MediaQuery.of(context).orientation == Orientation.landscape
+            ? PdfPageOrientation.landscape
+            : PdfPageOrientation.portrait;
+    document.pageSettings.margins.all = 0;
+    document.pageSettings.size =
+        Size(bitmap.width.toDouble(), bitmap.height.toDouble());
+    final PdfPage page = document.pages.add();
+    final Size pageSize = page.getClientSize();
+    page.graphics.drawImage(
+        bitmap, Rect.fromLTWH(0, 0, pageSize.width, pageSize.height));
+
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(5))),
+      duration: Duration(milliseconds: 200),
+      content: Text('Chart has been exported as PDF document.'),
+    ));
+    final List<int> bytes = document.save();
+    document.dispose();
+    await FileSaveHelper.saveAndLaunchFile(bytes, 'cartesian_chart.pdf');
+  }
+
   SfCartesianChart _buildDefaultLineChart() {
     return SfCartesianChart(
-      key: GlobalKey(),
+      key: _chartKey,
       plotAreaBorderWidth: 0,
       title: ChartTitle(text: 'Altitude Readings'),
       legend:

@@ -495,18 +495,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Column(
                     children: [
                       
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Container(
-                              height: 250,
-                              width: width/1.8,
-                              child: _buildRadialGauge(context)),
-                              Spacer(),
-                          Container(
-                              width: width/3,
-                              child: Text('Current Altitude reading: 33 ft'))
-                        ]), 
+                       Text('Thermal Imaging'),
+                        SizedBox(height: 5),
+                        // Image.network(''),
                         Text('*Altitude Readings as of 2020-9-9 10:23'),
                         SizedBox(height: 5)
                         ]
