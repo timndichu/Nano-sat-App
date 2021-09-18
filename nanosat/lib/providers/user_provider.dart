@@ -69,7 +69,7 @@ class UserProvider extends ChangeNotifier {
   
       bool hasError = true;
     String message = 'Something went wrong';
-    var response = await http.post(url,
+    var response = await http.post(Uri.parse(url),
         headers: {"Content-type": "application/json"}, body: json.encode(body))  .catchError((error) {
         return {
           'message': message + 'Check your Internet connection',
@@ -130,7 +130,7 @@ class UserProvider extends ChangeNotifier {
     String token = '';
   
   try{
-      var response = await http.post(url,
+      var response = await http.post(Uri.parse(url),
         headers: {"Content-type": "application/json"}, body: json.encode(body));
       print(response.body);
       final Map<String, dynamic> responseData = new Map<String, dynamic>.from(json.decode(response.body));
@@ -180,7 +180,7 @@ class UserProvider extends ChangeNotifier {
     try {
       //Get user from Profile
     String url = formatter('/laundry/fetchUser/$_email');
-        var response = await http.get(url).catchError((error) {
+        var response = await http.get(Uri.parse(url)).catchError((error) {
           _hasError = true;
           notifyListeners();
           return {

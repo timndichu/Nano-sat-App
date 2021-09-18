@@ -167,7 +167,7 @@ class _LoginPageState extends State<LoginPage> {
             controller: _password,
           ),
           SizedBox(height: 30.0),
-          loading ? CircularProgressIndicator() : _userSubmitButton(),
+          loading ? CircularProgressIndicator( color:  Colors.deepPurple) : _userSubmitButton(),
           SizedBox(height: 20.0),
 
           // GestureDetector(

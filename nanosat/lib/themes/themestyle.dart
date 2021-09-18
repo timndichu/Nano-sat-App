@@ -13,7 +13,7 @@ class AppTheme {
             headline6: TextStyle(color: Colors.white, fontSize: 20, fontFamily: 'InterRegular')),
       ),
 
-      unselectedWidgetColor: Colors.deepPurple,
+      unselectedWidgetColor: Colors.deepPurple[300],
       primaryColor: AppColors.primaryDark,
          bottomNavigationBarTheme: BottomNavigationBarThemeData(
           backgroundColor: Colors.white,
@@ -63,7 +63,7 @@ class AppTheme {
       floatingActionButtonTheme:
           FloatingActionButtonThemeData(backgroundColor: Colors.deepPurple),
       iconTheme: IconThemeData(
-        color: Colors.deepPurple,
+        color: Colors.deepPurple[300],
       ),
 
       

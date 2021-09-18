@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:nanosat/icons/nano_icons_icons.dart';
 import 'package:nanosat/views/alerts.dart';
@@ -7,6 +9,7 @@ import 'package:nanosat/views/charts.dart';
 import 'package:nanosat/views/imaging.dart';
 import 'package:nanosat/widgets/drawer.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 import '../providers/shop_provider.dart';
 import '../views/landing_page.dart';
@@ -166,100 +169,98 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-      final width = MediaQuery.of(context).size.width;
+    final width = MediaQuery.of(context).size.width;
 
     SfRadialGauge _buildRadialGauge(BuildContext context) {
-    return SfRadialGauge(axes: <RadialAxis>[
-      RadialAxis(
-        minimum: 32,
-        maximum: 212,
-        interval: 36,
-        radiusFactor: MediaQuery.of(context).orientation == Orientation.portrait
-           ? 0.5
-                : 0.6,
-   
-        labelOffset: 15,
-        canRotateLabels: true,
-        minorTickStyle: const MinorTickStyle(
-            color: Color(0xFF00A8B5),
-            thickness: 1.5,
-            lengthUnit: GaugeSizeUnit.factor,
-            length: 0.07),
-        majorTickStyle: const MajorTickStyle(
-            color: Color(0xFF00A8B5),
-            thickness: 1.5,
-            lengthUnit: GaugeSizeUnit.factor,
-            length: 0.15),
-        axisLineStyle: const AxisLineStyle(
-          color: Color(0xFF00A8B5),
-          thickness: 3,
-        ),
-        axisLabelStyle:
-            const GaugeTextStyle(color: Color(0xFF00A8B5), fontSize: 12),
-      ),
-      RadialAxis(
-          minimum: 0,
-          maximum: 100,
-          interval: 10,
-          ticksPosition: ElementsPosition.outside,
-          labelsPosition: ElementsPosition.outside,
-          minorTicksPerInterval: 5,
-          radiusFactor: 0.95,
+      return SfRadialGauge(axes: <RadialAxis>[
+        RadialAxis(
+          minimum: 32,
+          maximum: 212,
+          interval: 36,
+          radiusFactor:
+              MediaQuery.of(context).orientation == Orientation.portrait
+                  ? 0.5
+                  : 0.6,
           labelOffset: 15,
+          canRotateLabels: true,
           minorTickStyle: const MinorTickStyle(
-              thickness: 1.5, length: 0.07, lengthUnit: GaugeSizeUnit.factor),
-          majorTickStyle: const MinorTickStyle(
-            thickness: 1.5,
-            length: 0.15,
-            lengthUnit: GaugeSizeUnit.factor,
-          ),
+              color: Color(0xFF00A8B5),
+              thickness: 1.5,
+              lengthUnit: GaugeSizeUnit.factor,
+              length: 0.07),
+          majorTickStyle: const MajorTickStyle(
+              color: Color(0xFF00A8B5),
+              thickness: 1.5,
+              lengthUnit: GaugeSizeUnit.factor,
+              length: 0.15),
           axisLineStyle: const AxisLineStyle(
+            color: Color(0xFF00A8B5),
             thickness: 3,
           ),
-          axisLabelStyle: const GaugeTextStyle(fontSize: 12),
-          annotations: <GaugeAnnotation>[
-            GaugeAnnotation(
-                angle: 90,
-                positionFactor: 1,
-                widget: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Container(
-                        child: const Text(
-                      '33ft  :',
-                      style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Times'),
-                    )),
-                    Container(
-                        child: const Text(
-                      ' 20in',
-                      style: TextStyle(
-                          fontSize: 12,
-                          color: Color(0xFF00A8B5),
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Times'),
-                    ))
-                  ],
-                ))
-          ],
-          pointers: const <GaugePointer>[
-            NeedlePointer(
-              needleLength: 0.68,
+          axisLabelStyle:
+              const GaugeTextStyle(color: Color(0xFF00A8B5), fontSize: 12),
+        ),
+        RadialAxis(
+            minimum: 0,
+            maximum: 100,
+            interval: 10,
+            ticksPosition: ElementsPosition.outside,
+            labelsPosition: ElementsPosition.outside,
+            minorTicksPerInterval: 5,
+            radiusFactor: 0.95,
+            labelOffset: 15,
+            minorTickStyle: const MinorTickStyle(
+                thickness: 1.5, length: 0.07, lengthUnit: GaugeSizeUnit.factor),
+            majorTickStyle: const MinorTickStyle(
+              thickness: 1.5,
+              length: 0.15,
               lengthUnit: GaugeSizeUnit.factor,
-              needleStartWidth: 0,
-              needleEndWidth: 3,
-              value: 33,
-              enableAnimation: true,
-              knobStyle: KnobStyle(
-                  knobRadius: 6.5, sizeUnit: GaugeSizeUnit.logicalPixel),
-            )
-          ]),
-    ]);
-  }
-
-
+            ),
+            axisLineStyle: const AxisLineStyle(
+              thickness: 3,
+            ),
+            axisLabelStyle: const GaugeTextStyle(fontSize: 12),
+            annotations: <GaugeAnnotation>[
+              GaugeAnnotation(
+                  angle: 90,
+                  positionFactor: 1,
+                  widget: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Container(
+                          child: const Text(
+                        '33ft  :',
+                        style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Times'),
+                      )),
+                      Container(
+                          child: const Text(
+                        ' 20in',
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Color(0xFF00A8B5),
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Times'),
+                      ))
+                    ],
+                  ))
+            ],
+            pointers: const <GaugePointer>[
+              NeedlePointer(
+                needleLength: 0.68,
+                lengthUnit: GaugeSizeUnit.factor,
+                needleStartWidth: 0,
+                needleEndWidth: 3,
+                value: 33,
+                enableAnimation: true,
+                knobStyle: KnobStyle(
+                    knobRadius: 6.5, sizeUnit: GaugeSizeUnit.logicalPixel),
+              )
+            ]),
+      ]);
+    }
 
     SfRadialGauge _buildTemperatureMonitorExample() {
       return SfRadialGauge(
@@ -385,126 +386,176 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       body: Container(
-        padding: EdgeInsets.all(2),
-        child: ListView(children: <Widget>[
-          Stack(children: [
-            Container(
-              height: height / 2,
-              child: GoogleMap(
-                  myLocationButtonEnabled: false,
-                  mapType: _currentMapType,
-                  zoomControlsEnabled: false,
-                  initialCameraPosition: _initialCameraPosition,
-                  onMapCreated: (controller) =>
-                      _googleMapController = controller,
-                  markers: _markers),
-            ),
-            Positioned(
-              right: 4,
-              bottom: 2,
-              child: FloatingActionButton(
-                backgroundColor: Theme.of(context).primaryColor,
-                foregroundColor: Colors.black,
-                onPressed: () => _googleMapController.animateCamera(
-                  CameraUpdate.newCameraPosition(_initialCameraPosition),
+        height: height,
+     
+        child: SingleChildScrollView(
+          child: Column(children: <Widget>[
+            Stack(children: [
+              Container(
+                height: height / 2,
+                child: GoogleMap(
+                    myLocationButtonEnabled: false,
+                    mapType: _currentMapType,
+                      gestureRecognizers: Set()..add(Factory<EagerGestureRecognizer>(() => EagerGestureRecognizer())),
+                    zoomControlsEnabled: false,
+                    initialCameraPosition: _initialCameraPosition,
+                    onMapCreated: (controller) =>
+                        _googleMapController = controller,
+                    markers: _markers),
+              ),
+              Positioned(
+                right: 4,
+                bottom: 2,
+                child: FloatingActionButton(
+                  heroTag: 'satellite',
+                  backgroundColor: Theme.of(context).primaryColor,
+                  foregroundColor: Colors.black,
+                  onPressed: () => _googleMapController.animateCamera(
+                    CameraUpdate.newCameraPosition(_initialCameraPosition),
+                  ),
+                  child:
+                      const Icon(Icons.center_focus_strong, color: Colors.white),
                 ),
-                child:
-                    const Icon(Icons.center_focus_strong, color: Colors.white),
               ),
-            ),
-            Positioned(
-              right: 4,
-              bottom: 70,
-              child: FloatingActionButton(
-                backgroundColor: Theme.of(context).primaryColor,
-                foregroundColor: Colors.black,
-                onPressed: () {
-                  setState(() {
-                    _currentMapType = _currentMapType == MapType.normal
-                        ? MapType.satellite
-                        : MapType.normal;
-                  });
-                },
-                child: const Icon(Icons.map, color: Colors.white),
+              Positioned(
+                right: 4,
+                bottom: 70,
+                child: FloatingActionButton(
+                     heroTag: 'pan',
+                  backgroundColor: Theme.of(context).primaryColor,
+                  foregroundColor: Colors.black,
+                  onPressed: () {
+                    setState(() {
+                      _currentMapType = _currentMapType == MapType.normal
+                          ? MapType.satellite
+                          : MapType.normal;
+                    });
+                  },
+                  child: const Icon(Icons.map, color: Colors.white),
+                ),
               ),
+            ]),
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Container(
+                  padding: EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).cardColor,
+                      borderRadius: BorderRadius.circular(12)),
+                  child: Container(
+                      width: width,
+                      child: Column(children: [
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Container(
+                                  height: 250,
+                                  width: width / 1.8,
+                                  child: _buildTemperatureMonitorExample()),
+                              Spacer(),
+                              Container(
+                                  width: width / 3,
+                                  child: Text('Latest Temp. reading: 22.5 °C'))
+                            ]),
+                        Text('*Temp. Readings as of 2020-9-9 10:23'),
+                        SizedBox(height: 5)
+                      ]))),
             ),
-          ]),
-          Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: Container(
-                padding: EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                    color: Theme.of(context).cardColor,
-                    borderRadius: BorderRadius.circular(12)),
-                child: Container(
-                  width: width,
-                  child: Column(
-                    children: [ Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Container(
-                            height: 250,
-                            width: width/1.8,
-                            child: _buildTemperatureMonitorExample()),
-                            Spacer(),
-                        Container(
-                            width: width/3,
-                            child: Text('Current Temp. reading: 22.5 °C'))
-                      ]),     Text('*Temp. Readings as of 2020-9-9 10:23'),   SizedBox(height: 5) ])
-                )),
-          ),
             SizedBox(height: 10),
             Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: Container(
-                padding: EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                    color: Theme.of(context).cardColor,
-                    borderRadius: BorderRadius.circular(12)),
-                child: Container(
-                  width: width,
-                  child: Column(
-                    children: [Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Container(
-                              height: 250,
-                              width: width/1.8,
-                              child: _buildRadialGauge(context)),
-                              Spacer(),
-                          Container(
-                              width: width/3,
-                              child: Text('Current Altitude reading: 33 ft'))
-                        ]), 
-                        Text('*Altitude Readings as of 2020-9-9 10:23'),
-                        SizedBox(height: 5)
-                        ]
-                  ),
-                )),
-          ),
-              SizedBox(height: 10),
+              padding: const EdgeInsets.all(4.0),
+              child: Container(
+                  padding: EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).cardColor,
+                      borderRadius: BorderRadius.circular(12)),
+                  child: Container(
+                    width: width,
+                    child: Column(children: [
+                      Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                        Container(
+                            height: 250,
+                            width: width / 1.8,
+                            child: _buildRadialGauge(context)),
+                        Spacer(),
+                        Container(
+                            width: width / 3,
+                            child: Text('Latest Altitude reading: 33 ft'))
+                      ]),
+                      Text('*Altitude Readings as of 2020-9-9 10:23'),
+                      SizedBox(height: 5)
+                    ]),
+                  )),
+            ),
+            SizedBox(height: 10),
             Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: Container(
-                padding: EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                    color: Theme.of(context).cardColor,
-                    borderRadius: BorderRadius.circular(12)),
-                child: Container(
-                  width: width,
-                  child: Column(
-                    children: [
-                      
-                       Text('Thermal Imaging'),
-                        SizedBox(height: 5),
-                        // Image.network(''),
-                        Text('*Altitude Readings as of 2020-9-9 10:23'),
-                        SizedBox(height: 5)
-                        ]
-                  ),
-                )),
-          )
-        ]),
+              padding: const EdgeInsets.all(4.0),
+              child: Container(
+                  padding: EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).cardColor,
+                      borderRadius: BorderRadius.circular(12)),
+                  child: Container(
+                    width: width,
+                    child: Column(children: [
+                      Text('Thermal Imaging', style: TextStyle(fontSize: 18)),
+                      SizedBox(height: 5),
+                      // Image.network('https://d36nqgmw98q4v5.cloudfront.net/images/Article_Images/ImageForArticle_1105(1).jpg'),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Container(
+                          width: width,
+                          height: 200,
+                          child: FadeInImage.memoryNetwork(
+                              fit: BoxFit.cover,
+                              alignment: Alignment.center,
+                              placeholder: kTransparentImage,
+                              image:
+                                  'https://d36nqgmw98q4v5.cloudfront.net/images/Article_Images/ImageForArticle_1105(1).jpg'),
+                        ),
+                      ),
+        
+                      Text('*Latest Thermal Image as of 2020-9-9 10:23'),
+                      SizedBox(height: 10),
+                      Container(
+                        width: 125,
+                        child: ElevatedButton(
+                            onPressed: () {
+                                Navigator.push(
+                      context,
+                      CupertinoPageRoute(
+                          builder: (context) => Imaging(
+                                initialIndex: 0,
+                              )));
+                            },
+                            child: Row(children: [
+                              Text('View more',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                    fontFamily: 'InterRegular',
+                                  )),
+                              Icon(Icons.arrow_forward_ios),
+                            ]),
+                            style: ButtonStyle(
+                                elevation: MaterialStateProperty.all(0.2),
+                                backgroundColor: MaterialStateProperty.all(
+                                    Colors.deepPurple[300]),
+                                shape: MaterialStateProperty.all(StadiumBorder()),
+                                padding:
+                                    MaterialStateProperty.all(EdgeInsets.all(10)),
+                                textStyle: MaterialStateProperty.all(TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                  fontFamily: 'InterRegular',
+                                )))),
+                      ),
+                      SizedBox(height: 5)
+                    ]),
+                  )),
+            )
+          ]),
+        ),
       ),
     );
   }

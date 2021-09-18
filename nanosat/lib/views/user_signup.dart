@@ -307,7 +307,7 @@ class _SignUpPageState extends State<SignUpPage> {
           SizedBox(height: 20.0),
           _termsOfService(),
           SizedBox(height: 20.0),
-          loading ? Center(child: CircularProgressIndicator()) : _submitButton(),
+          loading ? Center(child: CircularProgressIndicator(color:  Colors.deepPurple)) : _submitButton(),
           SizedBox(height: 10.0),
           _divider(),
           _createAccountLabel(),

@@ -74,6 +74,7 @@ class _AltitudeState extends State<Altitude> {
             } else if ((model.altitude.length > 0 && !model.isLoading)) {
               content = GraphWidget(
                 readings: model.altitude,
+                label: 'Past Hour'
               );
             }
 
@@ -94,6 +95,7 @@ class _AltitudeState extends State<Altitude> {
             } else if ((model.altitude.length > 0 && !model.isLoading)) {
               content = GraphWidget(
                 readings: model.altitude,
+                  label: 'Today'
               );
             }
 
@@ -114,6 +116,7 @@ class _AltitudeState extends State<Altitude> {
             } else if ((model.altitude.length > 0 && !model.isLoading)) {
               content = GraphWidget(
                 readings: model.altitude,
+                  label: 'Yesterday'
               );
             }
 
@@ -186,8 +189,8 @@ class ShimmerLoader extends StatelessWidget {
 
 class GraphWidget extends StatelessWidget {
   final List<SensorReading> readings;
-
-  GraphWidget({this.readings});
+  final String label;
+  GraphWidget({this.readings, this.label});
 
   @override
   Widget build(BuildContext context) {
@@ -221,7 +224,7 @@ class GraphWidget extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Text(
-                            'Today',
+                            label,
                             textAlign: TextAlign.left,
                             softWrap: true,
                             textScaleFactor: 1,
@@ -467,14 +470,18 @@ class _ExpandedTempState extends State<ExpandedTemp> {
     ));
     final List<int> bytes = document.save();
     document.dispose();
-    await FileSaveHelper.saveAndLaunchFile(bytes, 'cartesian_chart.pdf');
+    await FileSaveHelper.saveAndLaunchFile(bytes, 'altitude.pdf');
   }
 
   SfCartesianChart _buildDefaultLineChart() {
     return SfCartesianChart(
       key: _chartKey,
       plotAreaBorderWidth: 0,
-      title: ChartTitle(text: 'Altitude Readings'),
+      title: ChartTitle(text: 'Altitude Readings' ,textStyle: TextStyle(
+                fontFamily: 'Roboto',
+                fontSize: 16,
+                color: Colors.deepPurple[300],
+              )),
       legend:
           Legend(isVisible: false, overflowMode: LegendItemOverflowMode.wrap),
       primaryXAxis: DateTimeAxis(
@@ -487,6 +494,7 @@ class _ExpandedTempState extends State<ExpandedTemp> {
               textStyle: TextStyle(
                 fontFamily: 'Roboto',
                 fontSize: 16,
+                color: Colors.deepPurple[300],
               )),
           majorGridLines: const MajorGridLines(width: 0)),
       primaryYAxis: NumericAxis(

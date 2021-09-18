@@ -57,6 +57,8 @@ class _ChartsState extends State<Charts> with TickerProviderStateMixin {
           
           }, icon: Icon(Icons.refresh, color: Colors.white))],
         ),
+        floatingActionButton: FloatingActionButton(onPressed: (){},
+        child: Icon(Icons.filter_alt_outlined)),
         body: DefaultTabController(
           length: 6,
           child: Column(

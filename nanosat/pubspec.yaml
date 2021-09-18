@@ -30,7 +30,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   provider: ^4.3.1
   transparent_image: ^1.0.0
-  http: ^0.12.2
+  http: 
   file_picker:
   flutter_launcher_icons: null
   cached_network_image:
@@ -41,6 +41,12 @@ dependencies:
   intl:
   shimmer: 
   syncfusion_flutter_pdf:
+  url_launcher: ^6.0.2
+  path_provider: ^2.0.1
+  path_provider_macos: ^2.0.0
+  desktop_window: 0.4.0
+  syncfusion_flutter_pdfviewer: 
+  syncfusion_officechart: 
 
 dev_dependencies:
   flutter_test:

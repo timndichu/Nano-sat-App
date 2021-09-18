@@ -36,7 +36,7 @@ class SensorReadingsProvider extends ChangeNotifier {
       notifyListeners();
       String url = formatter('/getAltitudeReadings');
 
-      var response = await http.get(url);
+      var response = await http.get(Uri.parse(url));
       if (response.statusCode == 200 || response.statusCode == 201) {
         responseData = json.decode(response.body);
 

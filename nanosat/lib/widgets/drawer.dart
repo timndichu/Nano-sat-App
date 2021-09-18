@@ -4,6 +4,7 @@ import 'package:nanosat/icons/nano_icons_icons.dart';
 import 'package:nanosat/views/charts.dart';
 import 'package:nanosat/views/home_page.dart';
 import 'package:nanosat/views/imaging.dart';
+import 'package:nanosat/views/landing_page.dart';
 import 'package:nanosat/views/misc/about.dart';
 import 'package:nanosat/views/misc/help.dart';
 import 'package:nanosat/views/misc/settings.dart';
@@ -22,13 +23,12 @@ class MainDrawer extends StatelessWidget {
                 //     CupertinoPageRoute(builder: (context) => UserProfile()));
               },
               child: UserAccountsDrawerHeader(
-                accountEmail: Text('nancynjiru@gmail.com'),
-                accountName: Text('Nancy'),
+                accountEmail: Text('timndichu@gmail.com'),
+                accountName: Text('Tim'),
                 currentAccountPicture: CircleAvatar(
-                  backgroundColor: Color(0xffA4312A),
+                  backgroundColor: Colors.deepPurple[300],
                   radius: 30,
-                  backgroundImage: NetworkImage(
-                      'https://www.click042.com/wp-content/uploads/2019/08/images-39.jpeg'),
+                child: Icon(Icons.person, color: Colors.white)
                 ),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -139,9 +139,9 @@ class MainDrawer extends StatelessWidget {
                 ListTile(
                   title: Text(
                     'See All',
-                    style: TextStyle(color: Colors.deepPurple),
+                    style: TextStyle(color: Colors.deepPurple[300]),
                   ),
-                  trailing: Icon(Icons.arrow_forward, color: Colors.deepPurple),
+                  trailing: Icon(Icons.arrow_forward, color: Colors.deepPurple[300]),
                   onTap: () {
                  Navigator.push(
                               context,
@@ -251,7 +251,36 @@ class MainDrawer extends StatelessWidget {
             ListTile(
               leading: Icon(Icons.exit_to_app),
               title: Text('Log Out'),
-              onTap: () => {},
+              onTap: (){
+                 showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                content:
+                                    Text('Are you Sure you want to Log Out?'),
+                                actions: <Widget>[
+                                  FlatButton(
+                                      onPressed: () {
+                                       Navigator.pushAndRemoveUntil(
+                                                    context,
+                                                    CupertinoPageRoute(
+                                                        builder: (context) =>
+                                                            WelcomePage()),
+                                                    (Route<dynamic> route) =>
+                                                        false,
+                                                  );
+                                      },
+                                      child: Text('Yes')),
+                                  FlatButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text('No'))
+                                ],
+                              );
+                            });
+                     
+              },
             ),
           ],
         ),
