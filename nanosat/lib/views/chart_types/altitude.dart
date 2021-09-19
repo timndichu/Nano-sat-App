@@ -477,10 +477,11 @@ class _ExpandedTempState extends State<ExpandedTemp> {
     return SfCartesianChart(
       key: _chartKey,
       plotAreaBorderWidth: 0,
+      backgroundColor: Theme.of(context).cardColor,
       title: ChartTitle(text: 'Altitude Readings' ,textStyle: TextStyle(
                 fontFamily: 'Roboto',
                 fontSize: 16,
-                color: Colors.deepPurple[300],
+                color: Theme.of(context).textTheme.headline1.color
               )),
       legend:
           Legend(isVisible: false, overflowMode: LegendItemOverflowMode.wrap),
@@ -489,18 +490,24 @@ class _ExpandedTempState extends State<ExpandedTemp> {
           intervalType: DateTimeIntervalType.auto,
           dateFormat: DateFormat.Hms(),
           name: 'Seconds',
+            labelStyle: TextStyle(
+                              color: Theme.of(context).textTheme.headline1.color
+                            ),
           title: AxisTitle(
               text: 'Time',
               textStyle: TextStyle(
                 fontFamily: 'Roboto',
                 fontSize: 16,
-                color: Colors.deepPurple[300],
+                color: Theme.of(context).textTheme.headline1.color
               )),
           majorGridLines: const MajorGridLines(width: 0)),
       primaryYAxis: NumericAxis(
           rangePadding: ChartRangePadding.none,
           name: 'Altitude',
           minimum: 10,
+          labelStyle: TextStyle(
+                              color: Theme.of(context).textTheme.headline1.color
+                            ),
           maximum: 110,
           interval: 10,
           axisLine: const AxisLine(width: 0),

@@ -38,12 +38,16 @@ class _HomepageState extends State<Homepage> {
   }
 
   int _currentIndex = 0;
+  bool alertBadgeVisible = true;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   void onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
+      if(_currentIndex == 3) {
+        alertBadgeVisible = false;
+      }
     });
   }
 
@@ -93,11 +97,15 @@ class _HomepageState extends State<Homepage> {
             BottomNavigationBarItem(
                 backgroundColor: Theme.of(context).cardColor,
                 label: 'Alerts',
-                icon: Icon(NanoIcons.bell,
-                    size: 26,
-                    color: _currentIndex == 3
-                        ? Colors.deepPurple
-                        : Colors.grey[700])),
+                icon: Stack(
+                  children: [Icon(NanoIcons.bell,
+                      size: 26,
+                      color: _currentIndex == 3
+                          ? Colors.deepPurple
+                          : Colors.grey[700]),
+                        alertBadgeVisible ?  Positioned(top: 0, right: 2, child: Container(width:10, height: 10, decoration: BoxDecoration(color: Colors.deepPurple[300], borderRadius: BorderRadius.circular(20)),))
+                          : Container(height: 0, width: 0)]
+                )),
           ],
         ),
         body: _children[_currentIndex]);
