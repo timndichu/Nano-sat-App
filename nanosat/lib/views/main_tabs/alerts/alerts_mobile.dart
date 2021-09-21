@@ -3,19 +3,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nanosat/widgets/drawer.dart';
 
-import '../providers/shop_provider.dart';
-import '../views/landing_page.dart';
-import '../views/user_login.dart';
+
 import 'package:provider/provider.dart';
 
-import 'profile.dart';
 
-class Alerts extends StatefulWidget {
+class AlertsMobile extends StatefulWidget {
   @override
-  _AlertsState createState() => _AlertsState();
+  _AlertsMobileState createState() => _AlertsMobileState();
 }
 
-class _AlertsState extends State<Alerts> {
+class _AlertsMobileState extends State<AlertsMobile> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -26,7 +23,7 @@ class _AlertsState extends State<Alerts> {
           automaticallyImplyLeading: true,
           backgroundColor: Colors.deepPurple,
           centerTitle: true,
-          title: Text('Alerts'),
+          title: Text('AlertsMobile'),
           actions: [
             IconButton(
                 color: Colors.deepPurple,

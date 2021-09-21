@@ -1,30 +1,26 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:nanosat/views/chart_types/accelerometer.dart';
-import 'package:nanosat/views/chart_types/gyroscope.dart';
-import 'package:nanosat/views/chart_types/magnetometer.dart';
+import 'package:nanosat/views/chart_types/accelerometer/accelerometer.dart';
+import 'package:nanosat/views/chart_types/altitude/altitude.dart';
+import 'package:nanosat/views/chart_types/battery_info/battery_info.dart';
+import 'package:nanosat/views/chart_types/gyroscope/gyroscope.dart';
+import 'package:nanosat/views/chart_types/altitude/magnetometer.dart';
+import 'package:nanosat/views/chart_types/temperature/temperature.dart';
 import 'package:nanosat/widgets/drawer.dart';
 
-import '../providers/shop_provider.dart';
-import '../views/landing_page.dart';
-import '../views/user_login.dart';
+
 import 'package:provider/provider.dart';
 
-import 'chart_types/altitude.dart';
-import 'chart_types/battery_info.dart';
-import 'chart_types/temperature.dart';
 
-import 'profile.dart';
-
-class Charts extends StatefulWidget {
+class ChartsMobile extends StatefulWidget {
   final int initialIndex;
-  Charts({this.initialIndex});
+  ChartsMobile({this.initialIndex});
   @override
-  _ChartsState createState() => _ChartsState();
+  _ChartsMobileState createState() => _ChartsMobileState();
 }
 
-class _ChartsState extends State<Charts> with TickerProviderStateMixin {
+class _ChartsMobileState extends State<ChartsMobile> with TickerProviderStateMixin {
   TabController _controller;
   int _activeTabIndex = 0;
 

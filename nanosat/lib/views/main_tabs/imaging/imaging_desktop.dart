@@ -1,28 +1,22 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nanosat/views/imaging_types/rural_lighting/rural_lighting.dart';
+import 'package:nanosat/views/imaging_types/thermal_imaging/thermal_imaging.dart';
+import 'package:nanosat/views/imaging_types/vegetation_cover/vegetation_cover.dart';
+import 'package:nanosat/views/imaging_types/water_bodies/water_bodies.dart';
 import 'package:nanosat/widgets/drawer.dart';
 
-import '../providers/shop_provider.dart';
-import '../views/landing_page.dart';
-import '../views/user_login.dart';
-import 'package:provider/provider.dart';
 
-import 'imaging_types/rural_lighting.dart';
-import 'imaging_types/thermal_imaging.dart';
-import 'imaging_types/vegetation_cover.dart';
-import 'imaging_types/water_bodies.dart';
-import 'profile.dart';
-
-class Imaging extends StatefulWidget {
+class ImagingDesktop extends StatefulWidget {
  final int initialIndex;
-  Imaging({this.initialIndex});
+  ImagingDesktop({this.initialIndex});
 
   @override
-  _ImagingState createState() => _ImagingState();
+  _ImagingDesktopState createState() => _ImagingDesktopState();
 }
 
-class _ImagingState extends State<Imaging> with TickerProviderStateMixin {
+class _ImagingDesktopState extends State<ImagingDesktop> with TickerProviderStateMixin {
 
   
     TabController _controller;

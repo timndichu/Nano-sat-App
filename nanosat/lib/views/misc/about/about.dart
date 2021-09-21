@@ -2,14 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
-import '../../../services/themeprovider.dart';
+import '../../../../services/themeprovider.dart';
 
-class Help extends StatefulWidget {
+class About extends StatefulWidget {
   @override
-  _HelpState createState() => _HelpState();
+  _AboutState createState() => _AboutState();
 }
 
-class _HelpState extends State<Help> {
+class _AboutState extends State<About> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

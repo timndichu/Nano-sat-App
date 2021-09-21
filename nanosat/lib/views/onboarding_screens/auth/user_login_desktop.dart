@@ -1,22 +1,25 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../providers/user_provider.dart';
-import '../views/home_page.dart';
+import 'package:nanosat/providers/user_provider.dart';
+
+import 'package:nanosat/views/main_tabs/homepage/homepage.dart';
+import 'package:nanosat/widgets/custom_path.dart';
+
 import 'package:provider/provider.dart';
 
-import '../widgets/custom_path.dart';
-import '../../widgets/password_formfield.dart';
-import '../../widgets/text_input_decoration.dart';
 
-import 'user_signup.dart';
+import '../../../widgets/password_formfield.dart';
+import '../../../widgets/text_input_decoration.dart';
+
+import 'user_signup_mobile.dart';
 
 //LOGIN PAGE
-class LoginPage extends StatefulWidget {
+class LoginPageDesktop extends StatefulWidget {
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _LoginPageDesktopState createState() => _LoginPageDesktopState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageDesktopState extends State<LoginPageDesktop> {
   final _formKey = GlobalKey<FormState>();
   String email = '';
   String password = '';
@@ -214,11 +217,8 @@ class _LoginPageState extends State<LoginPage> {
                       if (response['success'])
                         {
                              Provider.of<UserProvider>(context, listen: false).setEmail(data['email']);
-                          setState(() {
-                            loading = false;
-                          });
-                          
-                          print('succees');
+                         
+                          print('success');
                           Navigator.pushAndRemoveUntil(
                             context,
                             CupertinoPageRoute(

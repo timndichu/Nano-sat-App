@@ -4,29 +4,29 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:nanosat/icons/nano_icons_icons.dart';
-import 'package:nanosat/views/alerts.dart';
-import 'package:nanosat/views/charts.dart';
-import 'package:nanosat/views/imaging.dart';
+import 'package:nanosat/views/main_tabs/alerts/alerts.dart';
+
+import 'package:nanosat/views/main_tabs/alerts/alerts_mobile.dart';
+import 'package:nanosat/views/main_tabs/charts/charts.dart';
+import 'package:nanosat/views/main_tabs/imaging/imaging.dart';
 import 'package:nanosat/widgets/drawer.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-import '../providers/shop_provider.dart';
-import '../views/landing_page.dart';
-import '../views/user_login.dart';
+
 import 'package:provider/provider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import 'profile.dart';
 
-class Homepage extends StatefulWidget {
+
+class HomepageDesktop extends StatefulWidget {
   final int index;
-  Homepage({this.index});
+  HomepageDesktop({this.index});
   @override
-  _HomepageState createState() => _HomepageState();
+  _HomepageDesktopState createState() => _HomepageDesktopState();
 }
 
-class _HomepageState extends State<Homepage> {
+class _HomepageDesktopState extends State<HomepageDesktop> {
   PageController _myPage = PageController(initialPage: 0);
 
   List<T> map<T>(List list, Function handler) {

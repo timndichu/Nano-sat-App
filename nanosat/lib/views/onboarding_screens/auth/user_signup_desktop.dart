@@ -1,15 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../providers/user_provider.dart';
-import '../views/home_page.dart';
-import '../widgets/custom_path.dart';
+import 'package:nanosat/providers/user_provider.dart';
+import 'package:nanosat/views/main_tabs/homepage/homepage.dart';
+import 'package:nanosat/views/onboarding_screens/auth/user_login.dart';
+import 'package:nanosat/widgets/custom_path.dart';
+
 import 'package:provider/provider.dart';
 
-import '../../widgets/confirmformfield.dart';
-import './user_login.dart';
+import '../../../widgets/confirmformfield.dart';
+import 'user_login_mobile.dart';
 
-import '../../widgets/password_formfield.dart';
-import '../../widgets/text_input_decoration.dart';
+import '../../../widgets/password_formfield.dart';
+import '../../../widgets/text_input_decoration.dart';
 
 //SIGN UP PAGE
 class SignUpPage extends StatefulWidget {
@@ -395,9 +397,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       if (response['success'])
                         {
                               Provider.of<UserProvider>(context, listen: false).setEmail(data['email']);
-                          setState(() {
-                            loading = false;
-                          });
+                       
                           print('succees');
                           Navigator.pushAndRemoveUntil(
                             context,

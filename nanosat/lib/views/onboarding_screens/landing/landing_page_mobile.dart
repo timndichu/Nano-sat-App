@@ -1,18 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nanosat/views/onboarding_screens/auth/user_login.dart';
+import 'package:nanosat/widgets/custom_path.dart';
 
-import '../widgets/custom_path.dart';
-import 'user_login.dart';
-import 'user_signup.dart';
+
+import '../auth/user_login_mobile.dart';
+import '../auth/user_signup_mobile.dart';
 
 
 //THIS IS THE FIRST ONBOARDING SCREEN THE USER SEES ON OPENING THE APP
-class WelcomePage extends StatefulWidget {
+class WelcomePageMobile extends StatefulWidget {
   @override
-  _WelcomePageState createState() => _WelcomePageState();
+  _WelcomePageMobileState createState() => _WelcomePageMobileState();
 }
 
-class _WelcomePageState extends State<WelcomePage> {
+class _WelcomePageMobileState extends State<WelcomePageMobile> {
   Widget _loginButton() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),

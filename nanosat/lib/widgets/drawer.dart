@@ -1,13 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nanosat/icons/nano_icons_icons.dart';
-import 'package:nanosat/views/charts.dart';
-import 'package:nanosat/views/home_page.dart';
-import 'package:nanosat/views/imaging.dart';
-import 'package:nanosat/views/landing_page.dart';
-import 'package:nanosat/views/misc/about.dart';
-import 'package:nanosat/views/misc/help.dart';
-import 'package:nanosat/views/misc/settings.dart';
+import 'package:nanosat/views/main_tabs/charts/charts.dart';
+import 'package:nanosat/views/main_tabs/homepage/homepage.dart';
+import 'package:nanosat/views/main_tabs/imaging/imaging.dart';
+
+import 'package:nanosat/views/misc/about/about.dart';
+import 'package:nanosat/views/misc/help/help.dart';
+import 'package:nanosat/views/misc/settings/settings.dart';
+import 'package:nanosat/views/onboarding_screens/landing/landing_page.dart';
 
 class MainDrawer extends StatelessWidget {
   @override
