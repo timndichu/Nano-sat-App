@@ -6,19 +6,11 @@ import 'dart:io';
 import 'dart:ui' as dart_ui;
 
 import 'dart:math' as math;
-import 'package:path_provider/path_provider.dart';
 
-/// Package import
-import 'package:intl/intl.dart';
-import 'package:nanosat/helper/helper.dart';
-import 'package:shimmer/shimmer.dart';
 
-import 'package:flutter/services.dart';
-import 'package:nanosat/models/sensor_readings.dart';
-import 'package:nanosat/providers/sensor_readings_provider.dart';
-import 'package:nanosat/services/themeprovider.dart';
-import 'package:provider/provider.dart';
-import 'package:syncfusion_flutter_pdf/pdf.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
+
+import 'package:logger/logger.dart';
 
 /// Chart import
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -29,10 +21,16 @@ class Temperature extends StatefulWidget {
 }
 
 class _TemperatureState extends State<Temperature> {
-  List<SensorReading> reading;
+  
   bool isLoading = false;
   ChartSeriesController _chartSeriesController;
   Timer timer;
+   final channel = WebSocketChannel.connect(
+    Uri.parse('wss://ksa-nanosat.herokuapp.com'),
+  );
+  var socketData;
+   var log = Logger();
+   String str;
   @override
   void initState() {
      timer =
@@ -49,11 +47,10 @@ class _TemperatureState extends State<Temperature> {
     super.dispose();
   }
 
-  LiveData singleData = LiveData(val: 32, x: 83);
+  
 
   void _updateDataSource(Timer timer) {
-   
-      chartData.add(singleData);
+  
       if (chartData.length == 20) {
         chartData.removeAt(0);
         _chartSeriesController?.updateDataSource(
@@ -100,7 +97,39 @@ class _TemperatureState extends State<Temperature> {
   }
     return ListView(
       children: <Widget>[
-        _buildLiveLineChart()
+
+         StreamBuilder(
+          stream: channel.stream,
+          builder: (context, snapshot) {
+            if(snapshot.hasData) { 
+              socketData = snapshot.data;
+              
+              if(socketData.runtimeType != String){
+                 str = new String.fromCharCodes(socketData);
+                 print('Data is:');
+                 var splitString = str.split('/n');
+                 String newString = splitString[0];
+                 String removeWeirdChar = newString.replaceAll('\u0000', '');
+                 var splitByNewLine = removeWeirdChar.split('\n');
+                //   var zeroth = splitByNewLine[0].split(' ');
+                //  log.i(zeroth[2]);
+                String temp = splitByNewLine[3].trim();
+                var splitByComma = temp.split(',');
+                String x = splitByComma[1].trim();
+                log.i(splitByNewLine);
+                LiveData singleData = LiveData(val: int.parse(x), x: count);
+
+                chartData.add(singleData);
+                count++;
+              }
+              
+            }
+            return  _buildLiveLineChart();
+            
+          }),
+
+
+       
       ],
     );
   }
