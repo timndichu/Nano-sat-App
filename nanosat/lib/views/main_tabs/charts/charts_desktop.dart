@@ -5,7 +5,7 @@ import 'package:nanosat/views/chart_types/accelerometer/accelerometer.dart';
 import 'package:nanosat/views/chart_types/altitude/altitude.dart';
 import 'package:nanosat/views/chart_types/battery_info/battery_info.dart';
 import 'package:nanosat/views/chart_types/gyroscope/gyroscope.dart';
-import 'package:nanosat/views/chart_types/altitude/magnetometer.dart';
+import 'package:nanosat/views/chart_types/magnetometer/magnetometer.dart';
 import 'package:nanosat/views/chart_types/temperature/temperature.dart';
 import 'package:nanosat/widgets/drawer.dart';
 

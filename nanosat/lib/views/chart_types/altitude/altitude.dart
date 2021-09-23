@@ -294,7 +294,7 @@ class _SampleViewState extends State<SampleView> {
       // Deserialization step 3
     });
   }
-
+  
   bool isDark;
   @override
   void initState() {

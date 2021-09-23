@@ -47,6 +47,8 @@ dependencies:
   desktop_window: 0.4.0
   syncfusion_flutter_pdfviewer: 
   syncfusion_officechart: 
+  web_socket_channel: ^2.1.0
+  logger: ^0.9.2
 
 dev_dependencies:
   flutter_test:
