@@ -1,11 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
+import 'dart:async';
+import 'dart:io';
+import 'dart:ui' as dart_ui;
 
-/// Package import
-import 'package:intl/intl.dart';
+import 'dart:math' as math;
 
-import 'package:flutter/services.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
+
+import 'package:logger/logger.dart';
 import 'package:nanosat/services/themeprovider.dart';
 import 'package:provider/provider.dart';
 
@@ -18,120 +22,23 @@ class GyroscopeCharts extends StatefulWidget {
 }
 
 class _GyroscopeChartsState extends State<GyroscopeCharts> {
-  @override
-  Widget build(BuildContext context) {
-    return ListView(children: [
-      Container(
-        // color: Theme.of(context).cardColor,
-        padding: const EdgeInsets.all(5.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            Card(
-              elevation: 2,
-              color: Theme.of(context).cardColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(3.0),
-              ),
-              child: Column(
-                children: <Widget>[
-                  InkWell(
-                    splashColor: Colors.grey.withOpacity(0.4),
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                              builder: (context) => ExpandedTemp()));
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text(
-                              'Temp',
-                              textAlign: TextAlign.left,
-                              softWrap: true,
-                              textScaleFactor: 1,
-                              overflow: TextOverflow.fade,
-                              style:
-                                  TextStyle(fontSize: 16.0, letterSpacing: 0.2),
-                            ),
-                            Container(
-                                child: Row(
-                              children: <Widget>[
-                                const Padding(
-                                  padding: EdgeInsets.only(left: 15),
-                                ),
-                                Container(
-                                  height: 24,
-                                  width: 24,
-                                  color: Colors.transparent,
-                                  child: Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(5, 0, 5, 5),
-                                    child: Icon(Icons.open_in_full_outlined,
-                                        color: Colors.deepPurple[300]),
-                                  ),
-                                ),
-                              ],
-                            )),
-                          ]),
-                    ),
-                  ),
-                  Container(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                      child: SizedBox(
-                          width: double.infinity,
-                          height: 230,
-                          child: SampleView()),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      )
-    ]);
-  }
-}
-
-class SampleView extends StatefulWidget {
-  @override
-  _SampleViewState createState() => _SampleViewState();
-}
-
-class _SampleViewState extends State<SampleView> {
+  bool isLoading = false;
   TrackballBehavior _trackballBehavior;
-
-  List<_SampleData> chartData = <_SampleData>[];
-
-  // Method to load Json file from assets.
-  Future<String> _loadTempData() async {
-    return await rootBundle.loadString('assets/data/sample_data.json');
-  }
-
-  Future loadSalesData() async {
-    final String jsonString = await _loadTempData(); // Deserialization  step 1
-    final dynamic jsonResponse =
-        json.decode(jsonString); // Deserialization  step 2
-    setState(() {
-      // ignore: always_specify_types
-      for (final Map i in jsonResponse) {
-        chartData.add(_SampleData.fromJson(i)); // Deserialization step 3
-      }
-    });
-  }
-
+  ChartSeriesController _chartSeriesController;
+  Timer timer;
+  final channel = WebSocketChannel.connect(
+    Uri.parse('wss://ksa-nanosat.herokuapp.com'),
+  );
+  var socketData;
+  var log = Logger();
+  String str;
   bool isDark;
   @override
   void initState() {
+    timer =
+        Timer.periodic(const Duration(milliseconds: 100), _updateDataSource);
     isDark = Provider.of<ThemeProvider>(context, listen: false).isDark;
-    super.initState();
-    loadSalesData();
+
     _trackballBehavior = TrackballBehavior(
         enable: true,
         lineColor: isDark
@@ -144,170 +51,163 @@ class _SampleViewState extends State<SampleView> {
             height: 10,
             width: 10,
             markerVisibility: TrackballVisibilityMode.visible));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _buildDefaultLineChart();
-  }
-
-  SfCartesianChart _buildDefaultLineChart() {
-    return SfCartesianChart(
-      key: GlobalKey(),
-      plotAreaBorderWidth: 0,
-      title: ChartTitle(text: 'Gyroscope Readings'),
-      legend:
-          Legend(isVisible: false, overflowMode: LegendItemOverflowMode.wrap),
-      primaryXAxis: DateTimeAxis(
-          edgeLabelPlacement: EdgeLabelPlacement.shift,
-          intervalType: DateTimeIntervalType.years,
-          dateFormat: DateFormat.y(),
-          name: 'Years',
-          majorGridLines: const MajorGridLines(width: 0)),
-      primaryYAxis: NumericAxis(
-          rangePadding: ChartRangePadding.none,
-          name: 'Temp',
-          minimum: 70,
-          maximum: 110,
-          interval: 10,
-          axisLine: const AxisLine(width: 0),
-          majorTickLines: const MajorTickLines(color: Colors.transparent)),
-      series: _getDefaultLineSeries(),
-      trackballBehavior: _trackballBehavior,
-    );
-  }
-
-  /// The method returns line series to chart.
-  List<LineSeries<_SampleData, DateTime>> _getDefaultLineSeries() {
-    return <LineSeries<_SampleData, DateTime>>[
-      LineSeries<_SampleData, DateTime>(
-        dataSource: chartData,
-        xValueMapper: (_SampleData sales, _) => sales.x,
-        yValueMapper: (_SampleData sales, _) => sales.y1,
-        name: 'Product',
-      ),
-    ];
-  }
-}
-
-//Expanded Temperature
-
-class ExpandedTemp extends StatefulWidget {
-  @override
-  _ExpandedTempState createState() => _ExpandedTempState();
-}
-
-class _ExpandedTempState extends State<ExpandedTemp> {
-  TrackballBehavior _trackballBehavior;
-
-  List<_SampleData> chartData = <_SampleData>[];
-
-  // Method to load Json file from assets.
-  Future<String> _loadTempData() async {
-    return await rootBundle.loadString('assets/data/sample_data.json');
-  }
-
-  Future loadSalesData() async {
-    final String jsonString = await _loadTempData(); // Deserialization  step 1
-    final dynamic jsonResponse =
-        json.decode(jsonString); // Deserialization  step 2
-    setState(() {
-      // ignore: always_specify_types
-      for (final Map i in jsonResponse) {
-        chartData.add(_SampleData.fromJson(i)); // Deserialization step 3
-      }
-    });
-  }
-
-  bool isDark;
-  @override
-  void initState() {
-    isDark = Provider.of<ThemeProvider>(context, listen: false).isDark;
     super.initState();
-    loadSalesData();
-    _trackballBehavior = TrackballBehavior(
-        enable: true,
-        lineColor: isDark
-            ? const Color.fromRGBO(255, 255, 255, 0.03)
-            : const Color.fromRGBO(0, 0, 0, 0.03),
-        lineWidth: 15,
-        activationMode: ActivationMode.singleTap,
-        markerSettings: const TrackballMarkerSettings(
-            borderWidth: 4,
-            height: 10,
-            width: 10,
-            markerVisibility: TrackballVisibilityMode.visible));
+  }
+
+  List<LiveData> chartData = <LiveData>[];
+  int count = 19;
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
+
+  void _updateDataSource(Timer timer) {
+    if (chartData.length == 20) {
+      chartData.removeAt(0);
+      _chartSeriesController?.updateDataSource(
+        addedDataIndexes: <int>[chartData.length - 1],
+        removedDataIndexes: <int>[0],
+      );
+    } else {
+      _chartSeriesController?.updateDataSource(
+        addedDataIndexes: <int>[chartData.length - 1],
+      );
+    }
+    count = count + 1;
+  }
+
+  ///Get the random data
+  int _getRandomInt(int min, int max) {
+    final math.Random _random = math.Random();
+    return min + _random.nextInt(max - min);
+  }
+
+  bool _isNumeric(String result) {
+    if (result == null) {
+      return false;
+    }
+    return double.tryParse(result) != null;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(title: Text('Temperature as of 20th September')),
-        body: Container(
-            height: MediaQuery.of(context).size.height,
-            child: _buildDefaultLineChart()));
-  }
+    SfCartesianChart _buildLiveLineChart() {
+      return SfCartesianChart(
+          title: ChartTitle(text: 'Live Gyroscope Readings'),
+          plotAreaBorderWidth: 0,
+          tooltipBehavior: TooltipBehavior(enable: true),
+          legend: Legend(
+            isVisible: true,
+            overflowMode: LegendItemOverflowMode.wrap,
+          ),
+          trackballBehavior: _trackballBehavior,
+          primaryXAxis:
+              NumericAxis(majorGridLines: const MajorGridLines(width: 0)),
+          primaryYAxis: NumericAxis(
+              axisLine: const AxisLine(width: 0),
+              majorTickLines: const MajorTickLines(size: 0)),
+          series: <LineSeries<LiveData, int>>[
+            LineSeries<LiveData, int>(
+                onRendererCreated: (ChartSeriesController controller) {
+                  _chartSeriesController = controller;
+                },
+                dataSource: chartData,
+                color: const Color.fromRGBO(192, 108, 132, 1),
+                xValueMapper: (LiveData readings, _) => readings.count,
+                yValueMapper: (LiveData readings, _) => readings.x,
+                animationDuration: 0,
+                name: 'X',
+                markerSettings: const MarkerSettings(isVisible: true)),
+            LineSeries<LiveData, int>(
+                onRendererCreated: (ChartSeriesController controller) {
+                  _chartSeriesController = controller;
+                },
+                dataSource: chartData,
+                color: Colors.deepOrange[400],
+                xValueMapper: (LiveData readings, _) => readings.count,
+                yValueMapper: (LiveData readings, _) => readings.y,
+                animationDuration: 0,
+                name: 'Y',
+                markerSettings: const MarkerSettings(isVisible: true)),
+            LineSeries<LiveData, int>(
+                onRendererCreated: (ChartSeriesController controller) {
+                  _chartSeriesController = controller;
+                },
+                dataSource: chartData,
+                color: Colors.deepPurple[400],
+                xValueMapper: (LiveData readings, _) => readings.count,
+                yValueMapper: (LiveData readings, _) => readings.z,
+                animationDuration: 0,
+                name: 'Z',
+                markerSettings: const MarkerSettings(isVisible: true))
+          ]);
+    }
 
-  SfCartesianChart _buildDefaultLineChart() {
-    return SfCartesianChart(
-      key: GlobalKey(),
-      plotAreaBorderWidth: 0,
-      title: ChartTitle(text: 'Temperature Against Time'),
-      legend:
-          Legend(isVisible: false, overflowMode: LegendItemOverflowMode.wrap),
-      primaryXAxis: DateTimeAxis(
-          edgeLabelPlacement: EdgeLabelPlacement.shift,
-          intervalType: DateTimeIntervalType.years,
-          dateFormat: DateFormat.y(),
-          title: AxisTitle(
-              text: 'Years',
-              textStyle: TextStyle(
-                fontFamily: 'Roboto',
-                fontSize: 18,
-              )),
-          name: 'Years',
+    return ListView(
+      children: <Widget>[
+        StreamBuilder(
+            stream: channel.stream,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                socketData = snapshot.data;
 
-          placeLabelsNearAxisLine: true,
-          majorGridLines: const MajorGridLines(width: 0)),
-      primaryYAxis: NumericAxis(
-          rangePadding: ChartRangePadding.none,
-          name: 'Temp',
-          labelFormat: '{value}°C',
-          
-          minimum: 70,
-          maximum: 110,
-          interval: 10,
-          axisLine: const AxisLine(width: 0),
-          associatedAxisName: 'Temp in degrees celsius',
-          majorTickLines: const MajorTickLines(color: Colors.transparent)),
-      series: _getDefaultLineSeries(),
-      trackballBehavior: _trackballBehavior,
+                if (socketData.runtimeType != String) {
+                  str = new String.fromCharCodes(socketData);
+                  print('Data is:');
+                  var splitString = str.split('/n');
+                  String newString = splitString[0];
+                  String removeWeirdChar = newString.replaceAll('\u0000', '');
+                  var splitByNewLine = removeWeirdChar.split('\n');
+                  log.i(splitByNewLine);
+                  if(splitByNewLine.length > 4) {
+                     String temp = splitByNewLine[3].trim();
+                  var splitByComma = temp.split(',');
+                  String x = splitByComma[0].trim();
+                  String y = splitByComma[1].trim();
+                  String z = splitByComma[2].trim();
+                  if (_isNumeric(x) && _isNumeric(y) && _isNumeric(z)) {
+                    LiveData singleData = LiveData(
+                        x: int.parse(x),
+                        y: int.parse(y),
+                        z: int.parse(z),
+                        count: count);
+
+                    chartData.add(singleData);
+                    count++;
+                  }
+                  }
+                 
+                }
+              }
+              return Card(
+                  elevation: 2,
+                  
+                  color: Theme.of(context).cardColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(3.0),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: _buildLiveLineChart(),
+                  ));
+            }),
+      ],
     );
-  }
-
-  /// The method returns line series to chart.
-  List<LineSeries<_SampleData, DateTime>> _getDefaultLineSeries() {
-    return <LineSeries<_SampleData, DateTime>>[
-      LineSeries<_SampleData, DateTime>(
-        dataSource: chartData,
-        xValueMapper: (_SampleData sales, _) => sales.x,
-        yValueMapper: (_SampleData sales, _) => sales.y1,
-        name: '',
-      ),
-    ];
   }
 }
 
-class _SampleData {
-  _SampleData(this.x, this.y1, this.y2);
-  factory _SampleData.fromJson(Map<dynamic, dynamic> parsedJson) {
-    return _SampleData(
-      DateTime.parse(parsedJson['x']),
-      parsedJson['y1'],
-      parsedJson['y2'],
-    );
-  }
-  DateTime x;
-  num y1;
-  num y2;
+class LiveData {
+  final int x;
+  final int y;
+  final int z;
+  final int count;
+
+  LiveData({
+    this.x,
+    this.y,
+    this.z,
+    this.count,
+  });
 }

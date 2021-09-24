@@ -342,9 +342,7 @@ class _SampleViewState extends State<SampleView> {
       primaryYAxis: NumericAxis(
           rangePadding: ChartRangePadding.none,
           name: 'Altitude',
-          minimum: 10,
-          maximum: 110,
-          interval: 10,
+         
           axisLine: const AxisLine(width: 0),
           majorTickLines: const MajorTickLines(color: Colors.transparent)),
       series: _getDefaultLineSeries(),

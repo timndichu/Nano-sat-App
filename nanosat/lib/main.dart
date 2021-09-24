@@ -3,6 +3,7 @@ import 'package:nanosat/providers/sensor_readings_provider.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import './providers/user_provider.dart';
+import 'views/main_tabs/charts/charts.dart';
 import 'views/onboarding_screens/landing/landing_page.dart';
 import 'views/onboarding_screens/landing/landing_page_mobile.dart';
 import 'package:provider/provider.dart';
@@ -50,7 +51,7 @@ class MyApp extends StatelessWidget {
         theme: value.getTheme(),
       title: 'Nano Sat',
     
-      home: WelcomePage(),
+      home: Charts(initialIndex: 0, )
     );
   });}
 }
