@@ -76,6 +76,7 @@ class _AccelerometerChartsState extends State<AccelerometerCharts> {
       );
     }
     count = count + 1;
+    
   }
 
   ///Get the random data
@@ -117,7 +118,7 @@ class _AccelerometerChartsState extends State<AccelerometerCharts> {
                 color: const Color.fromRGBO(192, 108, 132, 1),
                 xValueMapper: (LiveData readings, _) => readings.count,
                 yValueMapper: (LiveData readings, _) => readings.x,
-                animationDuration: 0,
+                animationDuration: 100,
                 name: 'X',
                 markerSettings: const MarkerSettings(isVisible: true)),
             LineSeries<LiveData, int>(
@@ -128,7 +129,7 @@ class _AccelerometerChartsState extends State<AccelerometerCharts> {
                 color: Colors.deepOrange[400],
                 xValueMapper: (LiveData readings, _) => readings.count,
                 yValueMapper: (LiveData readings, _) => readings.y,
-                animationDuration: 0,
+                animationDuration: 100,
                 name: 'Y',
                 markerSettings: const MarkerSettings(isVisible: true)),
             LineSeries<LiveData, int>(
@@ -139,7 +140,7 @@ class _AccelerometerChartsState extends State<AccelerometerCharts> {
                 color: Colors.deepPurple[400],
                 xValueMapper: (LiveData readings, _) => readings.count,
                 yValueMapper: (LiveData readings, _) => readings.z,
-                animationDuration: 0,
+                animationDuration: 100,
                 name: 'Z',
                 markerSettings: const MarkerSettings(isVisible: true))
           ]);

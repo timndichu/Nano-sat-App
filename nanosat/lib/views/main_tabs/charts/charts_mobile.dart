@@ -145,9 +145,9 @@ class _ChartsMobileState extends State<ChartsMobile> with TickerProviderStateMix
                 icon: Icon(Icons.refresh, color: Colors.white))
           ],
         ),
-        floatingActionButton: FloatingActionButton(
-            onPressed: () => _showModalBottomSheet(),
-            child: Icon(Icons.filter_alt_outlined)),
+        // floatingActionButton: FloatingActionButton(
+        //     onPressed: () => _showModalBottomSheet(),
+        //     child: Icon(Icons.filter_alt_outlined)),
         body: DefaultTabController(
           length: 6,
           child: Column(

@@ -28,7 +28,7 @@ class Altitude extends StatefulWidget {
 
 class _AltitudeState extends State<Altitude> {
   List<SensorReading> reading;
-  bool isLoading = false;
+  bool isAltitudeLoading = false;
   @override
   void initState() {
     Provider.of<SensorReadingsProvider>(context, listen: false)
@@ -50,7 +50,7 @@ class _AltitudeState extends State<Altitude> {
           .getAltitudeReadings()
           .then((value) {
         setState(() {
-          isLoading = false;
+          isAltitudeLoading = false;
         });
       });
     });
@@ -66,12 +66,12 @@ class _AltitudeState extends State<Altitude> {
                 child: Text(
                     'Error fetching data. Check your Internet connection'));
 
-            if (model.isLoading) {
+            if (model.isAltitudeLoading) {
               print(model.altitude);
               content = ShimmerLoader();
-            } else if ((model.altitude.length == 0 && !model.isLoading)) {
+            } else if ((model.altitude.length == 0 && !model.isAltitudeLoading)) {
               content = Center(child: Text('No graph data yet'));
-            } else if ((model.altitude.length > 0 && !model.isLoading)) {
+            } else if ((model.altitude.length > 0 && !model.isAltitudeLoading)) {
               content = GraphWidget(
                 readings: model.altitude,
                 label: 'Past Hour'
@@ -87,12 +87,12 @@ class _AltitudeState extends State<Altitude> {
                 child: Text(
                     'Error fetching data. Check your Internet connection'));
 
-            if (model.isLoading) {
+            if (model.isAltitudeLoading) {
               print(model.altitude);
               content = ShimmerLoader();
-            } else if ((model.altitude.length == 0 && !model.isLoading)) {
+            } else if ((model.altitude.length == 0 && !model.isAltitudeLoading)) {
               content = Center(child: Text('No graph data yet'));
-            } else if ((model.altitude.length > 0 && !model.isLoading)) {
+            } else if ((model.altitude.length > 0 && !model.isAltitudeLoading)) {
               content = GraphWidget(
                 readings: model.altitude,
                   label: 'Today'
@@ -108,12 +108,12 @@ class _AltitudeState extends State<Altitude> {
                 child: Text(
                     'Error fetching data. Check your Internet connection'));
 
-            if (model.isLoading) {
+            if (model.isAltitudeLoading) {
               print(model.altitude);
               content = ShimmerLoader();
-            } else if ((model.altitude.length == 0 && !model.isLoading)) {
+            } else if ((model.altitude.length == 0 && !model.isAltitudeLoading)) {
               content = Center(child: Text('No graph data yet'));
-            } else if ((model.altitude.length > 0 && !model.isLoading)) {
+            } else if ((model.altitude.length > 0 && !model.isAltitudeLoading)) {
               content = GraphWidget(
                 readings: model.altitude,
                   label: 'Yesterday'
