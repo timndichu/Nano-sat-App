@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nanosat/views/onboarding_screens/auth/user_login.dart';
+import 'package:nanosat/views/onboarding_screens/auth/user_signup.dart';
 import 'package:nanosat/widgets/custom_path.dart';
 
 

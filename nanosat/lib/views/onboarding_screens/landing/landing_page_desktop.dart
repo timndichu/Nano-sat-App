@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nanosat/views/onboarding_screens/auth/user_login.dart';
+import 'package:nanosat/views/onboarding_screens/auth/user_signup.dart';
 import 'package:nanosat/widgets/custom_path.dart';
 
 import '../auth/user_login_mobile.dart';
@@ -120,7 +121,7 @@ class _WelcomePageDesktopState extends State<WelcomePageDesktop> {
                       clipper: LandingPageClipper2(),
                       child: Container(
                         width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height / 2,
+                        height: MediaQuery.of(context).size.height / 1.6,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(18),
                           boxShadow: [
@@ -136,11 +137,12 @@ class _WelcomePageDesktopState extends State<WelcomePageDesktop> {
                             clipper: LandingPageClipper(),
                             child: Container(
                                 color: Colors.black,
+                                padding: EdgeInsets.only(bottom: 16),
                                 //  child: Image.network(
                                 //     'https://content.latest-hairstyles.com/wp-content/uploads/burgundy-red-cornrows-on-long-hair-500x553.jpg',
                                 //     fit: BoxFit.cover)
                                 child: Image.asset('assets/images/earth.gif',
-                                    fit: BoxFit.contain))),
+                                    fit: BoxFit.contain, height: 200, width: 200))),
                       ),
                     ),
                     SizedBox(
@@ -179,7 +181,7 @@ class _WelcomePageDesktopState extends State<WelcomePageDesktop> {
                   children: [
                     Center(
                       child: Container(
-                        transform: Matrix4.translationValues(0.0, -20, 0.0),
+                        transform: Matrix4.translationValues(0.0, 40, 0.0),
                         child: CircleAvatar(
                           radius: 120,
                           backgroundColor: Colors.deepPurple[200],

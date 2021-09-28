@@ -36,6 +36,7 @@ dependencies:
   cached_network_image:
   shared_preferences: ^2.0.6
   google_maps_flutter: ^2.0.8
+  google_maps_flutter_web: 
   syncfusion_flutter_gauges: ^19.2.60
   syncfusion_flutter_charts:
   intl:

@@ -358,7 +358,8 @@ class _TemperatureState extends State<Temperature> {
                 } else if ((model.todayTemp.length > 0 && !model.isTodayTempLoading)) {
                   content = GraphWidget(
                     readings: model.todayTemp,
-                      label: 'Today'
+                      label: 'Today',
+                       dateType: 'Today'
                   );
                 }
         
@@ -379,7 +380,8 @@ class _TemperatureState extends State<Temperature> {
                 } else if ((model.yesterdayTemp.length > 0 && !model.isYesterdayTempLoading)) {
                   content = GraphWidget(
                     readings: model.yesterdayTemp,
-                      label: 'Yesterday'
+                      label: 'Yesterday',
+                      dateType: 'Yesterday'
                   );
                 }
         
@@ -401,7 +403,8 @@ class _TemperatureState extends State<Temperature> {
                 } else if ((model.pastWeekTemp.length > 0 && !model.isPastWeekTempLoading)) {
                   content = GraphWidget(
                     readings: model.pastWeekTemp,
-                      label: 'Past Week'
+                      label: 'Past Week',
+                      dateType: 'Past Week',
                   );
                 }
         
@@ -423,7 +426,8 @@ class _TemperatureState extends State<Temperature> {
                 } else if ((model.pastMonthTemp.length > 0 && !model.isPastMonthTempLoading)) {
                   content = GraphWidget(
                     readings: model.pastMonthTemp,
-                      label: 'Past Month'
+                      label: 'Past Month',
+                      dateType: 'Past Month'
                   );
                 }
         
@@ -511,7 +515,8 @@ class ShimmerLoader extends StatelessWidget {
 class GraphWidget extends StatelessWidget {
   final List<SensorReading> readings;
   final String label;
-  GraphWidget({this.readings, this.label});
+  final String dateType;
+  GraphWidget({this.readings, this.label, this.dateType});
 
   @override
   Widget build(BuildContext context) {
@@ -537,7 +542,7 @@ class GraphWidget extends StatelessWidget {
                         context,
                         CupertinoPageRoute(
                             builder: (context) =>
-                                ExpandedTemp(readings: readings)));
+                                ExpandedTemp(readings: readings, dateType: dateType)));
                   },
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
@@ -581,7 +586,7 @@ class GraphWidget extends StatelessWidget {
                     child: SizedBox(
                         width: double.infinity,
                         height: 230,
-                        child: SampleView(readings: readings)),
+                        child: SampleView(readings: readings, dateType: dateType,)),
                   ),
                 ),
               ],
@@ -617,6 +622,7 @@ class _SampleViewState extends State<SampleView> {
   }
   
   bool isDark;
+  DateFormat dateformat;
   @override
   void initState() {
     isDark = Provider.of<ThemeProvider>(context, listen: false).isDark;
@@ -634,6 +640,15 @@ class _SampleViewState extends State<SampleView> {
             height: 10,
             width: 10,
             markerVisibility: TrackballVisibilityMode.visible));
+
+      if(widget.dateType == 'Today' || widget.dateType == 'Yesterday') {
+        dateformat = DateFormat.Hms();
+      }
+      else {
+        dateformat = DateFormat.Md();
+      }
+
+
   }
 
   @override
@@ -651,7 +666,7 @@ class _SampleViewState extends State<SampleView> {
       primaryXAxis: DateTimeAxis(
           edgeLabelPlacement: EdgeLabelPlacement.shift,
           intervalType: DateTimeIntervalType.auto,
-          dateFormat: DateFormat.Hms(),
+          dateFormat: dateformat,
           name: 'Seconds',
           title: AxisTitle(
               text: 'Time',
@@ -691,8 +706,8 @@ class _SampleViewState extends State<SampleView> {
 
 class ExpandedTemp extends StatefulWidget {
   final List<SensorReading> readings;
-
-  ExpandedTemp({this.readings});
+  final String dateType;
+  ExpandedTemp({this.readings, this.dateType});
   @override
   _ExpandedTempState createState() => _ExpandedTempState();
 }
@@ -701,7 +716,7 @@ class _ExpandedTempState extends State<ExpandedTemp> {
   TrackballBehavior _trackballBehavior;
   final GlobalKey<SfCartesianChartState> _chartKey = GlobalKey();
   List<SensorReading> chartData = <SensorReading>[];
-
+    DateFormat dateformat;
   Future loadSalesData() async {
     setState(() {
       // ignore: always_specify_types
@@ -730,6 +745,14 @@ class _ExpandedTempState extends State<ExpandedTemp> {
             height: 10,
             width: 10,
             markerVisibility: TrackballVisibilityMode.visible));
+     if(widget.dateType == 'Today' || widget.dateType == 'Yesterday') {
+        dateformat = DateFormat.Hms();
+      }
+      else {
+        dateformat = DateFormat.Md();
+      }
+
+
   }
 
   @override
@@ -798,6 +821,7 @@ class _ExpandedTempState extends State<ExpandedTemp> {
     return SfCartesianChart(
       key: _chartKey,
       plotAreaBorderWidth: 0,
+      tooltipBehavior: TooltipBehavior(enable: true),
       backgroundColor: Theme.of(context).cardColor,
       title: ChartTitle(text: 'Temperature Readings' ,textStyle: TextStyle(
                 fontFamily: 'Roboto',
@@ -809,7 +833,7 @@ class _ExpandedTempState extends State<ExpandedTemp> {
       primaryXAxis: DateTimeAxis(
           edgeLabelPlacement: EdgeLabelPlacement.shift,
           intervalType: DateTimeIntervalType.auto,
-          dateFormat: DateFormat.Hms(),
+          dateFormat: dateformat,
           name: 'Seconds',
             labelStyle: TextStyle(
                               color: Theme.of(context).textTheme.headline1.color
@@ -825,12 +849,11 @@ class _ExpandedTempState extends State<ExpandedTemp> {
       primaryYAxis: NumericAxis(
           rangePadding: ChartRangePadding.none,
           name: 'Temperature',
-          minimum: 10,
+        
           labelStyle: TextStyle(
                               color: Theme.of(context).textTheme.headline1.color
                             ),
-          maximum: 110,
-          interval: 10,
+       
           axisLine: const AxisLine(width: 0),
           majorTickLines: const MajorTickLines(color: Colors.transparent)),
       series: _getDefaultLineSeries(),

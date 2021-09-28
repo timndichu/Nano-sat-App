@@ -39,8 +39,7 @@ class AppTheme {
             fontFamily: 'InterRegular',
           )),
     
-   textSelectionTheme: TextSelectionThemeData(cursorColor: Colors.deepPurple, selectionColor: Colors.deepPurple, selectionHandleColor: Colors.deepPurple,),
- 
+  
       inputDecorationTheme: InputDecorationTheme(
         hintStyle: TextStyle(
           color: AppColors.textGrey,
@@ -83,8 +82,7 @@ class AppTheme {
       ),
        focusColor: Colors.deepPurple,
 
-       textSelectionTheme: TextSelectionThemeData(cursorColor: Colors.deepPurple, selectionColor: Colors.deepPurple, selectionHandleColor: Colors.deepPurple,),
- 
+     
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
           backgroundColor: Colors.white,
           selectedItemColor: Colors.deepPurple,
@@ -106,9 +104,7 @@ class AppTheme {
 
 //       toggleableActiveColor: Colors.deepPurple,
       inputDecorationTheme: InputDecorationTheme(
-        focusColor: Colors.deepPurple,
-        hoverColor: Colors.deepPurple,
-
+        
         hintStyle: TextStyle(
           fontFamily: 'InterRegular',
        

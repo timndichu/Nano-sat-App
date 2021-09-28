@@ -7,10 +7,10 @@ import 'package:nanosat/widgets/custom_path.dart';
 
 import 'package:provider/provider.dart';
 
-
 import '../../../widgets/password_formfield.dart';
 import '../../../widgets/text_input_decoration.dart';
 
+import 'user_signup.dart';
 import 'user_signup_mobile.dart';
 
 //LOGIN PAGE
@@ -170,7 +170,9 @@ class _LoginPageDesktopState extends State<LoginPageDesktop> {
             controller: _password,
           ),
           SizedBox(height: 30.0),
-          loading ? CircularProgressIndicator( color:  Colors.deepPurple) : _userSubmitButton(),
+          loading
+              ? CircularProgressIndicator(color: Colors.deepPurple)
+              : _userSubmitButton(),
           SizedBox(height: 20.0),
 
           // GestureDetector(
@@ -200,54 +202,49 @@ class _LoginPageDesktopState extends State<LoginPageDesktop> {
   Widget _userSubmitButton() {
     return InkWell(
         onTap: () {
-        
           if (_formKey.currentState.validate()) {
             Map<String, String> data = {
               "email": _email.text,
               "password": _password.text
             };
-              setState(() {
-            loading = true;
-          });
+            setState(() {
+              loading = true;
+            });
             print(data);
             Provider.of<UserProvider>(context, listen: false)
                 .postLogin("/laundry/auth/user-login", data)
-                .then((response)  {
-                  print('the response is $response');
-                      if (response['success'])
-                        {
-                             Provider.of<UserProvider>(context, listen: false).setEmail(data['email']);
-                         
-                          print('success');
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            CupertinoPageRoute(
-                                builder: (context) => Homepage()),
-                            (Route<dynamic> route) => false,
-                          );
-                        }
-                      else
-                        {
-                          setState(() {
-                            loading = false;
-                          });
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  content: Text(response['message']),
-                                  actions: <Widget>[
-                                    FlatButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: Text('OK'))
-                                  ],
-                                );
-                              });
-                        }
-                    })
-                .catchError((error) {
+                .then((response) {
+              print('the response is $response');
+              if (response['success']) {
+                Provider.of<UserProvider>(context, listen: false)
+                    .setEmail(data['email']);
+
+                print('success');
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  CupertinoPageRoute(builder: (context) => Homepage()),
+                  (Route<dynamic> route) => false,
+                );
+              } else {
+                setState(() {
+                  loading = false;
+                });
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        content: Text(response['message']),
+                        actions: <Widget>[
+                          FlatButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text('OK'))
+                        ],
+                      );
+                    });
+              }
+            }).catchError((error) {
               setState(() {
                 loading = false;
               });
@@ -300,7 +297,7 @@ class _LoginPageDesktopState extends State<LoginPageDesktop> {
             TextSpan(
               text: ' Back',
               style: TextStyle(
-                  color: Colors.white,
+                  color: Colors.deepPurple,
                   fontFamily: 'InterRegular',
                   fontSize: 30),
             ),
@@ -339,7 +336,7 @@ class _LoginPageDesktopState extends State<LoginPageDesktop> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-
+    final width = MediaQuery.of(context).size.width;
     return Scaffold(
         backgroundColor: Theme.of(context).canvasColor,
         body: GestureDetector(
@@ -348,43 +345,97 @@ class _LoginPageDesktopState extends State<LoginPageDesktop> {
           },
           child: Container(
             height: height,
-            child: Stack(
-              children: <Widget>[
-                Positioned(
-                  top: -height * .15,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height / 1.6,
-                    child: ClipPath(
-                        clipper: LandingPageClipper(),
-                        child: Container(
-                          decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                Colors.deepPurple,
-                                Colors.deepPurple[900],
-                              ])),
-                        )),
+            width: width,
+            child: Row(
+              children: [
+                Container(
+                  width: width / 2,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.centerLeft,
+                      colors: [Colors.deepPurple, Colors.deepPurple[900]],
+                    ),
+                  ),
+                  child: Stack(
+                    children: <Widget>[
+                      Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ClipPath(
+                              clipper: LandingPageClipper2(),
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                height:
+                                    MediaQuery.of(context).size.height / 1.6,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(18),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      // color: Color(0xffd4af37),
+                                      color: Color(0x3f000000),
+                                      blurRadius: 14,
+                                      offset: Offset(0, 8),
+                                    ),
+                                  ],
+                                ),
+                                child: ClipPath(
+                                    clipper: LandingPageClipper(),
+                                    child: Container(
+                                        color: Colors.black,
+                                        padding: EdgeInsets.only(bottom: 16),
+                                        //  child: Image.network(
+                                        //     'https://content.latest-hairstyles.com/wp-content/uploads/burgundy-red-cornrows-on-long-hair-500x553.jpg',
+                                        //     fit: BoxFit.cover)
+                                        child: Image.asset(
+                                            'assets/images/earth.gif',
+                                            fit: BoxFit.contain,
+                                            height: 200,
+                                            width: 200))),
+                              ),
+                            ),
+                          
+                            Center(
+                              child: Container(
+                                transform:
+                                    Matrix4.translationValues(0.0, -20, 0.0),
+                                child: CircleAvatar(
+                                  radius: 120,
+                                  backgroundColor: Colors.deepPurple[200],
+                                  child: Image.asset(
+                                    'assets/images/nanosat.png',
+                                    height: 150,
+                                    width: 150,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ]),
+                      Positioned(top: 40, left: 0, child: _backButton()),
+                    ],
                   ),
                 ),
                 Container(
+                  width: MediaQuery.of(context).size.width / 2,
+                  height: MediaQuery.of(context).size.height,
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        SizedBox(height: height * .15),
-                        _title(),
-                        SizedBox(height: height * .25),
-                        _formWidget(),
-                      ],
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          SizedBox(height: height * .15),
+                          _title(),
+                          SizedBox(height: height * .25),
+                          _formWidget(),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-                Positioned(top: 40, left: 0, child: _backButton()),
               ],
             ),
           ),

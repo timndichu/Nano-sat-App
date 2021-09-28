@@ -14,9 +14,9 @@ import '../../../widgets/password_formfield.dart';
 import '../../../widgets/text_input_decoration.dart';
 
 //SIGN UP PAGE
-class SignUpPage extends StatefulWidget {
+class SignUpPageMobile extends StatefulWidget {
   @override
-  _SignUpPageState createState() => _SignUpPageState();
+  _SignUpPageMobileState createState() => _SignUpPageMobileState();
 }
 
 class NumberList {
@@ -25,7 +25,7 @@ class NumberList {
   NumberList({this.option, this.index});
 }
 
-class _SignUpPageState extends State<SignUpPage> {
+class _SignUpPageMobileState extends State<SignUpPageMobile> {
   final _formKey = GlobalKey<FormState>();
   String email = '';
   String password = '';
@@ -125,7 +125,7 @@ class _SignUpPageState extends State<SignUpPage> {
     return InkWell(
       onTap: () {
         // Navigator.push(
-        //     context, CupertinoPageRoute(builder: (context) => SignUpPage()));
+        //     context, CupertinoPageRoute(builder: (context) => SignUpPageMobile()));
       },
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 10),

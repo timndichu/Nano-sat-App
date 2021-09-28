@@ -14,9 +14,9 @@ import '../../../widgets/password_formfield.dart';
 import '../../../widgets/text_input_decoration.dart';
 
 //SIGN UP PAGE
-class SignUpPage extends StatefulWidget {
+class SignUpPageDesktop extends StatefulWidget {
   @override
-  _SignUpPageState createState() => _SignUpPageState();
+  _SignUpPageDesktopState createState() => _SignUpPageDesktopState();
 }
 
 class NumberList {
@@ -25,7 +25,7 @@ class NumberList {
   NumberList({this.option, this.index});
 }
 
-class _SignUpPageState extends State<SignUpPage> {
+class _SignUpPageDesktopState extends State<SignUpPageDesktop> {
   final _formKey = GlobalKey<FormState>();
   String email = '';
   String password = '';
@@ -125,7 +125,7 @@ class _SignUpPageState extends State<SignUpPage> {
     return InkWell(
       onTap: () {
         // Navigator.push(
-        //     context, CupertinoPageRoute(builder: (context) => SignUpPage()));
+        //     context, CupertinoPageRoute(builder: (context) => SignUpPageDesktop()));
       },
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 10),
@@ -472,38 +472,133 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
+     final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+     Widget _title() {
+    return RichText(
+      textAlign: TextAlign.center,
+      text: TextSpan(
+          text: 'Sign',
+          style: TextStyle(
+              fontFamily: 'InterRegular',
+              fontSize: 30,
+              color: Colors.amber[800]),
+          children: [
+            TextSpan(
+              text: ' Up',
+              style: TextStyle(
+                  color: Colors.deepPurple,
+                  fontFamily: 'InterRegular',
+                  fontSize: 30),
+            ),
+          ]),
+    );
+  }
+
 
     return Scaffold(
-      backgroundColor: Theme.of(context).canvasColor,
-      body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).requestFocus(FocusNode());
-        },
-        child: NestedScrollView(
-          // allows you to build a list of elements that would be scrolled away till the body reached the top
-          headerSliverBuilder: (context, _) {
-            return [
-              SliverList(
-                delegate: SliverChildListDelegate([
-                  Stack(children: <Widget>[
-                    WaveDesign(),
-                    Positioned(top: 40, left: 0, child: _backButton()),
-                  ])
-                ]),
-              ),
-            ];
+        backgroundColor: Theme.of(context).canvasColor,
+        body: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).requestFocus(FocusNode());
           },
-          //Tab view goes here
-          body: Container(
-              height: height,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                child: _formWidget(),
-              )),
-        ),
-      ),
-    );
+          child: Container(
+            height: height,
+            width: width,
+            child: Row(
+              children: [
+                Container(
+                  width: width / 2,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.centerLeft,
+                      colors: [Colors.deepPurple, Colors.deepPurple[900]],
+                    ),
+                  ),
+                  child: Stack(
+                    children: <Widget>[
+                      Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ClipPath(
+                              clipper: LandingPageClipper2(),
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                height:
+                                    MediaQuery.of(context).size.height / 1.6,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(18),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      // color: Color(0xffd4af37),
+                                      color: Color(0x3f000000),
+                                      blurRadius: 14,
+                                      offset: Offset(0, 8),
+                                    ),
+                                  ],
+                                ),
+                                child: ClipPath(
+                                    clipper: LandingPageClipper(),
+                                    child: Container(
+                                        color: Colors.black,
+                                        padding: EdgeInsets.only(bottom: 16),
+                                        //  child: Image.network(
+                                        //     'https://content.latest-hairstyles.com/wp-content/uploads/burgundy-red-cornrows-on-long-hair-500x553.jpg',
+                                        //     fit: BoxFit.cover)
+                                        child: Image.asset(
+                                            'assets/images/earth.gif',
+                                            fit: BoxFit.contain,
+                                            height: 200,
+                                            width: 200))),
+                              ),
+                            ),
+                          
+                            Center(
+                              child: Container(
+                                transform:
+                                    Matrix4.translationValues(0.0, -20, 0.0),
+                                child: CircleAvatar(
+                                  radius: 120,
+                                  backgroundColor: Colors.deepPurple[200],
+                                  child: Image.asset(
+                                    'assets/images/nanosat.png',
+                                    height: 150,
+                                    width: 150,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ]),
+                      Positioned(top: 40, left: 0, child: _backButton()),
+                    ],
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width / 2,
+                  height: MediaQuery.of(context).size.height,
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          SizedBox(height: height * .15),
+                         _title(),
+                          SizedBox(height: height * .25),
+                          _formWidget(),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ));
   }
 }
 

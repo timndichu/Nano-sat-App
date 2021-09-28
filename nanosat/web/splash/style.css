@@ -32,6 +32,17 @@ body, html {
   object-fit: cover;
 }
 
+.below {
+  margin: 0;
+  position: absolute;
+  top: 85%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%)
+}
+
+
+
 @media (prefers-color-scheme: dark) {
   body {
     margin:0;

@@ -151,6 +151,9 @@ class _HomeScreenState extends State<HomeScreen> {
   );
   LatLng _currentMapPosition = _center;
 
+
+
+
   @override
   void dispose() {
     _googleMapController.dispose();
@@ -162,6 +165,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // Future.delayed(Duration.zero, () {
     //   Provider.of<ShopProvider>(context, listen: false).getServices();
     // });
+ 
     _markers.add(
       Marker(
           markerId: MarkerId(_currentMapPosition.toString()),

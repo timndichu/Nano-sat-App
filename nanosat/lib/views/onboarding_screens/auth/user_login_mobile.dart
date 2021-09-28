@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import '../../../widgets/password_formfield.dart';
 import '../../../widgets/text_input_decoration.dart';
 
+import 'user_signup.dart';
 import 'user_signup_mobile.dart';
 
 //LOGIN PAGE
