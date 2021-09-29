@@ -21,6 +21,8 @@ import 'package:logger/logger.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class Temperature extends StatefulWidget {
+  final scaffoldKey;
+  Temperature({this.scaffoldKey});
   @override
   _TemperatureState createState() => _TemperatureState();
 }
@@ -34,11 +36,12 @@ class _TemperatureState extends State<Temperature> {
   );
   TrackballBehavior _trackballBehavior;
   bool isDark;
-    bool pasthr = false;
-  bool today = false;
-  bool yesterday = false;
-  bool pastweek = false;
-  bool pastmonth = false;
+  bool pasthr = true;
+  bool today = true;
+  bool yesterday = true;
+  bool pastweek = true;
+  bool pastmonth = true;
+  bool livedata = true;
   var socketData;
   var log = Logger();
   String str;
@@ -47,7 +50,9 @@ class _TemperatureState extends State<Temperature> {
     timer =
         Timer.periodic(const Duration(milliseconds: 100), _updateDataSource);
     isDark = Provider.of<ThemeProvider>(context, listen: false).isDark;
-
+     Provider.of<SensorReadingsProvider>(context,
+                                            listen: false)
+                                        .resetAll();
     _trackballBehavior = TrackballBehavior(
         enable: true,
         lineColor: isDark
@@ -61,17 +66,6 @@ class _TemperatureState extends State<Temperature> {
             width: 10,
             markerVisibility: TrackballVisibilityMode.visible));
 
-  
-       Provider.of<SensorReadingsProvider>(context, listen: false)
-                .pastHrTemp
-                .length >
-            0
-        ? print('ALready fetched')
-        : Future.delayed(Duration.zero, () {
-            Provider.of<SensorReadingsProvider>(context, listen: false)
-                .getPastHourTempReadings();
-          });
-
     Provider.of<SensorReadingsProvider>(context, listen: false)
                 .todayTemp
                 .length >
@@ -82,7 +76,7 @@ class _TemperatureState extends State<Temperature> {
                 .getTodaysTemp();
           });
 
-       Provider.of<SensorReadingsProvider>(context, listen: false)
+    Provider.of<SensorReadingsProvider>(context, listen: false)
                 .yesterdayTemp
                 .length >
             0
@@ -92,8 +86,7 @@ class _TemperatureState extends State<Temperature> {
                 .getYesterdayTemp();
           });
 
-        
-       Provider.of<SensorReadingsProvider>(context, listen: false)
+    Provider.of<SensorReadingsProvider>(context, listen: false)
                 .pastWeekTemp
                 .length >
             0
@@ -103,7 +96,7 @@ class _TemperatureState extends State<Temperature> {
                 .getPastWeekTemp();
           });
 
-            Provider.of<SensorReadingsProvider>(context, listen: false)
+    Provider.of<SensorReadingsProvider>(context, listen: false)
                 .pastMonthTemp
                 .length >
             0
@@ -112,7 +105,6 @@ class _TemperatureState extends State<Temperature> {
             Provider.of<SensorReadingsProvider>(context, listen: false)
                 .getPastMonthTemp();
           });
-
 
     super.initState();
   }
@@ -158,13 +150,10 @@ class _TemperatureState extends State<Temperature> {
   Widget build(BuildContext context) {
     Widget roomOneheader() => Ink(
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-                end: Alignment.topRight,
-                begin: Alignment.bottomLeft,
-                colors: [
-              Colors.deepPurple,
-              Colors.deepPurple[300]
-            ])),
+              gradient: LinearGradient(
+                  end: Alignment.topRight,
+                  begin: Alignment.bottomLeft,
+                  colors: [Colors.deepPurple, Colors.deepPurple[300]])),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Row(
@@ -172,7 +161,8 @@ class _TemperatureState extends State<Temperature> {
               children: <Widget>[
                 Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text('Filter', style: TextStyle(fontSize: 20, color: Colors.white))),
+                    child: Text('Filter',
+                        style: TextStyle(fontSize: 20, color: Colors.white))),
                 Icon(Icons.filter_alt_outlined, color: Colors.white)
               ],
             ),
@@ -202,12 +192,12 @@ class _TemperatureState extends State<Temperature> {
           ]);
     }
 
-  void _showModalBottomSheet() {
-      showModalBottomSheet(
-         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                topLeft: const Radius.circular(20),
-                topRight: const Radius.circular(20))),
+    _showModalBottomSheet() {
+      return showModalBottomSheet(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  topLeft: const Radius.circular(20),
+                  topRight: const Radius.circular(20))),
           context: context,
           builder: (context) => StatefulBuilder(
                   builder: (BuildContext context, StateSetter setState) {
@@ -215,9 +205,9 @@ class _TemperatureState extends State<Temperature> {
                     clipBehavior: Clip.antiAlias,
                     color: Theme.of(context).cardColor,
                     shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                topLeft: const Radius.circular(20),
-                topRight: const Radius.circular(20))),
+                        borderRadius: BorderRadius.only(
+                            topLeft: const Radius.circular(20),
+                            topRight: const Radius.circular(20))),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
@@ -226,17 +216,37 @@ class _TemperatureState extends State<Temperature> {
                         SizedBox(
                           height: 10.0,
                         ),
-                     
+                        CheckboxListTile(
+                            title: Text('Live Data'),
+                            value: livedata,
+                            onChanged: (val) {
+                              setState(() {
+                                Provider.of<SensorReadingsProvider>(context,
+                                        listen: false)
+                                    .toggleLiveData(livedata);
+                                livedata = val;
+                                print('Live data is $livedata');
+                                // today = false;
+                                //  pasthr = false;
+                                // yesterday = false;
+                                // pastweek = false;
+                                // pastmonth = false;
+                              });
+                            }),
                         CheckboxListTile(
                             title: Text('Today'),
                             value: today,
                             onChanged: (val) {
                               setState(() {
+                                Provider.of<SensorReadingsProvider>(context,
+                                        listen: false)
+                                    .toggleToday(today);
                                 today = val;
-                                 pasthr = false;
-                                yesterday = false;
-                                pastweek = false;
-                                pastmonth = false;
+                                // livedata = false;
+                                //  pasthr = false;
+                                // yesterday = false;
+                                // pastweek = false;
+                                // pastmonth = false;
                               });
                             }),
                         CheckboxListTile(
@@ -244,11 +254,15 @@ class _TemperatureState extends State<Temperature> {
                             value: yesterday,
                             onChanged: (val) {
                               setState(() {
+                                Provider.of<SensorReadingsProvider>(context,
+                                        listen: false)
+                                    .toggleYesterday(yesterday);
                                 yesterday = val;
-                                 today = false;
-                                pasthr = false;
-                                pastweek = false;
-                                pastmonth = false;
+                                //  today = false;
+                                //  livedata = false;
+                                // pasthr = false;
+                                // pastweek = false;
+                                // pastmonth = false;
                               });
                             }),
                         CheckboxListTile(
@@ -256,47 +270,69 @@ class _TemperatureState extends State<Temperature> {
                             value: pastweek,
                             onChanged: (val) {
                               setState(() {
+                                Provider.of<SensorReadingsProvider>(context,
+                                        listen: false)
+                                    .togglePastWeek(pastweek);
                                 pastweek = val;
-                                 today = false;
-                                yesterday = false;
-                                pasthr = false;
-                                pastmonth = false;
+                                // livedata = false;
+                                //  today = false;
+                                // yesterday = false;
+                                // pasthr = false;
+                                // pastmonth = false;
                               });
                             }),
-                             CheckboxListTile(
+                        CheckboxListTile(
                             title: Text('Past Month'),
                             value: pastmonth,
                             onChanged: (val) {
                               setState(() {
+                                Provider.of<SensorReadingsProvider>(context,
+                                        listen: false)
+                                    .togglePastMonth(pastmonth);
                                 pastmonth = val;
-                                 today = false;
-                                yesterday = false;
-                                pastweek = false;
-                                pasthr = false;
+                                //  today = false;
+                                // yesterday = false;
+                                // livedata = false;
+                                // pastweek = false;
+                                // pasthr = false;
                               });
                             }),
+                        Center(
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                              RaisedButton(
+                                  onPressed: () {
+                                    today = true;
+                                    yesterday = true;
+                                    livedata = true;
+                                    pastweek = true;
+                                    pastmonth = true;
+                                    Provider.of<SensorReadingsProvider>(context,
+                                            listen: false)
+                                        .resetAll();
 
-                            Center(child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                RaisedButton(
-                                onPressed: (){
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text('Cancel', style: TextStyle(color: Colors.white)), color: Colors.deepOrange),
-                                SizedBox(width: 20,),
-                                RaisedButton(
-                                onPressed: (){
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text('Apply', style: TextStyle(color: Colors.white)), color: Colors.deepPurple),
-                              ]))
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('Reset',
+                                      style: TextStyle(color: Colors.white)),
+                                  color: Colors.deepOrange),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              RaisedButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('Apply',
+                                      style: TextStyle(color: Colors.white)),
+                                  color: Colors.deepPurple),
+                            ]))
                       ],
                     ));
               }));
     }
-
 
     return Stack(children: <Widget>[
       Container(
@@ -309,13 +345,14 @@ class _TemperatureState extends State<Temperature> {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       socketData = snapshot.data;
-        
+
                       if (socketData.runtimeType != String) {
                         str = new String.fromCharCodes(socketData);
                         print('Data is:');
                         var splitString = str.split('/n');
                         String newString = splitString[0];
-                        String removeWeirdChar = newString.replaceAll('\u0000', '');
+                        String removeWeirdChar =
+                            newString.replaceAll('\u0000', '');
                         var splitByNewLine = removeWeirdChar.split('\n');
                         log.i(splitByNewLine);
                         if (splitByNewLine.length > 4) {
@@ -325,133 +362,167 @@ class _TemperatureState extends State<Temperature> {
                           if (_isNumeric(temp)) {
                             LiveData singleData =
                                 LiveData(val: int.parse(temp), count: count);
-        
+
                             chartData.add(singleData);
                             count++;
                           }
                         }
                       }
                     }
-                    return Card(
-                        elevation: 2,
-                        color: Theme.of(context).cardColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(3.0),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: _buildLiveLineChart(),
-                        ));
+                    return Consumer<SensorReadingsProvider>(
+                        builder: (context, model, child) {
+                      Widget content = model.livedata
+                          ? Card(
+                              elevation: 2,
+                              color: Theme.of(context).cardColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(3.0),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: _buildLiveLineChart(),
+                              ))
+                          : Container();
+                      return content;
+                    });
                   }),
-
-            Consumer<SensorReadingsProvider>(
-              builder: (context, model, child) {
-                Widget content = Center(
-                    child: Text(
-                        'Error fetching data. Check your Internet connection'));
-        
-                if (model.isTodayTempLoading) {
-                  print(model.todayTemp);
-                  content = ShimmerLoader();
-                } else if ((model.todayTemp.length == 0 && !model.isTodayTempLoading)) {
-                  content = Center(child: Text('No graph data yet'));
-                } else if ((model.todayTemp.length > 0 && !model.isTodayTempLoading)) {
-                  content = GraphWidget(
-                    readings: model.todayTemp,
-                      label: 'Today',
-                       dateType: 'Today'
-                  );
-                }
-        
-                return content;
-              },
-            ),
-            Consumer<SensorReadingsProvider>(
-              builder: (context, model, child) {
-                Widget content = Center(
-                    child: Text(
-                        'Error fetching data. Check your Internet connection'));
-        
-                if (model.isYesterdayTempLoading) {
-                  print(model.yesterdayTemp);
-                  content = ShimmerLoader();
-                } else if ((model.yesterdayTemp.length == 0 && !model.isYesterdayTempLoading)) {
-                  content = Center(child: Text('No graph data yet'));
-                } else if ((model.yesterdayTemp.length > 0 && !model.isYesterdayTempLoading)) {
-                  content = GraphWidget(
-                    readings: model.yesterdayTemp,
-                      label: 'Yesterday',
-                      dateType: 'Yesterday'
-                  );
-                }
-        
-                return content;
-              },
-            ),
-        
-             Consumer<SensorReadingsProvider>(
-              builder: (context, model, child) {
-                Widget content = Center(
-                    child: Text(
-                        'Error fetching data. Check your Internet connection'));
-        
-                if (model.isPastWeekTempLoading) {
-                  print(model.pastWeekTemp);
-                  content = ShimmerLoader();
-                } else if ((model.pastWeekTemp.length == 0 && !model.isPastWeekTempLoading)) {
-                  content = Center(child: Text('No graph data yet'));
-                } else if ((model.pastWeekTemp.length > 0 && !model.isPastWeekTempLoading)) {
-                  content = GraphWidget(
-                    readings: model.pastWeekTemp,
-                      label: 'Past Week',
-                      dateType: 'Past Week',
-                  );
-                }
-        
-                return content;
-              },
-            ),
-            
               Consumer<SensorReadingsProvider>(
-              builder: (context, model, child) {
-                Widget content = Center(
-                    child: Text(
-                        'Error fetching data. Check your Internet connection'));
-        
-                if (model.isPastMonthTempLoading) {
-                  print(model.pastMonthTemp);
-                  content = ShimmerLoader();
-                } else if ((model.pastMonthTemp.length == 0 && !model.isPastMonthTempLoading)) {
-                  content = Center(child: Text('No graph data yet'));
-                } else if ((model.pastMonthTemp.length > 0 && !model.isPastMonthTempLoading)) {
-                  content = GraphWidget(
-                    readings: model.pastMonthTemp,
-                      label: 'Past Month',
-                      dateType: 'Past Month'
-                  );
-                }
-        
-                return content;
-              },
-            ),
-        
-             
-        
-        
+                builder: (context, model, child) {
+                  Widget content = Center(
+                      child: Text(
+                          'Error fetching data. Check your Internet connection'));
+                  if (model.today) {
+                    if (model.isTodayTempLoading) {
+                      print(model.todayTemp);
+                      content = ShimmerLoader();
+                    } else if ((model.todayTemp.length == 0 &&
+                        !model.isTodayTempLoading)) {
+                      content = Center(
+                          child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('No graph data for Today'),
+                      ));
+                    } else if ((model.todayTemp.length > 0 &&
+                        !model.isTodayTempLoading)) {
+                      content = GraphWidget(
+                          readings: model.todayTemp,
+                          label: 'Today',
+                          dateType: 'Today');
+                    }
+                  } else {
+                    content = Container();
+                  }
+
+                  return content;
+                },
+              ),
+              Consumer<SensorReadingsProvider>(
+                builder: (context, model, child) {
+                  Widget content = Center(
+                      child: Text(
+                          'Error fetching data. Check your Internet connection'));
+                  if (model.yesterday) {
+                    if (model.isYesterdayTempLoading) {
+                      print(model.yesterdayTemp);
+                      content = ShimmerLoader();
+                    } else if ((model.yesterdayTemp.length == 0 &&
+                        !model.isYesterdayTempLoading)) {
+                      content = Center(
+                          child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('No graph data for Yesterday'),
+                      ));
+                    } else if ((model.yesterdayTemp.length > 0 &&
+                        !model.isYesterdayTempLoading)) {
+                      content = yesterday
+                          ? GraphWidget(
+                              readings: model.yesterdayTemp,
+                              label: 'Yesterday',
+                              dateType: 'Yesterday')
+                          : Container();
+                    }
+                  } else {
+                    content = Container();
+                  }
+
+                  return content;
+                },
+              ),
+              Consumer<SensorReadingsProvider>(
+                builder: (context, model, child) {
+                  Widget content = Center(
+                      child: Text(
+                          'Error fetching data. Check your Internet connection'));
+                  if (model.pastWeek) {
+                    if (model.isPastWeekTempLoading) {
+                      print(model.pastWeekTemp);
+                      content = ShimmerLoader();
+                    } else if ((model.pastWeekTemp.length == 0 &&
+                        !model.isPastWeekTempLoading)) {
+                      content = Center(
+                          child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('No graph data for the past week'),
+                      ));
+                    } else if ((model.pastWeekTemp.length > 0 &&
+                        !model.isPastWeekTempLoading)) {
+                      content = GraphWidget(
+                        readings: model.pastWeekTemp,
+                        label: 'Past Week',
+                        dateType: 'Past Week',
+                      );
+                    }
+                  } else {
+                    content = Container();
+                  }
+
+                  return content;
+                },
+              ),
+              Consumer<SensorReadingsProvider>(
+                builder: (context, model, child) {
+                  Widget content = Center(
+                      child: Text(
+                          'Error fetching data. Check your Internet connection'));
+                  if (model.pastMonth) {
+                    if (model.isPastMonthTempLoading) {
+                      print(model.pastMonthTemp);
+                      content = ShimmerLoader();
+                    } else if ((model.pastMonthTemp.length == 0 &&
+                        !model.isPastMonthTempLoading)) {
+                      content = Center(
+                          child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('No graph data for the past month'),
+                      ));
+                    } else if ((model.pastMonthTemp.length > 0 &&
+                        !model.isPastMonthTempLoading)) {
+                      content = GraphWidget(
+                          readings: model.pastMonthTemp,
+                          label: 'Past Month',
+                          dateType: 'Past Month');
+                    }
+                  } else {
+                    content = Container();
+                  }
+
+                  return content;
+                },
+              ),
             ],
           ),
         ),
       ),
       Positioned(
-        bottom:5,
+        bottom: 5,
         right: 8,
         child: FloatingActionButton(
             onPressed: () => _showModalBottomSheet(),
-            child: Icon(Icons.filter_alt_outlined)),)
+            child: Icon(Icons.filter_alt_outlined)),
+      )
     ]);
   }
 }
-
 
 class ShimmerLoader extends StatelessWidget {
   const ShimmerLoader({
@@ -541,8 +612,8 @@ class GraphWidget extends StatelessWidget {
                     Navigator.push(
                         context,
                         CupertinoPageRoute(
-                            builder: (context) =>
-                                ExpandedTemp(readings: readings, dateType: dateType)));
+                            builder: (context) => ExpandedTemp(
+                                readings: readings, dateType: dateType)));
                   },
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
@@ -586,7 +657,10 @@ class GraphWidget extends StatelessWidget {
                     child: SizedBox(
                         width: double.infinity,
                         height: 230,
-                        child: SampleView(readings: readings, dateType: dateType,)),
+                        child: SampleView(
+                          readings: readings,
+                          dateType: dateType,
+                        )),
                   ),
                 ),
               ],
@@ -620,7 +694,7 @@ class _SampleViewState extends State<SampleView> {
       // Deserialization step 3
     });
   }
-  
+
   bool isDark;
   DateFormat dateformat;
   @override
@@ -641,14 +715,11 @@ class _SampleViewState extends State<SampleView> {
             width: 10,
             markerVisibility: TrackballVisibilityMode.visible));
 
-      if(widget.dateType == 'Today' || widget.dateType == 'Yesterday') {
-        dateformat = DateFormat.Hms();
-      }
-      else {
-        dateformat = DateFormat.Md();
-      }
-
-
+    if (widget.dateType == 'Today' || widget.dateType == 'Yesterday') {
+      dateformat = DateFormat.Hms();
+    } else {
+      dateformat = DateFormat.Md();
+    }
   }
 
   @override
@@ -678,15 +749,12 @@ class _SampleViewState extends State<SampleView> {
       primaryYAxis: NumericAxis(
           rangePadding: ChartRangePadding.none,
           name: 'Temperature',
-         
           axisLine: const AxisLine(width: 0),
           majorTickLines: const MajorTickLines(color: Colors.transparent)),
       series: _getDefaultLineSeries(),
       trackballBehavior: _trackballBehavior,
     );
   }
-
-
 
   /// The method returns line series to chart.
   List<LineSeries<SensorReading, DateTime>> _getDefaultLineSeries() {
@@ -716,7 +784,7 @@ class _ExpandedTempState extends State<ExpandedTemp> {
   TrackballBehavior _trackballBehavior;
   final GlobalKey<SfCartesianChartState> _chartKey = GlobalKey();
   List<SensorReading> chartData = <SensorReading>[];
-    DateFormat dateformat;
+  DateFormat dateformat;
   Future loadSalesData() async {
     setState(() {
       // ignore: always_specify_types
@@ -745,14 +813,11 @@ class _ExpandedTempState extends State<ExpandedTemp> {
             height: 10,
             width: 10,
             markerVisibility: TrackballVisibilityMode.visible));
-     if(widget.dateType == 'Today' || widget.dateType == 'Yesterday') {
-        dateformat = DateFormat.Hms();
-      }
-      else {
-        dateformat = DateFormat.Md();
-      }
-
-
+    if (widget.dateType == 'Today' || widget.dateType == 'Yesterday') {
+      dateformat = DateFormat.Hms();
+    } else {
+      dateformat = DateFormat.Md();
+    }
   }
 
   @override
@@ -823,11 +888,12 @@ class _ExpandedTempState extends State<ExpandedTemp> {
       plotAreaBorderWidth: 0,
       tooltipBehavior: TooltipBehavior(enable: true),
       backgroundColor: Theme.of(context).cardColor,
-      title: ChartTitle(text: 'Temperature Readings' ,textStyle: TextStyle(
-                fontFamily: 'Roboto',
-                fontSize: 16,
-                color: Theme.of(context).textTheme.headline1.color
-              )),
+      title: ChartTitle(
+          text: 'Temperature Readings',
+          textStyle: TextStyle(
+              fontFamily: 'Roboto',
+              fontSize: 16,
+              color: Theme.of(context).textTheme.headline1.color)),
       legend:
           Legend(isVisible: false, overflowMode: LegendItemOverflowMode.wrap),
       primaryXAxis: DateTimeAxis(
@@ -835,25 +901,20 @@ class _ExpandedTempState extends State<ExpandedTemp> {
           intervalType: DateTimeIntervalType.auto,
           dateFormat: dateformat,
           name: 'Seconds',
-            labelStyle: TextStyle(
-                              color: Theme.of(context).textTheme.headline1.color
-                            ),
+          labelStyle:
+              TextStyle(color: Theme.of(context).textTheme.headline1.color),
           title: AxisTitle(
               text: 'Time',
               textStyle: TextStyle(
-                fontFamily: 'Roboto',
-                fontSize: 16,
-                color: Theme.of(context).textTheme.headline1.color
-              )),
+                  fontFamily: 'Roboto',
+                  fontSize: 16,
+                  color: Theme.of(context).textTheme.headline1.color)),
           majorGridLines: const MajorGridLines(width: 0)),
       primaryYAxis: NumericAxis(
           rangePadding: ChartRangePadding.none,
           name: 'Temperature',
-        
-          labelStyle: TextStyle(
-                              color: Theme.of(context).textTheme.headline1.color
-                            ),
-       
+          labelStyle:
+              TextStyle(color: Theme.of(context).textTheme.headline1.color),
           axisLine: const AxisLine(width: 0),
           majorTickLines: const MajorTickLines(color: Colors.transparent)),
       series: _getDefaultLineSeries(),

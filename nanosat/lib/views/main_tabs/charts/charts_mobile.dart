@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nanosat/providers/sensor_readings_provider.dart';
 import 'package:nanosat/views/chart_types/accelerometer/accelerometer.dart';
 import 'package:nanosat/views/chart_types/altitude/altitude.dart';
 import 'package:nanosat/views/chart_types/battery_info/battery_info.dart';
@@ -28,7 +29,9 @@ class _ChartsMobileState extends State<ChartsMobile> with TickerProviderStateMix
   @override
   void initState() {
     super.initState();
-
+    if(widget.initialIndex != null) {
+      _activeTabIndex = widget.initialIndex;
+    }
     _controller = TabController(
         vsync: this,
         length: 6,
@@ -36,9 +39,44 @@ class _ChartsMobileState extends State<ChartsMobile> with TickerProviderStateMix
   }
 
   bool pasthr = false;
+  bool livedata = false;
   bool today = false;
   bool yesterday = false;
   bool pastweek = false;
+
+    Future<void> _refresh() async {
+    await Future.delayed(Duration.zero, () {
+
+      if(_activeTabIndex == 0) {
+        Provider.of<SensorReadingsProvider>(context, listen: false)
+                .getPastHourTempReadings();
+          Provider.of<SensorReadingsProvider>(context, listen: false)
+                .getTodaysTemp();
+                Provider.of<SensorReadingsProvider>(context, listen: false)
+                .getYesterdayTemp();
+                 Provider.of<SensorReadingsProvider>(context, listen: false)
+                .getPastWeekTemp();
+                Provider.of<SensorReadingsProvider>(context, listen: false)
+                .getPastMonthTemp();
+      }
+        if(_activeTabIndex == 1) { 
+          Provider.of<SensorReadingsProvider>(context, listen: false)
+                .getPastHourAltitudeReadings();
+          Provider.of<SensorReadingsProvider>(context, listen: false)
+                .getTodaysAltitude();
+                Provider.of<SensorReadingsProvider>(context, listen: false)
+                .getYesterdayAltitude();
+                 Provider.of<SensorReadingsProvider>(context, listen: false)
+                .getPastWeekAltitude();
+                Provider.of<SensorReadingsProvider>(context, listen: false)
+                .getPastMonthAltitude();
+        }
+       
+    });
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -64,72 +102,7 @@ class _ChartsMobileState extends State<ChartsMobile> with TickerProviderStateMix
             ),
           ),
         );
-    void _showModalBottomSheet() {
-      showModalBottomSheet(
-         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                topLeft: const Radius.circular(20),
-                topRight: const Radius.circular(20))),
-          context: context,
-          builder: (context) => StatefulBuilder(
-                  builder: (BuildContext context, StateSetter setState) {
-                return Material(
-                    clipBehavior: Clip.antiAlias,
-                    color: Theme.of(context).cardColor,
-                    shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                topLeft: const Radius.circular(20),
-                topRight: const Radius.circular(20))),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        roomOneheader(),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        CheckboxListTile(
-                            title: Text('Past Hour'),
-                            value: pasthr,
-                            onChanged: (val) {
-                              setState(() {
-                                pasthr = val;
-                              });
-                            }),
-                        CheckboxListTile(
-                            title: Text('Today'),
-                            value: today,
-                            onChanged: (val) {
-                              setState(() {
-                                today = val;
-                              });
-                            }),
-                        CheckboxListTile(
-                            title: Text('Yesterday'),
-                            value: yesterday,
-                            onChanged: (val) {
-                              setState(() {
-                                yesterday = val;
-                              });
-                            }),
-                        CheckboxListTile(
-                            title: Text('Past Week'),
-                            value: pastweek,
-                            onChanged: (val) {
-                              setState(() {
-                                pastweek = val;
-                              });
-                            }),
-
-                            Center(child: RaisedButton(
-                              onPressed: (){
-                                Navigator.of(context).pop();
-                              },
-                              child: Text('Apply', style: TextStyle(color: Colors.white)), color: Colors.deepPurple))
-                      ],
-                    ));
-              }));
-    }
+   
 
     return Scaffold(
         drawer: MainDrawer(),
@@ -141,7 +114,7 @@ class _ChartsMobileState extends State<ChartsMobile> with TickerProviderStateMix
           actions: [
             IconButton(
                 color: Colors.deepPurple,
-                onPressed: () {},
+                onPressed: _refresh,
                 icon: Icon(Icons.refresh, color: Colors.white))
           ],
         ),

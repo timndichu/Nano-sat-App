@@ -12,6 +12,96 @@ class SensorReadingsProvider extends ChangeNotifier {
     return baseurl + url;
   }
 
+  bool _livedata = true;
+
+  bool get livedata {
+    return _livedata;
+  }
+
+  bool _today = true;
+
+  bool get today {
+    return _today;
+  }
+
+  bool _yesterday = true;
+
+  bool get yesterday {
+    return _yesterday;
+  }
+
+  bool _pastWeek = true;
+
+  bool get pastWeek {
+    return _pastWeek;
+  }
+
+  bool _pastMonth = true;
+
+  bool get pastMonth {
+    return _pastMonth;
+  }
+
+
+  void resetAll() {
+    _livedata = true;
+    _today = true;
+    _yesterday = true;
+    _pastWeek = true;
+    _pastMonth = true;
+     notifyListeners();
+  }
+
+  void toggleLiveData(bool val) {
+    if (val == true) {
+      _livedata = false;
+      notifyListeners();
+    } else {
+      _livedata = true;
+      notifyListeners();
+    }
+  }
+
+  void toggleToday(bool val) {
+    if (val == true) {
+      _today = false;
+      notifyListeners();
+    } else {
+      _today = true;
+      notifyListeners();
+    }
+  }
+
+  void toggleYesterday(bool val) {
+    if (val == true) {
+      _yesterday = false;
+      notifyListeners();
+    } else {
+      _yesterday = true;
+      notifyListeners();
+    }
+  }
+
+  void togglePastWeek(bool val) {
+    if (val == true) {
+      _pastWeek = false;
+      notifyListeners();
+    } else {
+      _pastWeek = true;
+      notifyListeners();
+    }
+  }
+
+  void togglePastMonth(bool val) {
+    if (val == true) {
+      _pastMonth = false;
+      notifyListeners();
+    } else {
+      _pastMonth = true;
+      notifyListeners();
+    }
+  }
+
   List<SensorReading> _altitude = [];
 
   List<SensorReading> get altitude {
@@ -375,7 +465,7 @@ class SensorReadingsProvider extends ChangeNotifier {
   Future getAccelerometerReadings() async {
     Map<String, dynamic> responseData = {};
     List<SensorReading> fetchedAccelerometer = [];
-
+    _accelerometer = [];
     _isAccelerometerLoading = true;
     notifyListeners();
     String url = formatter('/getAccelerometerReadings');
@@ -409,7 +499,7 @@ class SensorReadingsProvider extends ChangeNotifier {
   Future getPastHourAccelerometerReadings() async {
     Map<String, dynamic> responseData = {};
     List<SensorReading> fetchedAccelerometer = [];
-
+    _pastHrAccelerometer = [];
     _isPastHrAccelerometerLoading = true;
     notifyListeners();
     String url = formatter('/getPastHourAccelerometer');
@@ -443,7 +533,7 @@ class SensorReadingsProvider extends ChangeNotifier {
   Future getTodaysAccelerometer() async {
     Map<String, dynamic> responseData = {};
     List<SensorReading> fetchedAccelerometer = [];
-
+    _todayAccelerometer = [];
     _isTodayAccelerometerLoading = true;
     notifyListeners();
     String url = formatter('/getTodaysAccelerometer');
@@ -477,7 +567,7 @@ class SensorReadingsProvider extends ChangeNotifier {
   Future getYesterdayAccelerometer() async {
     Map<String, dynamic> responseData = {};
     List<SensorReading> fetchedAccelerometer = [];
-
+    _yesterdayAccelerometer = [];
     _isYesterdayAccelerometerLoading = true;
     notifyListeners();
     String url = formatter('/getYesterdayAccelerometer');
@@ -511,7 +601,7 @@ class SensorReadingsProvider extends ChangeNotifier {
   Future getPastWeekAccelerometer() async {
     Map<String, dynamic> responseData = {};
     List<SensorReading> fetchedAccelerometer = [];
-
+    _pastWeekAccelerometer = [];
     _isPastWeekAccelerometerLoading = true;
     notifyListeners();
     String url = formatter('/getPastWeekAccelerometer');
@@ -545,7 +635,7 @@ class SensorReadingsProvider extends ChangeNotifier {
   Future getPastMonthAccelerometer() async {
     Map<String, dynamic> responseData = {};
     List<SensorReading> fetchedAccelerometer = [];
-
+    _pastMonthAccelerometer = [];
     _isPastMonthAccelerometerLoading = true;
     notifyListeners();
     String url = formatter('/getPastMonthAccelerometer');
@@ -579,7 +669,7 @@ class SensorReadingsProvider extends ChangeNotifier {
   Future getMagnetometerReadings() async {
     Map<String, dynamic> responseData = {};
     List<SensorReading> fetchedMagnetometer = [];
-
+    _magnetometer = [];
     _isMagnetometerLoading = true;
     notifyListeners();
     String url = formatter('/getMagnetometerReadings');
@@ -613,7 +703,7 @@ class SensorReadingsProvider extends ChangeNotifier {
   Future getPastHourMagnetometerReadings() async {
     Map<String, dynamic> responseData = {};
     List<SensorReading> fetchedMagnetometer = [];
-
+    _pastHrMagnetometer = [];
     _isPastHrMagnetometerLoading = true;
     notifyListeners();
     String url = formatter('/getPastHourMagnetometer');
@@ -647,7 +737,7 @@ class SensorReadingsProvider extends ChangeNotifier {
   Future getTodaysMagnetometer() async {
     Map<String, dynamic> responseData = {};
     List<SensorReading> fetchedMagnetometer = [];
-
+    _todayMagnetometer = [];
     _isTodayMagnetometerLoading = true;
     notifyListeners();
     String url = formatter('/getTodaysMagnetometer');
@@ -681,7 +771,7 @@ class SensorReadingsProvider extends ChangeNotifier {
   Future getYesterdayMagnetometer() async {
     Map<String, dynamic> responseData = {};
     List<SensorReading> fetchedMagnetometer = [];
-
+    _yesterdayMagnetometer = [];
     _isYesterdayMagnetometerLoading = true;
     notifyListeners();
     String url = formatter('/getYesterdayMagnetometer');
@@ -715,7 +805,7 @@ class SensorReadingsProvider extends ChangeNotifier {
   Future getPastWeekMagnetometer() async {
     Map<String, dynamic> responseData = {};
     List<SensorReading> fetchedMagnetometer = [];
-
+    _pastWeekMagnetometer = [];
     _isPastWeekMagnetometerLoading = true;
     notifyListeners();
     String url = formatter('/getPastWeekMagnetometer');
@@ -749,7 +839,7 @@ class SensorReadingsProvider extends ChangeNotifier {
   Future getPastMonthMagnetometer() async {
     Map<String, dynamic> responseData = {};
     List<SensorReading> fetchedMagnetometer = [];
-
+    _pastMonthMagnetometer = [];
     _isPastMonthMagnetometerLoading = true;
     notifyListeners();
     String url = formatter('/getPastMonthMagnetometer');
@@ -783,7 +873,7 @@ class SensorReadingsProvider extends ChangeNotifier {
   Future getGyroscopeReadings() async {
     Map<String, dynamic> responseData = {};
     List<SensorReading> fetchedGyroscope = [];
-
+    _gyroscope = [];
     _isGyroscopeLoading = true;
     notifyListeners();
     String url = formatter('/getGyroscopeReadings');
@@ -817,7 +907,7 @@ class SensorReadingsProvider extends ChangeNotifier {
   Future getPastHourGyroscopeReadings() async {
     Map<String, dynamic> responseData = {};
     List<SensorReading> fetchedGyroscope = [];
-
+    _pastHrGyroscope = [];
     _isPastHrGyroscopeLoading = true;
     notifyListeners();
     String url = formatter('/getPastHourGyroscope');
@@ -851,7 +941,7 @@ class SensorReadingsProvider extends ChangeNotifier {
   Future getTodaysGyroscope() async {
     Map<String, dynamic> responseData = {};
     List<SensorReading> fetchedGyroscope = [];
-
+    _todayGyroscope = [];
     _isTodayGyroscopeLoading = true;
     notifyListeners();
     String url = formatter('/getTodaysGyroscope');
@@ -885,7 +975,7 @@ class SensorReadingsProvider extends ChangeNotifier {
   Future getYesterdayGyroscope() async {
     Map<String, dynamic> responseData = {};
     List<SensorReading> fetchedGyroscope = [];
-
+    _yesterdayGyroscope = [];
     _isYesterdayGyroscopeLoading = true;
     notifyListeners();
     String url = formatter('/getYesterdayGyroscope');
@@ -919,7 +1009,7 @@ class SensorReadingsProvider extends ChangeNotifier {
   Future getPastWeekGyroscope() async {
     Map<String, dynamic> responseData = {};
     List<SensorReading> fetchedGyroscope = [];
-
+    _pastWeekGyroscope = [];
     _isPastWeekGyroscopeLoading = true;
     notifyListeners();
     String url = formatter('/getPastWeekGyroscope');
@@ -953,7 +1043,7 @@ class SensorReadingsProvider extends ChangeNotifier {
   Future getPastMonthGyroscope() async {
     Map<String, dynamic> responseData = {};
     List<SensorReading> fetchedGyroscope = [];
-
+    _pastMonthGyroscope = [];
     _isPastMonthGyroscopeLoading = true;
     notifyListeners();
     String url = formatter('/getPastMonthGyroscope');
@@ -987,7 +1077,7 @@ class SensorReadingsProvider extends ChangeNotifier {
   Future getTempReadings() async {
     Map<String, dynamic> responseData = {};
     List<SensorReading> fetchedTemp = [];
-
+    _temperature = [];
     _isTempLoading = true;
     notifyListeners();
     String url = formatter('/getAllTemperatures');
@@ -1021,7 +1111,7 @@ class SensorReadingsProvider extends ChangeNotifier {
   Future getPastHourTempReadings() async {
     Map<String, dynamic> responseData = {};
     List<SensorReading> fetchedTemp = [];
-
+    _pastHrTemp = [];
     _isPastHrTempLoading = true;
     notifyListeners();
     String url = formatter('/getPastHourTemp');
@@ -1055,7 +1145,7 @@ class SensorReadingsProvider extends ChangeNotifier {
   Future getTodaysTemp() async {
     Map<String, dynamic> responseData = {};
     List<SensorReading> fetchedTemp = [];
-
+    _todayTemp = [];
     _isTodayTempLoading = true;
     notifyListeners();
     String url = formatter('/getTodaysTemp');
@@ -1089,7 +1179,7 @@ class SensorReadingsProvider extends ChangeNotifier {
   Future getYesterdayTemp() async {
     Map<String, dynamic> responseData = {};
     List<SensorReading> fetchedTemp = [];
-
+    _yesterdayTemp = [];
     _isYesterdayTempLoading = true;
     notifyListeners();
     String url = formatter('/getYesterdayTemp');
@@ -1123,7 +1213,7 @@ class SensorReadingsProvider extends ChangeNotifier {
   Future getPastWeekTemp() async {
     Map<String, dynamic> responseData = {};
     List<SensorReading> fetchedTemp = [];
-
+    _pastWeekTemp = [];
     _isPastWeekTempLoading = true;
     notifyListeners();
     String url = formatter('/getPastWeekTemp');
@@ -1157,7 +1247,7 @@ class SensorReadingsProvider extends ChangeNotifier {
   Future getPastMonthTemp() async {
     Map<String, dynamic> responseData = {};
     List<SensorReading> fetchedTemp = [];
-
+    _pastMonthTemp = [];
     _isPastMonthTempLoading = true;
     notifyListeners();
     String url = formatter('/getPastMonthTemp');
@@ -1191,7 +1281,7 @@ class SensorReadingsProvider extends ChangeNotifier {
   Future getAltitudeReadings() async {
     Map<String, dynamic> responseData = {};
     List<SensorReading> fetchedAltitude = [];
-
+    _altitude = [];
     _isAltitudeLoading = true;
     notifyListeners();
     String url = formatter('/getAltitudeReadings');
@@ -1225,7 +1315,7 @@ class SensorReadingsProvider extends ChangeNotifier {
   Future getPastHourAltitudeReadings() async {
     Map<String, dynamic> responseData = {};
     List<SensorReading> fetchedAltitude = [];
-
+    _pastHrAltitude = [];
     _isPastHrAltitudeLoading = true;
     notifyListeners();
     String url = formatter('/getPastHourAltitude');
@@ -1259,7 +1349,7 @@ class SensorReadingsProvider extends ChangeNotifier {
   Future getTodaysAltitude() async {
     Map<String, dynamic> responseData = {};
     List<SensorReading> fetchedAltitude = [];
-
+    _todayAltitude = [];
     _isTodayAltitudeLoading = true;
     notifyListeners();
     String url = formatter('/getTodaysAltitude');
@@ -1293,7 +1383,7 @@ class SensorReadingsProvider extends ChangeNotifier {
   Future getYesterdayAltitude() async {
     Map<String, dynamic> responseData = {};
     List<SensorReading> fetchedAltitude = [];
-
+    _yesterdayAltitude = [];
     _isYesterdayAltitudeLoading = true;
     notifyListeners();
     String url = formatter('/getYesterdayAltitude');
@@ -1327,7 +1417,7 @@ class SensorReadingsProvider extends ChangeNotifier {
   Future getPastWeekAltitude() async {
     Map<String, dynamic> responseData = {};
     List<SensorReading> fetchedAltitude = [];
-
+    _pastWeekAltitude = [];
     _isPastWeekAltitudeLoading = true;
     notifyListeners();
     String url = formatter('/getPastWeekAltitude');
@@ -1361,7 +1451,7 @@ class SensorReadingsProvider extends ChangeNotifier {
   Future getPastMonthAltitude() async {
     Map<String, dynamic> responseData = {};
     List<SensorReading> fetchedAltitude = [];
-
+    _pastMonthAltitude = [];
     _isPastMonthAltitudeLoading = true;
     notifyListeners();
     String url = formatter('/getPastMonthAltitude');

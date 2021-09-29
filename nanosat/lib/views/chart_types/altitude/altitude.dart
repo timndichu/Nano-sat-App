@@ -1,130 +1,535 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nanosat/models/sensor_readings.dart';
+import 'package:nanosat/providers/sensor_readings_provider.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'dart:io';
 import 'dart:ui' as dart_ui;
-import 'package:path_provider/path_provider.dart';
-
-/// Package import
+import 'package:nanosat/services/themeprovider.dart';
+import 'package:provider/provider.dart';
+import 'dart:math' as math;
 import 'package:intl/intl.dart';
 import 'package:nanosat/helper/helper.dart';
 import 'package:shimmer/shimmer.dart';
-
-import 'package:flutter/services.dart';
-import 'package:nanosat/models/sensor_readings.dart';
-import 'package:nanosat/providers/sensor_readings_provider.dart';
-import 'package:nanosat/services/themeprovider.dart';
-import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:flutter/services.dart';
+import 'package:logger/logger.dart';
 
 /// Chart import
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class Altitude extends StatefulWidget {
+
   @override
   _AltitudeState createState() => _AltitudeState();
 }
 
 class _AltitudeState extends State<Altitude> {
-  List<SensorReading> reading;
-  bool isAltitudeLoading = false;
+  bool isLoading = false;
+  ChartSeriesController _chartSeriesController;
+  Timer timer;
+  final channel = WebSocketChannel.connect(
+    Uri.parse('wss://ksa-nanosat.herokuapp.com'),
+  );
+  TrackballBehavior _trackballBehavior;
+  bool isDark;
+  bool pasthr = true;
+  bool today = true;
+  bool yesterday = true;
+  bool pastweek = true;
+  bool pastmonth = true;
+  bool livedata = true;
+  var socketData;
+  var log = Logger();
+  String str;
   @override
   void initState() {
+    timer =
+        Timer.periodic(const Duration(milliseconds: 100), _updateDataSource);
+    isDark = Provider.of<ThemeProvider>(context, listen: false).isDark;
+     Provider.of<SensorReadingsProvider>(context,
+                                            listen: false)
+                                        .resetAll();
+    _trackballBehavior = TrackballBehavior(
+        enable: true,
+        lineColor: isDark
+            ? const Color.fromRGBO(255, 255, 255, 0.03)
+            : const Color.fromRGBO(0, 0, 0, 0.03),
+        lineWidth: 15,
+        activationMode: ActivationMode.singleTap,
+        markerSettings: const TrackballMarkerSettings(
+            borderWidth: 4,
+            height: 10,
+            width: 10,
+            markerVisibility: TrackballVisibilityMode.visible));
+
     Provider.of<SensorReadingsProvider>(context, listen: false)
-                .altitude
+                .pastHrAltitude
                 .length >
             0
         ? print('ALready fetched')
         : Future.delayed(Duration.zero, () {
             Provider.of<SensorReadingsProvider>(context, listen: false)
-                .getAltitudeReadings();
+                .getPastHourAltitudeReadings();
+          });
+
+    Provider.of<SensorReadingsProvider>(context, listen: false)
+                .todayAltitude
+                .length >
+            0
+        ? print('ALready fetched')
+        : Future.delayed(Duration.zero, () {
+            Provider.of<SensorReadingsProvider>(context, listen: false)
+                .getTodaysAltitude();
+          });
+
+    Provider.of<SensorReadingsProvider>(context, listen: false)
+                .yesterdayAltitude
+                .length >
+            0
+        ? print('ALready fetched')
+        : Future.delayed(Duration.zero, () {
+            Provider.of<SensorReadingsProvider>(context, listen: false)
+                .getYesterdayAltitude();
+          });
+
+    Provider.of<SensorReadingsProvider>(context, listen: false)
+                .pastWeekAltitude
+                .length >
+            0
+        ? print('ALready fetched')
+        : Future.delayed(Duration.zero, () {
+            Provider.of<SensorReadingsProvider>(context, listen: false)
+                .getPastWeekAltitude();
+          });
+
+    Provider.of<SensorReadingsProvider>(context, listen: false)
+                .pastMonthAltitude
+                .length >
+            0
+        ? print('ALready fetched')
+        : Future.delayed(Duration.zero, () {
+            Provider.of<SensorReadingsProvider>(context, listen: false)
+                .getPastMonthAltitude();
           });
 
     super.initState();
   }
 
-  Future<void> _refresh() async {
-    await Future.delayed(Duration.zero, () {
-      Provider.of<SensorReadingsProvider>(context, listen: false)
-          .getAltitudeReadings()
-          .then((value) {
-        setState(() {
-          isAltitudeLoading = false;
-        });
-      });
-    });
+  List<LiveData> chartData = <LiveData>[];
+  int count = 19;
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
+
+  void _updateDataSource(Timer timer) {
+    if (chartData.length == 20) {
+      chartData.removeAt(0);
+      _chartSeriesController?.updateDataSource(
+        addedDataIndexes: <int>[chartData.length - 1],
+        removedDataIndexes: <int>[0],
+      );
+    } else {
+      _chartSeriesController?.updateDataSource(
+        addedDataIndexes: <int>[chartData.length - 1],
+      );
+    }
+    count = count + 1;
+  }
+
+  ///Get the random data
+  int _getRandomInt(int min, int max) {
+    final math.Random _random = math.Random();
+    return min + _random.nextInt(max - min);
+  }
+
+  bool _isNumeric(String result) {
+    if (result == null) {
+      return false;
+    }
+    return double.tryParse(result) != null;
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: <Widget>[
-        Consumer<SensorReadingsProvider>(
-          builder: (context, model, child) {
-            Widget content = Center(
-                child: Text(
-                    'Error fetching data. Check your Internet connection'));
+    Widget roomOneheader() => Ink(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  end: Alignment.topRight,
+                  begin: Alignment.bottomLeft,
+                  colors: [Colors.deepPurple, Colors.deepPurple[300]])),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text('Filter',
+                        style: TextStyle(fontSize: 20, color: Colors.white))),
+                Icon(Icons.filter_alt_outlined, color: Colors.white)
+              ],
+            ),
+          ),
+        );
+    SfCartesianChart _buildLiveLineChart() {
+      return SfCartesianChart(
+          plotAreaBorderWidth: 0,
+          trackballBehavior: _trackballBehavior,
+          title: ChartTitle(text: 'Live Altitude Readings'),
+          primaryXAxis:
+              NumericAxis(majorGridLines: const MajorGridLines(width: 0)),
+          primaryYAxis: NumericAxis(
+              axisLine: const AxisLine(width: 0),
+              majorTickLines: const MajorTickLines(size: 0)),
+          series: <LineSeries<LiveData, int>>[
+            LineSeries<LiveData, int>(
+                onRendererCreated: (ChartSeriesController controller) {
+                  _chartSeriesController = controller;
+                },
+                dataSource: chartData,
+                color: const Color.fromRGBO(192, 108, 132, 1),
+                xValueMapper: (LiveData readings, _) => readings.count,
+                yValueMapper: (LiveData readings, _) => readings.val,
+                animationDuration: 0,
+                markerSettings: const MarkerSettings(isVisible: true))
+          ]);
+    }
 
-            if (model.isAltitudeLoading) {
-              print(model.altitude);
-              content = ShimmerLoader();
-            } else if ((model.altitude.length == 0 && !model.isAltitudeLoading)) {
-              content = Center(child: Text('No graph data yet'));
-            } else if ((model.altitude.length > 0 && !model.isAltitudeLoading)) {
-              content = GraphWidget(
-                readings: model.altitude,
-                label: 'Past Hour'
-              );
-            }
+    _showModalBottomSheet() {
+      return showModalBottomSheet(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  topLeft: const Radius.circular(20),
+                  topRight: const Radius.circular(20))),
+          context: context,
+          builder: (context) => StatefulBuilder(
+                  builder: (BuildContext context, StateSetter setState) {
+                return Material(
+                    clipBehavior: Clip.antiAlias,
+                    color: Theme.of(context).cardColor,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                            topLeft: const Radius.circular(20),
+                            topRight: const Radius.circular(20))),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        roomOneheader(),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        CheckboxListTile(
+                            title: Text('Live Data'),
+                            value: livedata,
+                            onChanged: (val) {
+                              setState(() {
+                                Provider.of<SensorReadingsProvider>(context,
+                                        listen: false)
+                                    .toggleLiveData(livedata);
+                                livedata = val;
+                                print('Live data is $livedata');
+                                // today = false;
+                                //  pasthr = false;
+                                // yesterday = false;
+                                // pastweek = false;
+                                // pastmonth = false;
+                              });
+                            }),
+                        CheckboxListTile(
+                            title: Text('Today'),
+                            value: today,
+                            onChanged: (val) {
+                              setState(() {
+                                Provider.of<SensorReadingsProvider>(context,
+                                        listen: false)
+                                    .toggleToday(today);
+                                today = val;
+                                // livedata = false;
+                                //  pasthr = false;
+                                // yesterday = false;
+                                // pastweek = false;
+                                // pastmonth = false;
+                              });
+                            }),
+                        CheckboxListTile(
+                            title: Text('Yesterday'),
+                            value: yesterday,
+                            onChanged: (val) {
+                              setState(() {
+                                Provider.of<SensorReadingsProvider>(context,
+                                        listen: false)
+                                    .toggleYesterday(yesterday);
+                                yesterday = val;
+                                //  today = false;
+                                //  livedata = false;
+                                // pasthr = false;
+                                // pastweek = false;
+                                // pastmonth = false;
+                              });
+                            }),
+                        CheckboxListTile(
+                            title: Text('Past Week'),
+                            value: pastweek,
+                            onChanged: (val) {
+                              setState(() {
+                                Provider.of<SensorReadingsProvider>(context,
+                                        listen: false)
+                                    .togglePastWeek(pastweek);
+                                pastweek = val;
+                                // livedata = false;
+                                //  today = false;
+                                // yesterday = false;
+                                // pasthr = false;
+                                // pastmonth = false;
+                              });
+                            }),
+                        CheckboxListTile(
+                            title: Text('Past Month'),
+                            value: pastmonth,
+                            onChanged: (val) {
+                              setState(() {
+                                Provider.of<SensorReadingsProvider>(context,
+                                        listen: false)
+                                    .togglePastMonth(pastmonth);
+                                pastmonth = val;
+                                //  today = false;
+                                // yesterday = false;
+                                // livedata = false;
+                                // pastweek = false;
+                                // pasthr = false;
+                              });
+                            }),
+                        Center(
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                              RaisedButton(
+                                  onPressed: () {
+                                    today = true;
+                                    yesterday = true;
+                                    livedata = true;
+                                    pastweek = true;
+                                    pastmonth = true;
+                                    Provider.of<SensorReadingsProvider>(context,
+                                            listen: false)
+                                        .resetAll();
 
-            return content;
-          },
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('Reset',
+                                      style: TextStyle(color: Colors.white)),
+                                  color: Colors.deepOrange),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              RaisedButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('Apply',
+                                      style: TextStyle(color: Colors.white)),
+                                  color: Colors.deepPurple),
+                            ]))
+                      ],
+                    ));
+              }));
+    }
+
+    return Stack(children: <Widget>[
+      Container(
+        height: MediaQuery.of(context).size.height,
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              StreamBuilder(
+                  stream: channel.stream,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      socketData = snapshot.data;
+
+                      if (socketData.runtimeType != String) {
+                        str = new String.fromCharCodes(socketData);
+                        print('Data is:');
+                        var splitString = str.split('/n');
+                        String newString = splitString[0];
+                        String removeWeirdChar =
+                            newString.replaceAll('\u0000', '');
+                        var splitByNewLine = removeWeirdChar.split('\n');
+                        log.i(splitByNewLine);
+                        if (splitByNewLine.length > 4) {
+                          String temp = splitByNewLine[2].trim();
+                          // var splitByComma = temp.split(',');
+                          // String x = splitByComma[1].trim();
+                          if (_isNumeric(temp)) {
+                            LiveData singleData =
+                                LiveData(val: int.parse(temp), count: count);
+
+                            chartData.add(singleData);
+                            count++;
+                          }
+                        }
+                      }
+                    }
+                    return Consumer<SensorReadingsProvider>(
+                        builder: (context, model, child) {
+                      Widget content = model.livedata
+                          ? Card(
+                              elevation: 2,
+                              color: Theme.of(context).cardColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(3.0),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: _buildLiveLineChart(),
+                              ))
+                          : Container();
+                      return content;
+                    });
+                  }),
+              Consumer<SensorReadingsProvider>(
+                builder: (context, model, child) {
+                  Widget content = Center(
+                      child: Text(
+                          'Error fetching data. Check your Internet connection'));
+                  if (model.today) {
+                    if (model.isTodayAltitudeLoading) {
+                      print(model.todayAltitude);
+                      content = ShimmerLoader();
+                    } else if ((model.todayAltitude.length == 0 &&
+                        !model.isTodayAltitudeLoading)) {
+                      content = Center(
+                          child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('No graph data for Today'),
+                      ));
+                    } else if ((model.todayAltitude.length > 0 &&
+                        !model.isTodayAltitudeLoading)) {
+                      content = GraphWidget(
+                          readings: model.todayAltitude,
+                          label: 'Today',
+                          dateType: 'Today');
+                    }
+                  } else {
+                    content = Container();
+                  }
+
+                  return content;
+                },
+              ),
+              Consumer<SensorReadingsProvider>(
+                builder: (context, model, child) {
+                  Widget content = Center(
+                      child: Text(
+                          'Error fetching data. Check your Internet connection'));
+                  if (model.yesterday) {
+                    if (model.isYesterdayAltitudeLoading) {
+                      print(model.yesterdayAltitude);
+                      content = ShimmerLoader();
+                    } else if ((model.yesterdayAltitude.length == 0 &&
+                        !model.isYesterdayAltitudeLoading)) {
+                      content = Center(
+                          child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('No graph data for Yesterday'),
+                      ));
+                    } else if ((model.yesterdayAltitude.length > 0 &&
+                        !model.isYesterdayAltitudeLoading)) {
+                      content = yesterday
+                          ? GraphWidget(
+                              readings: model.yesterdayAltitude,
+                              label: 'Yesterday',
+                              dateType: 'Yesterday')
+                          : Container();
+                    }
+                  } else {
+                    content = Container();
+                  }
+
+                  return content;
+                },
+              ),
+              Consumer<SensorReadingsProvider>(
+                builder: (context, model, child) {
+                  Widget content = Center(
+                      child: Text(
+                          'Error fetching data. Check your Internet connection'));
+                  if (model.pastWeek) {
+                    if (model.isPastWeekAltitudeLoading) {
+                      print(model.pastWeekAltitude);
+                      content = ShimmerLoader();
+                    } else if ((model.pastWeekAltitude.length == 0 &&
+                        !model.isPastWeekAltitudeLoading)) {
+                      content = Center(
+                          child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('No graph data for the past week'),
+                      ));
+                    } else if ((model.pastWeekAltitude.length > 0 &&
+                        !model.isPastWeekAltitudeLoading)) {
+                      content = GraphWidget(
+                        readings: model.pastWeekAltitude,
+                        label: 'Past Week',
+                        dateType: 'Past Week',
+                      );
+                    }
+                  } else {
+                    content = Container();
+                  }
+
+                  return content;
+                },
+              ),
+              Consumer<SensorReadingsProvider>(
+                builder: (context, model, child) {
+                  Widget content = Center(
+                      child: Text(
+                          'Error fetching data. Check your Internet connection'));
+                  if (model.pastMonth) {
+                    if (model.isPastMonthAltitudeLoading) {
+                      print(model.pastMonthAltitude);
+                      content = ShimmerLoader();
+                    } else if ((model.pastMonthAltitude.length == 0 &&
+                        !model.isPastMonthAltitudeLoading)) {
+                      content = Center(
+                          child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('No graph data for the past month'),
+                      ));
+                    } else if ((model.pastMonthAltitude.length > 0 &&
+                        !model.isPastMonthAltitudeLoading)) {
+                      content = GraphWidget(
+                          readings: model.pastMonthAltitude,
+                          label: 'Past Month',
+                          dateType: 'Past Month');
+                    }
+                  } else {
+                    content = Container();
+                  }
+
+                  return content;
+                },
+              ),
+            ],
+          ),
         ),
-        Consumer<SensorReadingsProvider>(
-          builder: (context, model, child) {
-            Widget content = Center(
-                child: Text(
-                    'Error fetching data. Check your Internet connection'));
-
-            if (model.isAltitudeLoading) {
-              print(model.altitude);
-              content = ShimmerLoader();
-            } else if ((model.altitude.length == 0 && !model.isAltitudeLoading)) {
-              content = Center(child: Text('No graph data yet'));
-            } else if ((model.altitude.length > 0 && !model.isAltitudeLoading)) {
-              content = GraphWidget(
-                readings: model.altitude,
-                  label: 'Today'
-              );
-            }
-
-            return content;
-          },
-        ),
-        Consumer<SensorReadingsProvider>(
-          builder: (context, model, child) {
-            Widget content = Center(
-                child: Text(
-                    'Error fetching data. Check your Internet connection'));
-
-            if (model.isAltitudeLoading) {
-              print(model.altitude);
-              content = ShimmerLoader();
-            } else if ((model.altitude.length == 0 && !model.isAltitudeLoading)) {
-              content = Center(child: Text('No graph data yet'));
-            } else if ((model.altitude.length > 0 && !model.isAltitudeLoading)) {
-              content = GraphWidget(
-                readings: model.altitude,
-                  label: 'Yesterday'
-              );
-            }
-
-            return content;
-          },
-        ),
-      ],
-    );
+      ),
+      Positioned(
+        bottom: 5,
+        right: 8,
+        child: FloatingActionButton(
+            onPressed: () => _showModalBottomSheet(),
+            child: Icon(Icons.filter_alt_outlined)),
+      )
+    ]);
   }
 }
 
@@ -190,7 +595,8 @@ class ShimmerLoader extends StatelessWidget {
 class GraphWidget extends StatelessWidget {
   final List<SensorReading> readings;
   final String label;
-  GraphWidget({this.readings, this.label});
+  final String dateType;
+  GraphWidget({this.readings, this.label, this.dateType});
 
   @override
   Widget build(BuildContext context) {
@@ -215,8 +621,8 @@ class GraphWidget extends StatelessWidget {
                     Navigator.push(
                         context,
                         CupertinoPageRoute(
-                            builder: (context) =>
-                                ExpandedTemp(readings: readings)));
+                            builder: (context) => ExpandedAltitude(
+                                readings: readings, dateType: dateType)));
                   },
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
@@ -260,7 +666,10 @@ class GraphWidget extends StatelessWidget {
                     child: SizedBox(
                         width: double.infinity,
                         height: 230,
-                        child: SampleView(readings: readings)),
+                        child: SampleView(
+                          readings: readings,
+                          dateType: dateType,
+                        )),
                   ),
                 ),
               ],
@@ -274,8 +683,8 @@ class GraphWidget extends StatelessWidget {
 
 class SampleView extends StatefulWidget {
   final List<SensorReading> readings;
-
-  SampleView({this.readings});
+  final String dateType;
+  SampleView({this.readings, this.dateType});
   @override
   _SampleViewState createState() => _SampleViewState();
 }
@@ -294,8 +703,9 @@ class _SampleViewState extends State<SampleView> {
       // Deserialization step 3
     });
   }
-  
+
   bool isDark;
+  DateFormat dateformat;
   @override
   void initState() {
     isDark = Provider.of<ThemeProvider>(context, listen: false).isDark;
@@ -313,6 +723,12 @@ class _SampleViewState extends State<SampleView> {
             height: 10,
             width: 10,
             markerVisibility: TrackballVisibilityMode.visible));
+
+    if (widget.dateType == 'Today' || widget.dateType == 'Yesterday') {
+      dateformat = DateFormat.Hms();
+    } else {
+      dateformat = DateFormat.Md();
+    }
   }
 
   @override
@@ -330,7 +746,7 @@ class _SampleViewState extends State<SampleView> {
       primaryXAxis: DateTimeAxis(
           edgeLabelPlacement: EdgeLabelPlacement.shift,
           intervalType: DateTimeIntervalType.auto,
-          dateFormat: DateFormat.Hms(),
+          dateFormat: dateformat,
           name: 'Seconds',
           title: AxisTitle(
               text: 'Time',
@@ -342,7 +758,6 @@ class _SampleViewState extends State<SampleView> {
       primaryYAxis: NumericAxis(
           rangePadding: ChartRangePadding.none,
           name: 'Altitude',
-         
           axisLine: const AxisLine(width: 0),
           majorTickLines: const MajorTickLines(color: Colors.transparent)),
       series: _getDefaultLineSeries(),
@@ -366,19 +781,19 @@ class _SampleViewState extends State<SampleView> {
 
 //Expanded Altitude
 
-class ExpandedTemp extends StatefulWidget {
+class ExpandedAltitude extends StatefulWidget {
   final List<SensorReading> readings;
-
-  ExpandedTemp({this.readings});
+  final String dateType;
+  ExpandedAltitude({this.readings, this.dateType});
   @override
-  _ExpandedTempState createState() => _ExpandedTempState();
+  _ExpandedAltitudeState createState() => _ExpandedAltitudeState();
 }
 
-class _ExpandedTempState extends State<ExpandedTemp> {
+class _ExpandedAltitudeState extends State<ExpandedAltitude> {
   TrackballBehavior _trackballBehavior;
   final GlobalKey<SfCartesianChartState> _chartKey = GlobalKey();
   List<SensorReading> chartData = <SensorReading>[];
-
+  DateFormat dateformat;
   Future loadSalesData() async {
     setState(() {
       // ignore: always_specify_types
@@ -407,6 +822,11 @@ class _ExpandedTempState extends State<ExpandedTemp> {
             height: 10,
             width: 10,
             markerVisibility: TrackballVisibilityMode.visible));
+    if (widget.dateType == 'Today' || widget.dateType == 'Yesterday') {
+      dateformat = DateFormat.Hms();
+    } else {
+      dateformat = DateFormat.Md();
+    }
   }
 
   @override
@@ -475,39 +895,35 @@ class _ExpandedTempState extends State<ExpandedTemp> {
     return SfCartesianChart(
       key: _chartKey,
       plotAreaBorderWidth: 0,
+      tooltipBehavior: TooltipBehavior(enable: true),
       backgroundColor: Theme.of(context).cardColor,
-      title: ChartTitle(text: 'Altitude Readings' ,textStyle: TextStyle(
-                fontFamily: 'Roboto',
-                fontSize: 16,
-                color: Theme.of(context).textTheme.headline1.color
-              )),
+      title: ChartTitle(
+          text: 'Altitude Readings',
+          textStyle: TextStyle(
+              fontFamily: 'Roboto',
+              fontSize: 16,
+              color: Theme.of(context).textTheme.headline1.color)),
       legend:
           Legend(isVisible: false, overflowMode: LegendItemOverflowMode.wrap),
       primaryXAxis: DateTimeAxis(
           edgeLabelPlacement: EdgeLabelPlacement.shift,
           intervalType: DateTimeIntervalType.auto,
-          dateFormat: DateFormat.Hms(),
+          dateFormat: dateformat,
           name: 'Seconds',
-            labelStyle: TextStyle(
-                              color: Theme.of(context).textTheme.headline1.color
-                            ),
+          labelStyle:
+              TextStyle(color: Theme.of(context).textTheme.headline1.color),
           title: AxisTitle(
               text: 'Time',
               textStyle: TextStyle(
-                fontFamily: 'Roboto',
-                fontSize: 16,
-                color: Theme.of(context).textTheme.headline1.color
-              )),
+                  fontFamily: 'Roboto',
+                  fontSize: 16,
+                  color: Theme.of(context).textTheme.headline1.color)),
           majorGridLines: const MajorGridLines(width: 0)),
       primaryYAxis: NumericAxis(
           rangePadding: ChartRangePadding.none,
           name: 'Altitude',
-          minimum: 10,
-          labelStyle: TextStyle(
-                              color: Theme.of(context).textTheme.headline1.color
-                            ),
-          maximum: 110,
-          interval: 10,
+          labelStyle:
+              TextStyle(color: Theme.of(context).textTheme.headline1.color),
           axisLine: const AxisLine(width: 0),
           majorTickLines: const MajorTickLines(color: Colors.transparent)),
       series: _getDefaultLineSeries(),
@@ -529,16 +945,9 @@ class _ExpandedTempState extends State<ExpandedTemp> {
   }
 }
 
-class _SampleData {
-  _SampleData(this.date, this.altitude, this.time);
-  factory _SampleData.fromJson(Map<dynamic, dynamic> parsedJson) {
-    return _SampleData(
-      DateTime.parse(parsedJson['date']),
-      parsedJson['altitude'],
-      DateTime.parse(parsedJson['time']),
-    );
-  }
-  DateTime date;
-  num altitude;
-  DateTime time;
+class LiveData {
+  final num val;
+  final int count;
+
+  LiveData({this.val, this.count});
 }
