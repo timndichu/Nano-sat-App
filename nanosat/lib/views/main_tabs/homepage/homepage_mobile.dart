@@ -113,6 +113,9 @@ class _HomepageMobileState extends State<HomepageMobile> {
 }
 
 class HomeScreen extends StatefulWidget {
+    final String firstName;
+  final String email;
+  HomeScreen({this.firstName, this.email});
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -379,7 +382,7 @@ class _HomeScreenState extends State<HomeScreen> {
     double _interval = 10;
 
     return Scaffold(
-      drawer: MainDrawer(),
+      drawer: MainDrawer(firstName: widget.firstName, email: widget.email),
       appBar: AppBar(
         automaticallyImplyLeading: true,
         backgroundColor: Colors.deepPurple,

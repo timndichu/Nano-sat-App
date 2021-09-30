@@ -391,6 +391,7 @@ class _SignUpPageDesktopState extends State<SignUpPageDesktop> {
             loading = true;
           });       
             print(data);
+             Provider.of<UserProvider>(context, listen: false).setEmail(_email.text);
             Provider.of<UserProvider>(context, listen: false)
                 .postSignUp("/laundry/auth/user-signup", data)
                 .then((response)  {

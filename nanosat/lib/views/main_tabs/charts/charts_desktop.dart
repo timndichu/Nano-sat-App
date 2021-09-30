@@ -47,7 +47,7 @@ class _ChartsDesktopState extends State<ChartsDesktop> with TickerProviderStateM
     Future<void> _refresh() async {
     await Future.delayed(Duration.zero, () {
 
-      if(_activeTabIndex == 0) {
+     if(_activeTabIndex == 0) {
         Provider.of<SensorReadingsProvider>(context, listen: false)
                 .getPastHourTempReadings();
           Provider.of<SensorReadingsProvider>(context, listen: false)
@@ -70,6 +70,42 @@ class _ChartsDesktopState extends State<ChartsDesktop> with TickerProviderStateM
                 .getPastWeekAltitude();
                 Provider.of<SensorReadingsProvider>(context, listen: false)
                 .getPastMonthAltitude();
+        }
+         if(_activeTabIndex == 3) { 
+          Provider.of<SensorReadingsProvider>(context, listen: false)
+                .getPastHourMagnetometerReadings();
+          Provider.of<SensorReadingsProvider>(context, listen: false)
+                .getTodaysMagnetometer();
+                Provider.of<SensorReadingsProvider>(context, listen: false)
+                .getYesterdayMagnetometer();
+                 Provider.of<SensorReadingsProvider>(context, listen: false)
+                .getPastWeekMagnetometer();
+                Provider.of<SensorReadingsProvider>(context, listen: false)
+                .getPastMonthMagnetometer();
+        }
+         if(_activeTabIndex == 4) { 
+          Provider.of<SensorReadingsProvider>(context, listen: false)
+                .getPastHourAccelerometerReadings();
+          Provider.of<SensorReadingsProvider>(context, listen: false)
+                .getTodaysAccelerometer();
+                Provider.of<SensorReadingsProvider>(context, listen: false)
+                .getYesterdayAccelerometer();
+                 Provider.of<SensorReadingsProvider>(context, listen: false)
+                .getPastWeekAccelerometer();
+                Provider.of<SensorReadingsProvider>(context, listen: false)
+                .getPastMonthAccelerometer();
+        }
+         if(_activeTabIndex == 5) { 
+          Provider.of<SensorReadingsProvider>(context, listen: false)
+                .getPastHourGyroscopeReadings();
+          Provider.of<SensorReadingsProvider>(context, listen: false)
+                .getTodaysGyroscope();
+                Provider.of<SensorReadingsProvider>(context, listen: false)
+                .getYesterdayGyroscope();
+                 Provider.of<SensorReadingsProvider>(context, listen: false)
+                .getPastWeekGyroscope();
+                Provider.of<SensorReadingsProvider>(context, listen: false)
+                .getPastMonthGyroscope();
         }
        
     });

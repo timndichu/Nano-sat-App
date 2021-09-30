@@ -45,7 +45,7 @@ class _OpticalImagingState extends State<OpticalImaging> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Center(child: CircularProgressIndicator()),
+                Center(child: CircularProgressIndicator(color: Colors.deepPurple,)),
                 ],
               );
             } else if ((model.opticalImages.length > 0 &&

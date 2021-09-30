@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nanosat/icons/nano_icons_icons.dart';
+import 'package:nanosat/providers/user_provider.dart';
 import 'package:nanosat/views/main_tabs/charts/charts.dart';
 import 'package:nanosat/views/main_tabs/homepage/homepage.dart';
 import 'package:nanosat/views/main_tabs/imaging/imaging.dart';
@@ -9,8 +10,25 @@ import 'package:nanosat/views/misc/about/about.dart';
 import 'package:nanosat/views/misc/help/help.dart';
 import 'package:nanosat/views/misc/settings/settings.dart';
 import 'package:nanosat/views/onboarding_screens/landing/landing_page.dart';
+import 'package:provider/provider.dart';
 
-class MainDrawer extends StatelessWidget {
+class MainDrawer extends StatefulWidget {
+  final String firstName;
+  final String email;
+  MainDrawer({this.firstName, this.email});
+
+  @override
+  _MainDrawerState createState() => _MainDrawerState();
+}
+
+class _MainDrawerState extends State<MainDrawer> {
+  String email;
+  @override
+  void initState() {
+    email = Provider.of<UserProvider>(context, listen: false).email;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -24,8 +42,8 @@ class MainDrawer extends StatelessWidget {
                 //     CupertinoPageRoute(builder: (context) => UserProfile()));
               },
               child: UserAccountsDrawerHeader(
-                accountEmail: Text('timndichu@gmail.com'),
-                accountName: Text('Tim'),
+                accountEmail: Text(email),
+                accountName: null,
                 currentAccountPicture: CircleAvatar(
                   backgroundColor: Colors.deepPurple[300],
                   radius: 30,
@@ -61,6 +79,18 @@ class MainDrawer extends StatelessWidget {
                     CupertinoPageRoute(
                         builder: (context) => Imaging(
                               initialIndex: 0,
+                            )));
+              },
+            ),
+               ListTile(
+              title: Text('Optical Imaging'),
+              leading: Icon(Icons.camera),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                        builder: (context) => Imaging(
+                              initialIndex: 1,
                             )));
               },
             ),

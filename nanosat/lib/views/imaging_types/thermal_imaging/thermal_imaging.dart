@@ -45,7 +45,7 @@ class _ThermalImagingState extends State<ThermalImaging> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Center(child: CircularProgressIndicator()),
+                  Center(child: CircularProgressIndicator(color: Colors.deepPurple,)),
                 ],
               );
             } else if ((model.thermalImages.length > 0 &&

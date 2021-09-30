@@ -1,11 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nanosat/providers/sensor_readings_provider.dart';
+import 'package:nanosat/views/imaging_types/optical_imaging/optical_imaging.dart';
 import 'package:nanosat/views/imaging_types/rural_lighting/rural_lighting.dart';
 import 'package:nanosat/views/imaging_types/thermal_imaging/thermal_imaging.dart';
 import 'package:nanosat/views/imaging_types/vegetation_cover/vegetation_cover.dart';
 import 'package:nanosat/views/imaging_types/water_bodies/water_bodies.dart';
 import 'package:nanosat/widgets/drawer.dart';
+import 'package:provider/provider.dart';
 
 
 class ImagingDesktop extends StatefulWidget {
@@ -28,9 +31,25 @@ class _ImagingDesktopState extends State<ImagingDesktop> with TickerProviderStat
     super.initState();
 
     _controller =
-        TabController(vsync: this, length: 4, initialIndex: widget.initialIndex ?? _activeTabIndex);
+        TabController(vsync: this, length: 5, initialIndex: widget.initialIndex ?? _activeTabIndex);
   }
 
+ Future<void> _refresh() async {
+    await Future.delayed(Duration.zero, () {
+
+      if(_activeTabIndex == 0) {
+        Provider.of<SensorReadingsProvider>(context, listen: false)
+                .getThermalImages();
+        
+      }
+        if(_activeTabIndex == 1) { 
+          Provider.of<SensorReadingsProvider>(context, listen: false)
+                .getOpticalImages();
+        
+        }
+       
+    });
+  }
 
 
   @override
@@ -45,12 +64,10 @@ class _ImagingDesktopState extends State<ImagingDesktop> with TickerProviderStat
           title: Text('Satellite Images'),
           actions: [IconButton(
                color: Colors.deepPurple,
-            onPressed: (){
-          
-          }, icon: Icon(Icons.refresh, color: Colors.white))],
+            onPressed: _refresh, icon: Icon(Icons.refresh, color: Colors.white))],
         ),
          body: DefaultTabController(
-          length: 6,
+          length: 5,
           child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
              
@@ -81,6 +98,7 @@ class _ImagingDesktopState extends State<ImagingDesktop> with TickerProviderStat
                     },
                     tabs: <Widget>[
                       Tab(text: 'Thermal Imaging'),
+                      Tab(text: 'Optical Imaging'),
                       Tab(text: 'Rural Lighting'),
                       Tab(text: 'Water bodies'),
                       Tab(text: 'Vegetation Cover'),
@@ -93,10 +111,11 @@ class _ImagingDesktopState extends State<ImagingDesktop> with TickerProviderStat
                     controller: _controller,
                     children: [
                       ThermalImaging(),
+                           OpticalImaging(),
                       RuralLighting(),
                       WaterBodies(),
                       VegetationCover(),
-                      
+                 
                     ],
                   ),
                 ),

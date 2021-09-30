@@ -210,6 +210,7 @@ class _LoginPageMobileState extends State<LoginPageMobile> {
             loading = true;
           });
             print(data);
+             Provider.of<UserProvider>(context, listen: false).setEmail(_email.text);
             Provider.of<UserProvider>(context, listen: false)
                 .postLogin("/laundry/auth/user-login", data)
                 .then((response)  {
