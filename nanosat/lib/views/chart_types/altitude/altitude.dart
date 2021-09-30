@@ -365,7 +365,7 @@ class _AltitudeState extends State<Altitude> {
                         var splitByNewLine = removeWeirdChar.split('\n');
                         log.i(splitByNewLine);
                         if (splitByNewLine.length > 4) {
-                          String temp = splitByNewLine[2].trim();
+                          String temp = splitByNewLine[6].trim();
                           // var splitByComma = temp.split(',');
                           // String x = splitByComma[1].trim();
                           if (_isNumeric(temp)) {
@@ -416,6 +416,7 @@ class _AltitudeState extends State<Altitude> {
                       content = GraphWidget(
                           readings: model.todayAltitude,
                           label: 'Today',
+                            title: 'Today Altitude Readings',
                           dateType: 'Today');
                     }
                   } else {
@@ -447,6 +448,7 @@ class _AltitudeState extends State<Altitude> {
                           ? GraphWidget(
                               readings: model.yesterdayAltitude,
                               label: 'Yesterday',
+                                title: 'Yesterday Altitude Readings',
                               dateType: 'Yesterday')
                           : Container();
                     }
@@ -478,6 +480,7 @@ class _AltitudeState extends State<Altitude> {
                       content = GraphWidget(
                         readings: model.pastWeekAltitude,
                         label: 'Past Week',
+                           title: 'Past Week Altitude Readings',
                         dateType: 'Past Week',
                       );
                     }
@@ -509,6 +512,7 @@ class _AltitudeState extends State<Altitude> {
                       content = GraphWidget(
                           readings: model.pastMonthAltitude,
                           label: 'Past Month',
+                             title: 'Past Month Altitude Readings',
                           dateType: 'Past Month');
                     }
                   } else {
@@ -596,7 +600,8 @@ class GraphWidget extends StatelessWidget {
   final List<SensorReading> readings;
   final String label;
   final String dateType;
-  GraphWidget({this.readings, this.label, this.dateType});
+    final String title;
+  GraphWidget({this.readings, this.label, this.title, this.dateType});
 
   @override
   Widget build(BuildContext context) {
@@ -622,6 +627,7 @@ class GraphWidget extends StatelessWidget {
                         context,
                         CupertinoPageRoute(
                             builder: (context) => ExpandedAltitude(
+                              title: title,
                                 readings: readings, dateType: dateType)));
                   },
                   child: Padding(
@@ -782,9 +788,10 @@ class _SampleViewState extends State<SampleView> {
 //Expanded Altitude
 
 class ExpandedAltitude extends StatefulWidget {
+   final String title;
   final List<SensorReading> readings;
   final String dateType;
-  ExpandedAltitude({this.readings, this.dateType});
+  ExpandedAltitude({this.readings, this.title, this.dateType});
   @override
   _ExpandedAltitudeState createState() => _ExpandedAltitudeState();
 }
@@ -833,7 +840,7 @@ class _ExpandedAltitudeState extends State<ExpandedAltitude> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Altitude as of 20th September'),
+          title: Text('Altitude Readings'),
           actions: [
             IconButton(
               onPressed: () {
@@ -866,6 +873,9 @@ class _ExpandedAltitudeState extends State<ExpandedAltitude> {
   Future<void> _renderPdf() async {
     final PdfDocument document = PdfDocument();
     final PdfBitmap bitmap = PdfBitmap(await _readImageData());
+     String fileName = 'temperature';
+  DateTime now = new DateTime.now();
+  String fileName1 = fileName + now.toString() + '.pdf';
     document.pageSettings.orientation =
         MediaQuery.of(context).orientation == Orientation.landscape
             ? PdfPageOrientation.landscape
@@ -888,7 +898,7 @@ class _ExpandedAltitudeState extends State<ExpandedAltitude> {
     ));
     final List<int> bytes = document.save();
     document.dispose();
-    await FileSaveHelper.saveAndLaunchFile(bytes, 'altitude.pdf');
+    await FileSaveHelper.saveAndLaunchFile(bytes, fileName1);
   }
 
   SfCartesianChart _buildDefaultLineChart() {
@@ -898,7 +908,7 @@ class _ExpandedAltitudeState extends State<ExpandedAltitude> {
       tooltipBehavior: TooltipBehavior(enable: true),
       backgroundColor: Theme.of(context).cardColor,
       title: ChartTitle(
-          text: 'Altitude Readings',
+          text: widget.title,
           textStyle: TextStyle(
               fontFamily: 'Roboto',
               fontSize: 16,

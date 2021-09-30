@@ -407,6 +407,7 @@ class _TemperatureState extends State<Temperature> {
                       content = GraphWidget(
                           readings: model.todayTemp,
                           label: 'Today',
+                            title: 'Today Temperature Readings',
                           dateType: 'Today');
                     }
                   } else {
@@ -438,6 +439,7 @@ class _TemperatureState extends State<Temperature> {
                           ? GraphWidget(
                               readings: model.yesterdayTemp,
                               label: 'Yesterday',
+                               title: 'Yesterday Temperature Readings',
                               dateType: 'Yesterday')
                           : Container();
                     }
@@ -469,6 +471,7 @@ class _TemperatureState extends State<Temperature> {
                       content = GraphWidget(
                         readings: model.pastWeekTemp,
                         label: 'Past Week',
+                         title: 'Past Week Temperature Readings',
                         dateType: 'Past Week',
                       );
                     }
@@ -500,6 +503,7 @@ class _TemperatureState extends State<Temperature> {
                       content = GraphWidget(
                           readings: model.pastMonthTemp,
                           label: 'Past Month',
+                          title: 'Past Month Temperature Readings',
                           dateType: 'Past Month');
                     }
                   } else {
@@ -586,8 +590,9 @@ class ShimmerLoader extends StatelessWidget {
 class GraphWidget extends StatelessWidget {
   final List<SensorReading> readings;
   final String label;
+  final String title;
   final String dateType;
-  GraphWidget({this.readings, this.label, this.dateType});
+  GraphWidget({this.readings,this.title, this.label, this.dateType});
 
   @override
   Widget build(BuildContext context) {
@@ -613,6 +618,7 @@ class GraphWidget extends StatelessWidget {
                         context,
                         CupertinoPageRoute(
                             builder: (context) => ExpandedTemp(
+                              title: title,
                                 readings: readings, dateType: dateType)));
                   },
                   child: Padding(
@@ -775,7 +781,8 @@ class _SampleViewState extends State<SampleView> {
 class ExpandedTemp extends StatefulWidget {
   final List<SensorReading> readings;
   final String dateType;
-  ExpandedTemp({this.readings, this.dateType});
+  final String title;
+  ExpandedTemp({this.readings, this.dateType, this.title});
   @override
   _ExpandedTempState createState() => _ExpandedTempState();
 }
@@ -824,7 +831,7 @@ class _ExpandedTempState extends State<ExpandedTemp> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Temperature as of 20th September'),
+          title: Text('Temperature Readings'),
           actions: [
             IconButton(
               onPressed: () {
@@ -856,6 +863,9 @@ class _ExpandedTempState extends State<ExpandedTemp> {
 
   Future<void> _renderPdf() async {
     final PdfDocument document = PdfDocument();
+      String fileName = 'temperature';
+  DateTime now = new DateTime.now();
+  String fileName1 = fileName + now.toString() + '.pdf';
     final PdfBitmap bitmap = PdfBitmap(await _readImageData());
     document.pageSettings.orientation =
         MediaQuery.of(context).orientation == Orientation.landscape
@@ -879,7 +889,7 @@ class _ExpandedTempState extends State<ExpandedTemp> {
     ));
     final List<int> bytes = document.save();
     document.dispose();
-    await FileSaveHelper.saveAndLaunchFile(bytes, 'altitude.pdf');
+    await FileSaveHelper.saveAndLaunchFile(bytes, fileName1);
   }
 
   SfCartesianChart _buildDefaultLineChart() {
@@ -889,7 +899,7 @@ class _ExpandedTempState extends State<ExpandedTemp> {
       tooltipBehavior: TooltipBehavior(enable: true),
       backgroundColor: Theme.of(context).cardColor,
       title: ChartTitle(
-          text: 'Temperature Readings',
+          text: widget.title,
           textStyle: TextStyle(
               fontFamily: 'Roboto',
               fontSize: 16,

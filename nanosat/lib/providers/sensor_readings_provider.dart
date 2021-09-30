@@ -108,7 +108,7 @@ class SensorReadingsProvider extends ChangeNotifier {
     return List.from(_altitude);
   }
 
-  bool _isAltitudeLoading = false;
+  bool _isAltitudeLoading = true;
 
   bool get isAltitudeLoading {
     return _isAltitudeLoading;
@@ -120,7 +120,7 @@ class SensorReadingsProvider extends ChangeNotifier {
     return List.from(_pastHrAltitude);
   }
 
-  bool _isPastHrAltitudeLoading = false;
+  bool _isPastHrAltitudeLoading = true;
 
   bool get isPastHrAltitudeLoading {
     return _isPastHrAltitudeLoading;
@@ -132,7 +132,7 @@ class SensorReadingsProvider extends ChangeNotifier {
     return List.from(_todayAltitude);
   }
 
-  bool _isTodayAltitudeLoading = false;
+  bool _isTodayAltitudeLoading = true;
 
   bool get isTodayAltitudeLoading {
     return _isTodayAltitudeLoading;
@@ -144,7 +144,7 @@ class SensorReadingsProvider extends ChangeNotifier {
     return List.from(_yesterdayAltitude);
   }
 
-  bool _isYesterdayAltitudeLoading = false;
+  bool _isYesterdayAltitudeLoading = true;
 
   bool get isYesterdayAltitudeLoading {
     return _isYesterdayAltitudeLoading;
@@ -156,7 +156,7 @@ class SensorReadingsProvider extends ChangeNotifier {
     return List.from(_pastWeekAltitude);
   }
 
-  bool _isPastWeekAltitudeLoading = false;
+  bool _isPastWeekAltitudeLoading = true;
 
   bool get isPastWeekAltitudeLoading {
     return _isPastWeekAltitudeLoading;
@@ -168,7 +168,7 @@ class SensorReadingsProvider extends ChangeNotifier {
     return List.from(_pastMonthAltitude);
   }
 
-  bool _isPastMonthAltitudeLoading = false;
+  bool _isPastMonthAltitudeLoading = true;
 
   bool get isPastMonthAltitudeLoading {
     return _isPastMonthAltitudeLoading;
@@ -180,7 +180,7 @@ class SensorReadingsProvider extends ChangeNotifier {
     return List.from(_temperature);
   }
 
-  bool _isTempLoading = false;
+  bool _isTempLoading = true;
 
   bool get isTempLoading {
     return _isTempLoading;
@@ -192,7 +192,7 @@ class SensorReadingsProvider extends ChangeNotifier {
     return List.from(_pastHrTemp);
   }
 
-  bool _isPastHrTempLoading = false;
+  bool _isPastHrTempLoading = true;
 
   bool get isPastHrTempLoading {
     return _isPastHrTempLoading;
@@ -204,7 +204,7 @@ class SensorReadingsProvider extends ChangeNotifier {
     return List.from(_todayTemp);
   }
 
-  bool _isTodayTempLoading = false;
+  bool _isTodayTempLoading = true;
 
   bool get isTodayTempLoading {
     return _isTodayTempLoading;
@@ -216,7 +216,7 @@ class SensorReadingsProvider extends ChangeNotifier {
     return List.from(_yesterdayTemp);
   }
 
-  bool _isYesterdayTempLoading = false;
+  bool _isYesterdayTempLoading = true;
 
   bool get isYesterdayTempLoading {
     return _isYesterdayTempLoading;
@@ -228,7 +228,7 @@ class SensorReadingsProvider extends ChangeNotifier {
     return List.from(_pastWeekTemp);
   }
 
-  bool _isPastWeekTempLoading = false;
+  bool _isPastWeekTempLoading = true;
 
   bool get isPastWeekTempLoading {
     return _isPastWeekTempLoading;
@@ -240,7 +240,7 @@ class SensorReadingsProvider extends ChangeNotifier {
     return List.from(_pastMonthTemp);
   }
 
-  bool _isPastMonthTempLoading = false;
+  bool _isPastMonthTempLoading = true;
 
   bool get isPastMonthTempLoading {
     return _isPastMonthTempLoading;
@@ -252,7 +252,7 @@ class SensorReadingsProvider extends ChangeNotifier {
     return List.from(_gyroscope);
   }
 
-  bool _isGyroscopeLoading = false;
+  bool _isGyroscopeLoading = true;
 
   bool get isGyroscopeLoading {
     return _isGyroscopeLoading;
@@ -264,7 +264,7 @@ class SensorReadingsProvider extends ChangeNotifier {
     return List.from(_pastHrGyroscope);
   }
 
-  bool _isPastHrGyroscopeLoading = false;
+  bool _isPastHrGyroscopeLoading = true;
 
   bool get isPastHrGyroscopeLoading {
     return _isPastHrGyroscopeLoading;
@@ -276,7 +276,7 @@ class SensorReadingsProvider extends ChangeNotifier {
     return List.from(_todayGyroscope);
   }
 
-  bool _isTodayGyroscopeLoading = false;
+  bool _isTodayGyroscopeLoading = true;
 
   bool get isTodayGyroscopeLoading {
     return _isTodayGyroscopeLoading;
@@ -288,7 +288,7 @@ class SensorReadingsProvider extends ChangeNotifier {
     return List.from(_yesterdayGyroscope);
   }
 
-  bool _isYesterdayGyroscopeLoading = false;
+  bool _isYesterdayGyroscopeLoading = true;
 
   bool get isYesterdayGyroscopeLoading {
     return _isYesterdayGyroscopeLoading;
@@ -300,7 +300,7 @@ class SensorReadingsProvider extends ChangeNotifier {
     return List.from(_pastWeekGyroscope);
   }
 
-  bool _isPastWeekGyroscopeLoading = false;
+  bool _isPastWeekGyroscopeLoading = true;
 
   bool get isPastWeekGyroscopeLoading {
     return _isPastWeekGyroscopeLoading;
@@ -312,7 +312,7 @@ class SensorReadingsProvider extends ChangeNotifier {
     return List.from(_pastMonthGyroscope);
   }
 
-  bool _isPastMonthGyroscopeLoading = false;
+  bool _isPastMonthGyroscopeLoading = true;
 
   bool get isPastMonthGyroscopeLoading {
     return _isPastMonthGyroscopeLoading;
@@ -324,7 +324,7 @@ class SensorReadingsProvider extends ChangeNotifier {
     return List.from(_magnetometer);
   }
 
-  bool _isMagnetometerLoading = false;
+  bool _isMagnetometerLoading = true;
 
   bool get isMagnetometerLoading {
     return _isMagnetometerLoading;
@@ -336,7 +336,7 @@ class SensorReadingsProvider extends ChangeNotifier {
     return List.from(_pastHrMagnetometer);
   }
 
-  bool _isPastHrMagnetometerLoading = false;
+  bool _isPastHrMagnetometerLoading = true;
 
   bool get isPastHrMagnetometerLoading {
     return _isPastHrMagnetometerLoading;
@@ -348,7 +348,7 @@ class SensorReadingsProvider extends ChangeNotifier {
     return List.from(_todayMagnetometer);
   }
 
-  bool _isTodayMagnetometerLoading = false;
+  bool _isTodayMagnetometerLoading = true;
 
   bool get isTodayMagnetometerLoading {
     return _isTodayMagnetometerLoading;
@@ -360,7 +360,7 @@ class SensorReadingsProvider extends ChangeNotifier {
     return List.from(_yesterdayMagnetometer);
   }
 
-  bool _isYesterdayMagnetometerLoading = false;
+  bool _isYesterdayMagnetometerLoading = true;
 
   bool get isYesterdayMagnetometerLoading {
     return _isYesterdayMagnetometerLoading;
@@ -372,7 +372,7 @@ class SensorReadingsProvider extends ChangeNotifier {
     return List.from(_pastWeekMagnetometer);
   }
 
-  bool _isPastWeekMagnetometerLoading = false;
+  bool _isPastWeekMagnetometerLoading = true;
 
   bool get isPastWeekMagnetometerLoading {
     return _isPastWeekMagnetometerLoading;
@@ -384,7 +384,7 @@ class SensorReadingsProvider extends ChangeNotifier {
     return List.from(_pastMonthMagnetometer);
   }
 
-  bool _isPastMonthMagnetometerLoading = false;
+  bool _isPastMonthMagnetometerLoading = true;
 
   bool get isPastMonthMagnetometerLoading {
     return _isPastMonthMagnetometerLoading;
@@ -396,7 +396,7 @@ class SensorReadingsProvider extends ChangeNotifier {
     return List.from(_accelerometer);
   }
 
-  bool _isAccelerometerLoading = false;
+  bool _isAccelerometerLoading = true;
 
   bool get isAccelerometerLoading {
     return _isAccelerometerLoading;
@@ -408,7 +408,7 @@ class SensorReadingsProvider extends ChangeNotifier {
     return List.from(_pastHrAccelerometer);
   }
 
-  bool _isPastHrAccelerometerLoading = false;
+  bool _isPastHrAccelerometerLoading = true;
 
   bool get isPastHrAccelerometerLoading {
     return _isPastHrAccelerometerLoading;
@@ -420,7 +420,7 @@ class SensorReadingsProvider extends ChangeNotifier {
     return List.from(_todayAccelerometer);
   }
 
-  bool _isTodayAccelerometerLoading = false;
+  bool _isTodayAccelerometerLoading = true;
 
   bool get isTodayAccelerometerLoading {
     return _isTodayAccelerometerLoading;
@@ -432,7 +432,7 @@ class SensorReadingsProvider extends ChangeNotifier {
     return List.from(_yesterdayAccelerometer);
   }
 
-  bool _isYesterdayAccelerometerLoading = false;
+  bool _isYesterdayAccelerometerLoading = true;
 
   bool get isYesterdayAccelerometerLoading {
     return _isYesterdayAccelerometerLoading;
@@ -444,7 +444,7 @@ class SensorReadingsProvider extends ChangeNotifier {
     return List.from(_pastWeekAccelerometer);
   }
 
-  bool _isPastWeekAccelerometerLoading = false;
+  bool _isPastWeekAccelerometerLoading = true;
 
   bool get isPastWeekAccelerometerLoading {
     return _isPastWeekAccelerometerLoading;
@@ -456,17 +456,18 @@ class SensorReadingsProvider extends ChangeNotifier {
     return List.from(_pastMonthAccelerometer);
   }
 
-  bool _isPastMonthAccelerometerLoading = false;
+  bool _isPastMonthAccelerometerLoading = true;
 
   bool get isPastMonthAccelerometerLoading {
     return _isPastMonthAccelerometerLoading;
   }
 
   Future getAccelerometerReadings() async {
+    
     Map<String, dynamic> responseData = {};
     List<SensorReading> fetchedAccelerometer = [];
     _accelerometer = [];
-    _isAccelerometerLoading = true;
+
     notifyListeners();
     String url = formatter('/getAccelerometerReadings');
 
@@ -478,7 +479,9 @@ class SensorReadingsProvider extends ChangeNotifier {
 
       responseData['altitudes'].forEach((dynamic sensorReading) {
         final SensorReading reading = SensorReading(
-          val: sensorReading['val'],
+         x: sensorReading['x'],
+       y: sensorReading['y'],
+        z: sensorReading['z'],
           time: sensorReading['time'],
           date: sensorReading['date'],
         );
@@ -512,7 +515,9 @@ class SensorReadingsProvider extends ChangeNotifier {
 
       responseData['altitudes'].forEach((dynamic sensorReading) {
         final SensorReading reading = SensorReading(
-          val: sensorReading['val'],
+         x: sensorReading['x'],
+       y: sensorReading['y'],
+        z: sensorReading['z'],
           time: sensorReading['time'],
           date: sensorReading['date'],
         );
@@ -546,7 +551,9 @@ class SensorReadingsProvider extends ChangeNotifier {
 
       responseData['altitudes'].forEach((dynamic sensorReading) {
         final SensorReading reading = SensorReading(
-          val: sensorReading['val'],
+         x: sensorReading['x'],
+       y: sensorReading['y'],
+        z: sensorReading['z'],
           time: sensorReading['time'],
           date: sensorReading['date'],
         );
@@ -580,7 +587,9 @@ class SensorReadingsProvider extends ChangeNotifier {
 
       responseData['altitudes'].forEach((dynamic sensorReading) {
         final SensorReading reading = SensorReading(
-          val: sensorReading['val'],
+         x: sensorReading['x'],
+       y: sensorReading['y'],
+        z: sensorReading['z'],
           time: sensorReading['time'],
           date: sensorReading['date'],
         );
@@ -614,7 +623,9 @@ class SensorReadingsProvider extends ChangeNotifier {
 
       responseData['altitudes'].forEach((dynamic sensorReading) {
         final SensorReading reading = SensorReading(
-          val: sensorReading['val'],
+         x: sensorReading['x'],
+       y: sensorReading['y'],
+        z: sensorReading['z'],
           time: sensorReading['time'],
           date: sensorReading['date'],
         );
@@ -648,7 +659,9 @@ class SensorReadingsProvider extends ChangeNotifier {
 
       responseData['altitudes'].forEach((dynamic sensorReading) {
         final SensorReading reading = SensorReading(
-          val: sensorReading['val'],
+         x: sensorReading['x'],
+       y: sensorReading['y'],
+        z: sensorReading['z'],
           time: sensorReading['time'],
           date: sensorReading['date'],
         );
@@ -682,7 +695,9 @@ class SensorReadingsProvider extends ChangeNotifier {
 
       responseData['altitudes'].forEach((dynamic sensorReading) {
         final SensorReading reading = SensorReading(
-          val: sensorReading['val'],
+         x: sensorReading['x'],
+       y: sensorReading['y'],
+        z: sensorReading['z'],
           time: sensorReading['time'],
           date: sensorReading['date'],
         );
@@ -716,7 +731,9 @@ class SensorReadingsProvider extends ChangeNotifier {
 
       responseData['altitudes'].forEach((dynamic sensorReading) {
         final SensorReading reading = SensorReading(
-          val: sensorReading['val'],
+         x: sensorReading['x'],
+       y: sensorReading['y'],
+        z: sensorReading['z'],
           time: sensorReading['time'],
           date: sensorReading['date'],
         );
@@ -750,7 +767,9 @@ class SensorReadingsProvider extends ChangeNotifier {
 
       responseData['altitudes'].forEach((dynamic sensorReading) {
         final SensorReading reading = SensorReading(
-          val: sensorReading['val'],
+         x: sensorReading['x'],
+       y: sensorReading['y'],
+        z: sensorReading['z'],
           time: sensorReading['time'],
           date: sensorReading['date'],
         );
@@ -784,7 +803,9 @@ class SensorReadingsProvider extends ChangeNotifier {
 
       responseData['altitudes'].forEach((dynamic sensorReading) {
         final SensorReading reading = SensorReading(
-          val: sensorReading['val'],
+         x: sensorReading['x'],
+       y: sensorReading['y'],
+        z: sensorReading['z'],
           time: sensorReading['time'],
           date: sensorReading['date'],
         );
@@ -818,7 +839,9 @@ class SensorReadingsProvider extends ChangeNotifier {
 
       responseData['altitudes'].forEach((dynamic sensorReading) {
         final SensorReading reading = SensorReading(
-          val: sensorReading['val'],
+         x: sensorReading['x'],
+       y: sensorReading['y'],
+        z: sensorReading['z'],
           time: sensorReading['time'],
           date: sensorReading['date'],
         );
@@ -852,7 +875,9 @@ class SensorReadingsProvider extends ChangeNotifier {
 
       responseData['altitudes'].forEach((dynamic sensorReading) {
         final SensorReading reading = SensorReading(
-          val: sensorReading['val'],
+         x: sensorReading['x'],
+       y: sensorReading['y'],
+        z: sensorReading['z'],
           time: sensorReading['time'],
           date: sensorReading['date'],
         );
@@ -886,7 +911,9 @@ class SensorReadingsProvider extends ChangeNotifier {
 
       responseData['altitudes'].forEach((dynamic sensorReading) {
         final SensorReading reading = SensorReading(
-          val: sensorReading['val'],
+         x: sensorReading['x'],
+       y: sensorReading['y'],
+        z: sensorReading['z'],
           time: sensorReading['time'],
           date: sensorReading['date'],
         );
@@ -920,7 +947,9 @@ class SensorReadingsProvider extends ChangeNotifier {
 
       responseData['altitudes'].forEach((dynamic sensorReading) {
         final SensorReading reading = SensorReading(
-          val: sensorReading['val'],
+         x: sensorReading['x'],
+       y: sensorReading['y'],
+        z: sensorReading['z'],
           time: sensorReading['time'],
           date: sensorReading['date'],
         );
@@ -954,7 +983,9 @@ class SensorReadingsProvider extends ChangeNotifier {
 
       responseData['altitudes'].forEach((dynamic sensorReading) {
         final SensorReading reading = SensorReading(
-          val: sensorReading['val'],
+         x: sensorReading['x'],
+       y: sensorReading['y'],
+        z: sensorReading['z'],
           time: sensorReading['time'],
           date: sensorReading['date'],
         );
@@ -988,7 +1019,9 @@ class SensorReadingsProvider extends ChangeNotifier {
 
       responseData['altitudes'].forEach((dynamic sensorReading) {
         final SensorReading reading = SensorReading(
-          val: sensorReading['val'],
+         x: sensorReading['x'],
+       y: sensorReading['y'],
+        z: sensorReading['z'],
           time: sensorReading['time'],
           date: sensorReading['date'],
         );
@@ -1022,7 +1055,9 @@ class SensorReadingsProvider extends ChangeNotifier {
 
       responseData['altitudes'].forEach((dynamic sensorReading) {
         final SensorReading reading = SensorReading(
-          val: sensorReading['val'],
+         x: sensorReading['x'],
+       y: sensorReading['y'],
+        z: sensorReading['z'],
           time: sensorReading['time'],
           date: sensorReading['date'],
         );
@@ -1053,10 +1088,12 @@ class SensorReadingsProvider extends ChangeNotifier {
       responseData = json.decode(response.body);
 
       print(responseData);
-
+     
       responseData['altitudes'].forEach((dynamic sensorReading) {
         final SensorReading reading = SensorReading(
-          val: sensorReading['val'],
+         x: sensorReading['x'],
+       y: sensorReading['y'],
+        z: sensorReading['z'],
           time: sensorReading['time'],
           date: sensorReading['date'],
         );
