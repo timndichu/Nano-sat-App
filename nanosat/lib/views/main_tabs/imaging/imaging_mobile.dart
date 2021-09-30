@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nanosat/views/imaging_types/optical_imaging/optical_imaging.dart';
 import 'package:nanosat/views/imaging_types/rural_lighting/rural_lighting.dart';
 import 'package:nanosat/views/imaging_types/thermal_imaging/thermal_imaging.dart';
 import 'package:nanosat/views/imaging_types/vegetation_cover/vegetation_cover.dart';
@@ -28,7 +29,7 @@ class _ImagingMobileState extends State<ImagingMobile> with TickerProviderStateM
     super.initState();
 
     _controller =
-        TabController(vsync: this, length: 4, initialIndex: widget.initialIndex ?? _activeTabIndex);
+        TabController(vsync: this, length: 5, initialIndex: widget.initialIndex ?? _activeTabIndex);
   }
 
 
@@ -50,7 +51,7 @@ class _ImagingMobileState extends State<ImagingMobile> with TickerProviderStateM
           }, icon: Icon(Icons.refresh, color: Colors.white))],
         ),
          body: DefaultTabController(
-          length: 6,
+          length: 5,
           child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
              
@@ -81,6 +82,7 @@ class _ImagingMobileState extends State<ImagingMobile> with TickerProviderStateM
                     },
                     tabs: <Widget>[
                       Tab(text: 'Thermal Imaging'),
+                      Tab(text: 'Optical Imaging'),
                       Tab(text: 'Rural Lighting'),
                       Tab(text: 'Water bodies'),
                       Tab(text: 'Vegetation Cover'),
@@ -93,10 +95,11 @@ class _ImagingMobileState extends State<ImagingMobile> with TickerProviderStateM
                     controller: _controller,
                     children: [
                       ThermalImaging(),
+                           OpticalImaging(),
                       RuralLighting(),
                       WaterBodies(),
                       VegetationCover(),
-                      
+                 
                     ],
                   ),
                 ),

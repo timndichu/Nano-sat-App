@@ -943,7 +943,7 @@ class _ExpandedMagnetometerState extends State<ExpandedMagnetometer> {
     return bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes);
   }
 
-  String fileName = 'gyroscope';
+  String fileName = 'magnetometer';
   DateTime now = new DateTime.now();
   
 

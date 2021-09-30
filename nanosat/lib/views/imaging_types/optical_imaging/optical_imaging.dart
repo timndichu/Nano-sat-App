@@ -4,22 +4,22 @@ import 'package:nanosat/providers/sensor_readings_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-class ThermalImaging extends StatefulWidget {
+class OpticalImaging extends StatefulWidget {
   @override
-  _ThermalImagingState createState() => _ThermalImagingState();
+  _OpticalImagingState createState() => _OpticalImagingState();
 }
 
-class _ThermalImagingState extends State<ThermalImaging> {
+class _OpticalImagingState extends State<OpticalImaging> {
   @override
   void initState() {
     Provider.of<SensorReadingsProvider>(context, listen: false)
-                .thermalImages
+                .opticalImages
                 .length >
             0
         ? print('ALready fetched')
         : Future.delayed(Duration.zero, () {
             Provider.of<SensorReadingsProvider>(context, listen: false)
-                .getThermalImages();
+                .getOpticalImages();
           });
     super.initState();
   }
@@ -40,7 +40,7 @@ class _ThermalImagingState extends State<ThermalImaging> {
               textAlign: TextAlign.center,
             ));
 
-            if (model.isThermalLoading) {
+            if (model.isOpticalLoading) {
               content = Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -48,10 +48,10 @@ class _ThermalImagingState extends State<ThermalImaging> {
                   Center(child: CircularProgressIndicator()),
                 ],
               );
-            } else if ((model.thermalImages.length > 0 &&
-                !model.isThermalLoading)) {
+            } else if ((model.opticalImages.length > 0 &&
+                !model.isOpticalLoading)) {
               content = ListView.builder(
-                  itemCount: model.thermalImages.length,
+                  itemCount: model.opticalImages.length,
                   itemBuilder: (BuildContext context, int index) {
                     return Padding(
                       padding: const EdgeInsets.all(4.0),
@@ -70,17 +70,17 @@ class _ThermalImagingState extends State<ThermalImaging> {
                                     alignment: Alignment.center,
                                     placeholder: kTransparentImage,
                                     image:
-                                        model.thermalImages[index].imageUrl),
+                                        model.opticalImages[index].imageUrl),
                               ),
                               SizedBox(height: 20),
-                              Text('Thermal Image taken on ${model.thermalImages[index].date}'),
+                              Text('Optical Image taken on ${model.opticalImages[index].date}'),
                               SizedBox(height: 20),
                             ]),
                           )),
                     );
                   });
-            } else if ((model.thermalImages.length == 0 &&
-                !model.isThermalLoading)) {
+            } else if ((model.opticalImages.length == 0 &&
+                !model.isOpticalLoading)) {
               content = Center(
                   child: Text(
                 'No open Orders',

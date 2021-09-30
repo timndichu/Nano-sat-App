@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:nanosat/models/imaging.dart';
+import 'package:nanosat/views/main_tabs/imaging/imaging.dart';
 
 import '../models/sensor_readings.dart';
 
@@ -101,6 +103,34 @@ class SensorReadingsProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+
+   List<ImagingModel> _opticalImages = [];
+
+  List<ImagingModel> get opticalImages {
+    return List.from(_opticalImages);
+  }
+
+  bool _isOpticalLoading = true;
+
+  bool get isOpticalLoading {
+    return _isOpticalLoading;
+  }
+
+     List<ImagingModel> _thermalImages = [];
+
+  List<ImagingModel> get thermalImages {
+    return List.from(_thermalImages);
+  }
+
+  bool _isThermalLoading = true;
+
+  bool get isThermalLoading {
+    return _isThermalLoading;
+  }
+
+
+
 
   List<SensorReading> _altitude = [];
 
@@ -1518,4 +1548,94 @@ class SensorReadingsProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+
+
+
+//IMAGING
+
+ Future getOpticalImages() async {
+    Map<String, dynamic> responseData = {};
+    List<ImagingModel> fetchedImages = [];
+    _opticalImages = [];
+    _isOpticalLoading = true;
+    notifyListeners();
+    String url = formatter('/getOpticalImages');
+
+    var response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      responseData = json.decode(response.body);
+
+      print(responseData);
+
+      responseData['images'].forEach((dynamic sensorReading) {
+        final ImagingModel reading = ImagingModel(
+          category: sensorReading['category'],
+          subcategory: sensorReading['subcategory'],
+          imageUrl: sensorReading['imageUrl'],
+          date: sensorReading['date'],
+        );
+        fetchedImages.add(reading);
+      });
+      _opticalImages = fetchedImages;
+
+      _isOpticalLoading = false;
+      notifyListeners();
+    } else {
+      responseData = json.decode(response.body);
+
+      _isOpticalLoading = false;
+      notifyListeners();
+    }
+  }
+
+
+Future getThermalImages() async {
+    Map<String, dynamic> responseData = {};
+    List<ImagingModel> fetchedImages = [];
+    _thermalImages = [];
+    _isThermalLoading = true;
+    notifyListeners();
+    String url = formatter('/getThermalImages');
+
+    var response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      responseData = json.decode(response.body);
+
+      print(responseData);
+
+      responseData['images'].forEach((dynamic sensorReading) {
+        final ImagingModel reading = ImagingModel(
+          category: sensorReading['category'],
+          subcategory: sensorReading['subcategory'],
+          imageUrl: sensorReading['imageUrl'],
+          date: sensorReading['date'],
+        );
+        fetchedImages.add(reading);
+      });
+      _thermalImages = fetchedImages;
+
+      _isThermalLoading = false;
+      notifyListeners();
+    } else {
+      responseData = json.decode(response.body);
+
+      _isThermalLoading = false;
+      notifyListeners();
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
