@@ -14,7 +14,7 @@ void main() {
 
     WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences.getInstance().then((prefs) {
-    var isDarkTheme = prefs.getBool("darkTheme") ?? false;
+    var isDarkTheme = prefs.getBool("darkTheme") ?? true;
 
     return runApp(MultiProvider(child: MyApp(), providers: [
     

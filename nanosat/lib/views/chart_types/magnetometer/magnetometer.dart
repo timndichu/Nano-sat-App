@@ -1,4 +1,6 @@
 
+import 'dart:html';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nanosat/models/sensor_readings.dart';
@@ -972,6 +974,11 @@ class _ExpandedMagnetometerState extends State<ExpandedMagnetometer> {
       content: Text('Chart has been exported as PDF document.'),
     ));
     final List<int> bytes = document.save();
+    AnchorElement(
+        href:
+            "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(bytes)}")
+      ..setAttribute("download", fileName1)
+      ..click();
     document.dispose();
     await FileSaveHelper.saveAndLaunchFile(bytes, fileName1);
   }

@@ -1,4 +1,6 @@
 
+import 'dart:html';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nanosat/models/sensor_readings.dart';
@@ -962,7 +964,8 @@ class _ExpandedAccelerometerState extends State<ExpandedAccelerometer> {
     final Size pageSize = page.getClientSize();
     page.graphics.drawImage(
         bitmap, Rect.fromLTWH(0, 0, pageSize.width, pageSize.height));
-
+        //Download the output file
+    
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
       behavior: SnackBarBehavior.floating,
@@ -972,6 +975,11 @@ class _ExpandedAccelerometerState extends State<ExpandedAccelerometer> {
       content: Text('Chart has been exported as PDF document.'),
     ));
     final List<int> bytes = document.save();
+    AnchorElement(
+        href:
+            "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(bytes)}")
+      ..setAttribute("download", fileName1)
+      ..click();
     document.dispose();
     await FileSaveHelper.saveAndLaunchFile(bytes, fileName1);
   }

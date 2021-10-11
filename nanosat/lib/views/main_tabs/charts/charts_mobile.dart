@@ -34,7 +34,7 @@ class _ChartsMobileState extends State<ChartsMobile> with TickerProviderStateMix
     }
     _controller = TabController(
         vsync: this,
-        length: 6,
+        length: 5,
         initialIndex: widget.initialIndex ?? _activeTabIndex);
   }
 
@@ -71,7 +71,7 @@ class _ChartsMobileState extends State<ChartsMobile> with TickerProviderStateMix
                 Provider.of<SensorReadingsProvider>(context, listen: false)
                 .getPastMonthAltitude();
         }
-         if(_activeTabIndex == 3) { 
+         if(_activeTabIndex == 2) { 
           Provider.of<SensorReadingsProvider>(context, listen: false)
                 .getPastHourMagnetometerReadings();
           Provider.of<SensorReadingsProvider>(context, listen: false)
@@ -83,7 +83,7 @@ class _ChartsMobileState extends State<ChartsMobile> with TickerProviderStateMix
                 Provider.of<SensorReadingsProvider>(context, listen: false)
                 .getPastMonthMagnetometer();
         }
-         if(_activeTabIndex == 4) { 
+         if(_activeTabIndex == 3) { 
           Provider.of<SensorReadingsProvider>(context, listen: false)
                 .getPastHourAccelerometerReadings();
           Provider.of<SensorReadingsProvider>(context, listen: false)
@@ -95,7 +95,7 @@ class _ChartsMobileState extends State<ChartsMobile> with TickerProviderStateMix
                 Provider.of<SensorReadingsProvider>(context, listen: false)
                 .getPastMonthAccelerometer();
         }
-         if(_activeTabIndex == 5) { 
+         if(_activeTabIndex == 4) { 
           Provider.of<SensorReadingsProvider>(context, listen: false)
                 .getPastHourGyroscopeReadings();
           Provider.of<SensorReadingsProvider>(context, listen: false)
@@ -158,7 +158,7 @@ class _ChartsMobileState extends State<ChartsMobile> with TickerProviderStateMix
         //     onPressed: () => _showModalBottomSheet(),
         //     child: Icon(Icons.filter_alt_outlined)),
         body: DefaultTabController(
-          length: 6,
+          length: 5,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -189,7 +189,7 @@ class _ChartsMobileState extends State<ChartsMobile> with TickerProviderStateMix
                   tabs: <Widget>[
                     Tab(text: 'Temperature'),
                     Tab(text: 'Altitude'),
-                    Tab(text: 'Battery Info'),
+                
                     Tab(text: 'Magnetometer'),
                     Tab(text: 'Accelerometer'),
                     Tab(text: 'Gyroscope'),
@@ -202,7 +202,7 @@ class _ChartsMobileState extends State<ChartsMobile> with TickerProviderStateMix
                   children: [
                     Temperature(),
                     Altitude(),
-                    BatteryInfo(),
+                  
                     MagnetometerCharts(),
                     AccelerometerCharts(),
                     GyroscopeCharts()

@@ -123,8 +123,9 @@ class _MainDrawerState extends State<MainDrawer> {
                                 )));
                   },
                 ),
+               
                 ListTile(
-                  title: Text('Battery Info'),
+                  title: Text('Magnetometer'),
                   onTap: () {
                     Navigator.push(
                         context,
@@ -135,7 +136,7 @@ class _MainDrawerState extends State<MainDrawer> {
                   },
                 ),
                 ListTile(
-                  title: Text('Magnetometer'),
+                  title: Text('Accelerometer'),
                   onTap: () {
                     Navigator.push(
                         context,
@@ -146,24 +147,13 @@ class _MainDrawerState extends State<MainDrawer> {
                   },
                 ),
                 ListTile(
-                  title: Text('Accelerometer'),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                            builder: (context) => Charts(
-                                  initialIndex: 4,
-                                )));
-                  },
-                ),
-                ListTile(
                   title: Text('Gyroscope'),
                   onTap: () {
                     Navigator.push(
                         context,
                         CupertinoPageRoute(
                             builder: (context) => Charts(
-                                  initialIndex: 5,
+                                  initialIndex: 4,
                                 )));
                   },
                 ),

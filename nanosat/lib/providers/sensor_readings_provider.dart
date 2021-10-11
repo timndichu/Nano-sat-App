@@ -6,6 +6,7 @@ import 'package:nanosat/models/imaging.dart';
 import 'package:nanosat/views/main_tabs/imaging/imaging.dart';
 
 import '../models/sensor_readings.dart';
+import 'package:logger/logger.dart';
 
 class SensorReadingsProvider extends ChangeNotifier {
   String baseurl = "https://ksa-nanosat.herokuapp.com";
@@ -13,7 +14,7 @@ class SensorReadingsProvider extends ChangeNotifier {
   String formatter(String url) {
     return baseurl + url;
   }
-
+    var log = Logger();
   bool _livedata = true;
 
   bool get livedata {
@@ -127,6 +128,50 @@ class SensorReadingsProvider extends ChangeNotifier {
 
   bool get isThermalLoading {
     return _isThermalLoading;
+  }
+
+
+  bool _isLatestLoading = true;
+
+  bool get isLatestLoading {
+    return _isLatestLoading;
+  }
+
+  String _latestDate = '';
+
+  String get latestDate {
+    return _latestDate;
+  }
+
+  String _latestTime = '';
+
+  String get latestTime {
+    return _latestTime;
+  }
+
+   num _latestTemp = 0;
+
+  num get latestTemp {
+    return _latestTemp;
+  }
+
+    num _latitude = 0;
+
+  num get latitude {
+    return _latitude;
+  }
+
+  num _longitude = 0;
+
+  num get longitude {
+    return _longitude;
+  }
+
+
+     num _latestAlt = 0;
+
+  num get latestAlt {
+    return _latestAlt;
   }
 
 
@@ -1629,6 +1674,35 @@ Future getThermalImages() async {
 
 
 
+  Future getLatestReadings() async {
+    Map<String, dynamic> responseData = {};
+  
+    _isLatestLoading = true;
+    notifyListeners();
+    String url = formatter('/getLatest');
+
+    var response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      responseData = json.decode(response.body);
+
+      log.i(responseData);
+
+      _latestAlt = responseData['altitude']; 
+       _latestTemp = responseData['temperature']; 
+        _latestDate = responseData['date']; 
+         _latestTime = responseData['time']; 
+              _latitude = responseData['latitude']; 
+                   _longitude = responseData['longitude']; 
+
+      _isLatestLoading = false;
+      notifyListeners();
+    } else {
+      responseData = json.decode(response.body);
+
+      _isLatestLoading = false;
+      notifyListeners();
+    }
+  }
 
 
 

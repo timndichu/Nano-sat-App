@@ -4,20 +4,19 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:nanosat/icons/nano_icons_icons.dart';
+import 'package:nanosat/providers/sensor_readings_provider.dart';
 import 'package:nanosat/views/main_tabs/alerts/alerts.dart';
 
 import 'package:nanosat/views/main_tabs/alerts/alerts_mobile.dart';
 import 'package:nanosat/views/main_tabs/charts/charts.dart';
 import 'package:nanosat/views/main_tabs/imaging/imaging.dart';
 import 'package:nanosat/widgets/drawer.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-
 import 'package:provider/provider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
-
 
 class HomepageDesktop extends StatefulWidget {
   final int index;
@@ -45,7 +44,7 @@ class _HomepageDesktopState extends State<HomepageDesktop> {
   void onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
-      if(_currentIndex == 3) {
+      if (_currentIndex == 3) {
         alertBadgeVisible = false;
       }
     });
@@ -97,15 +96,25 @@ class _HomepageDesktopState extends State<HomepageDesktop> {
             BottomNavigationBarItem(
                 backgroundColor: Theme.of(context).cardColor,
                 label: 'Alerts',
-                icon: Stack(
-                  children: [Icon(NanoIcons.bell,
+                icon: Stack(children: [
+                  Icon(NanoIcons.bell,
                       size: 26,
                       color: _currentIndex == 3
                           ? Colors.deepPurple
                           : Colors.grey[700]),
-                        alertBadgeVisible ?  Positioned(top: 0, right: 2, child: Container(width:10, height: 10, decoration: BoxDecoration(color: Colors.deepPurple[300], borderRadius: BorderRadius.circular(20)),))
-                          : Container(height: 0, width: 0)]
-                )),
+                  alertBadgeVisible
+                      ? Positioned(
+                          top: 0,
+                          right: 2,
+                          child: Container(
+                            width: 10,
+                            height: 10,
+                            decoration: BoxDecoration(
+                                color: Colors.deepPurple[300],
+                                borderRadius: BorderRadius.circular(20)),
+                          ))
+                      : Container(height: 0, width: 0)
+                ])),
           ],
         ),
         body: _children[_currentIndex]);
@@ -133,7 +142,15 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  static const _initialCameraPosition = CameraPosition(
+  var _initialCameraPosition = CameraPosition(
+    target: LatLng(
+      -1.2921,
+      36.8219,
+    ),
+    zoom: 11.5,
+  );
+  
+  var _defaultCameraPosition = CameraPosition(
     target: LatLng(
       -1.2921,
       36.8219,
@@ -145,45 +162,79 @@ class _HomeScreenState extends State<HomeScreen> {
   Marker _origin;
   Marker _destination;
 
-  static const LatLng _center = const LatLng(
-    -1.2921,
-    36.8219,
-  );
-  LatLng _currentMapPosition = _center;
+  LatLng _center = LatLng(  -1.2921,
+      36.8219,);
+  LatLng _currentMapPosition;
 
 
-
-
-  @override
-  void dispose() {
-    _googleMapController.dispose();
-    super.dispose();
-  }
 
   @override
   void initState() {
-    // Future.delayed(Duration.zero, () {
-    //   Provider.of<ShopProvider>(context, listen: false).getServices();
-    // });
- 
-    _markers.add(
+   
+      Provider.of<SensorReadingsProvider>(context, listen: false)
+          .getLatestReadings()
+          .then((val) {
+        _initialCameraPosition = CameraPosition(
+          target: LatLng(
+            Provider.of<SensorReadingsProvider>(context, listen: false)
+                .latitude,
+            Provider.of<SensorReadingsProvider>(context, listen: false)
+                .longitude,
+          ),
+          zoom: 11.5,
+        );
+       
+
+       
+        if( Provider.of<SensorReadingsProvider>(context, listen: false).latitude == 0) {
+          
+           _currentMapPosition = _center;
+           _markers.add(
+      Marker(
+          markerId: MarkerId(_currentMapPosition.toString()),
+          position: _currentMapPosition,
+          infoWindow: InfoWindow(title: 'Latest Satellite position'),
+          icon: BitmapDescriptor.defaultMarker),
+    );
+        }
+        else {
+           _center = LatLng(
+          Provider.of<SensorReadingsProvider>(context, listen: false).latitude,
+          Provider.of<SensorReadingsProvider>(context, listen: false).longitude,
+        );
+           _currentMapPosition = _center;
+           _markers.add(
       Marker(
           markerId: MarkerId(_currentMapPosition.toString()),
           position: _currentMapPosition,
           infoWindow: InfoWindow(title: 'You'),
           icon: BitmapDescriptor.defaultMarker),
     );
+        }
+         
+      
+      });
+  
+
+  
     super.initState();
   }
 
   MapType _currentMapType = MapType.normal;
+
+    @override
+  void dispose() {
+    _googleMapController.dispose();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
 
-    SfRadialGauge _buildRadialGauge(BuildContext context) {
+    SfRadialGauge _buildRadialGauge(BuildContext context, num altitude) {
       return SfRadialGauge(axes: <RadialAxis>[
         RadialAxis(
           minimum: 32,
@@ -213,12 +264,12 @@ class _HomeScreenState extends State<HomeScreen> {
               const GaugeTextStyle(color: Color(0xFF00A8B5), fontSize: 12),
         ),
         RadialAxis(
-            minimum: 0,
-            maximum: 100,
-            interval: 10,
+           minimum: 0,
+            maximum: 1000,
+            interval: 100,
             ticksPosition: ElementsPosition.outside,
             labelsPosition: ElementsPosition.outside,
-            minorTicksPerInterval: 5,
+            minorTicksPerInterval: 10,
             radiusFactor: 0.95,
             labelOffset: 15,
             minorTickStyle: const MinorTickStyle(
@@ -240,32 +291,23 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       Container(
-                          child: const Text(
-                        '33ft  :',
+                          child: Text(
+                        '$altitude meters',
                         style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
                             fontFamily: 'Times'),
                       )),
-                      Container(
-                          child: const Text(
-                        ' 20in',
-                        style: TextStyle(
-                            fontSize: 12,
-                            color: Color(0xFF00A8B5),
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Times'),
-                      ))
                     ],
                   ))
             ],
-            pointers: const <GaugePointer>[
+            pointers: <GaugePointer>[
               NeedlePointer(
                 needleLength: 0.68,
                 lengthUnit: GaugeSizeUnit.factor,
                 needleStartWidth: 0,
                 needleEndWidth: 3,
-                value: 33,
+                value: altitude,
                 enableAnimation: true,
                 knobStyle: KnobStyle(
                     knobRadius: 6.5, sizeUnit: GaugeSizeUnit.logicalPixel),
@@ -274,7 +316,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ]);
     }
 
-    SfRadialGauge _buildTemperatureMonitorExample() {
+    SfRadialGauge _buildTemperatureMonitorExample(num temperature) {
       return SfRadialGauge(
         animationDuration: 3500,
         enableLoadingAnimation: true,
@@ -338,8 +380,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     angle: 90,
                     positionFactor: 0.8,
                     widget: Container(
-                      child: const Text(
-                        '  22.5  ',
+                      child: Text(
+                        '$temperature',
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 20),
                       ),
@@ -347,7 +389,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: 22.5,
+                  value: temperature,
                   needleLength: 0.6,
                   lengthUnit: GaugeSizeUnit.factor,
                   needleStartWidth: 0,
@@ -392,29 +434,74 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
             color: Colors.deepPurple,
-            onPressed: () {},
+            onPressed: () {
+                Provider.of<SensorReadingsProvider>(context, listen: false)
+          .getLatestReadings();
+            },
             icon: Icon(Icons.refresh, color: Colors.white),
           )
         ],
       ),
       body: Container(
         height: height,
-     
         child: SingleChildScrollView(
           child: Column(children: <Widget>[
             Stack(children: [
-              Container(
-                height: height / 2,
-                child: GoogleMap(
-                    myLocationButtonEnabled: false,
-                    mapType: _currentMapType,
-                      gestureRecognizers: Set()..add(Factory<EagerGestureRecognizer>(() => EagerGestureRecognizer())),
-                    zoomControlsEnabled: false,
-                    initialCameraPosition: _initialCameraPosition,
-                    onMapCreated: (controller) =>
-                        _googleMapController = controller,
-                    markers: _markers),
-              ),
+              Consumer<SensorReadingsProvider>(
+                  builder: (context, model, child) {
+                Widget content = Center(
+                    child: Text(
+                  'Error fetching data. Check your Internet connection',
+                  textAlign: TextAlign.center,
+                ));
+
+                if (model.isLatestLoading) {
+                  content = Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Center(child: ShimmerLoader()),
+                    ],
+                  );
+                } else if ((!model.isLatestLoading && model.latitude != 0)) {
+                  content = Container(
+                    height: height / 2,
+                    child: GoogleMap(
+                        myLocationButtonEnabled: false,
+                        mapType: _currentMapType,
+                        gestureRecognizers: Set()
+                          ..add(Factory<EagerGestureRecognizer>(
+                              () => EagerGestureRecognizer())),
+                        zoomControlsEnabled: false,
+                        initialCameraPosition: _initialCameraPosition,
+                        onMapCreated: (controller) =>
+                            _googleMapController = controller,
+                        markers: _markers),
+                  );
+                } 
+                 else if ((!model.isLatestLoading && model.latitude == 0)) {
+                  content = Container(
+                    height: height / 2,
+                    child: GoogleMap(
+                        myLocationButtonEnabled: false,
+                        mapType: _currentMapType,
+                        gestureRecognizers: Set()
+                          ..add(Factory<EagerGestureRecognizer>(
+                              () => EagerGestureRecognizer())),
+                        zoomControlsEnabled: false,
+                        initialCameraPosition: _defaultCameraPosition,
+                        onMapCreated: (controller) =>
+                            _googleMapController = controller,
+                        markers: _markers),
+                  );
+                }
+                
+                else {
+                  content = Container(
+                      child: Center(child: Text('No data available')));
+                }
+                return content;
+              }),
               Positioned(
                 right: 4,
                 bottom: 2,
@@ -425,15 +512,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   onPressed: () => _googleMapController.animateCamera(
                     CameraUpdate.newCameraPosition(_initialCameraPosition),
                   ),
-                  child:
-                      const Icon(Icons.center_focus_strong, color: Colors.white),
+                  child: const Icon(Icons.center_focus_strong,
+                      color: Colors.white),
                 ),
               ),
               Positioned(
                 right: 4,
                 bottom: 70,
                 child: FloatingActionButton(
-                     heroTag: 'pan',
+                  heroTag: 'pan',
                   backgroundColor: Theme.of(context).primaryColor,
                   foregroundColor: Colors.black,
                   onPressed: () {
@@ -448,57 +535,108 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ]),
             Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Container(
-                  padding: EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).cardColor,
-                      borderRadius: BorderRadius.circular(12)),
-                  child: Container(
-                      width: width,
-                      child: Column(children: [
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Container(
-                                  height: 250,
-                                  width: width / 1.8,
-                                  child: _buildTemperatureMonitorExample()),
-                              Spacer(),
-                              Container(
-                                  width: width / 3,
-                                  child: Text('Latest Temp. reading: 22.5 °C'))
-                            ]),
-                        Text('*Temp. Readings as of 2020-9-9 10:23'),
-                        SizedBox(height: 5)
-                      ]))),
-            ),
+                padding: const EdgeInsets.all(4.0),
+                child: Container(
+                    padding: EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).cardColor,
+                        borderRadius: BorderRadius.circular(12)),
+                    child: Consumer<SensorReadingsProvider>(
+                        builder: (context, model, child) {
+                      Widget content = Center(
+                          child: Text(
+                        'Error fetching data. Check your Internet connection',
+                        textAlign: TextAlign.center,
+                      ));
+
+                      if (model.isLatestLoading) {
+                        content = Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Center(child: ShimmerLoader()),
+                          ],
+                        );
+                      } else if ((!model.isLatestLoading)) {
+                        content = Container(
+                            width: width,
+                            child: Column(children: [
+                              Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                        height: 250,
+                                        width: width / 1.8,
+                                        child: _buildTemperatureMonitorExample(
+                                            model.latestTemp)),
+                                    Spacer(),
+                                    Container(
+                                        width: width / 3,
+                                        child: Text(
+                                            'Latest Temp. reading: ${model.latestTemp} °C'))
+                                  ]),
+                              Text(
+                                  '*Temp. Readings as of ${model.latestDate} ${model.latestTime}'),
+                              SizedBox(height: 5)
+                            ]));
+                      } else {
+                        content = Container(
+                            child: Center(child: Text('No data available')));
+                      }
+                      return content;
+                    }))),
             SizedBox(height: 10),
             Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Container(
-                  padding: EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).cardColor,
-                      borderRadius: BorderRadius.circular(12)),
-                  child: Container(
-                    width: width,
-                    child: Column(children: [
-                      Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-                        Container(
-                            height: 250,
-                            width: width / 1.8,
-                            child: _buildRadialGauge(context)),
-                        Spacer(),
-                        Container(
-                            width: width / 3,
-                            child: Text('Latest Altitude reading: 33 ft'))
-                      ]),
-                      Text('*Altitude Readings as of 2020-9-9 10:23'),
-                      SizedBox(height: 5)
-                    ]),
-                  )),
-            ),
+                padding: const EdgeInsets.all(4.0),
+                child: Container(
+                    padding: EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).cardColor,
+                        borderRadius: BorderRadius.circular(12)),
+                    child: Consumer<SensorReadingsProvider>(
+                        builder: (context, model, child) {
+                      Widget content = Center(
+                          child: Text(
+                        'Error fetching data. Check your Internet connection',
+                        textAlign: TextAlign.center,
+                      ));
+
+                      if (model.isLatestLoading) {
+                        content = Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Center(child: ShimmerLoader()),
+                          ],
+                        );
+                      } else if ((!model.isLatestLoading)) {
+                        content = Container(
+                            width: width,
+                            child: Column(children: [
+                              Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                        height: 250,
+                                        width: width / 1.8,
+                                        child: _buildRadialGauge(
+                                            context, model.latestAlt)),
+                                    Spacer(),
+                                    Container(
+                                        width: width / 3,
+                                        child: Text(
+                                            'Latest Altitude reading: ${model.latestAlt} meters'))
+                                  ]),
+                              Text(
+                                  '*Altitude Readings as of ${model.latestDate} ${model.latestTime}'),
+                              SizedBox(height: 5)
+                            ]));
+                      } else {
+                        content = Container(
+                            child: Center(child: Text('No data available')));
+                      }
+                      return content;
+                    }))),
             SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.all(4.0),
@@ -518,29 +656,31 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Container(
                           width: width,
                           height: 200,
-                          child: FadeInImage.memoryNetwork(
+                          child:Image.asset(
+                            'assets/images/thermal.jpg',
                               fit: BoxFit.cover,
                               alignment: Alignment.center,
-                              placeholder: kTransparentImage,
-                              image:
-                                  'https://d36nqgmw98q4v5.cloudfront.net/images/Article_Images/ImageForArticle_1105(1).jpg'),
+                            
+                            ),
                         ),
                       ),
-        
-                      Text('*Latest Thermal Image as of 2020-9-9 10:23'),
+
                       SizedBox(height: 10),
                       Container(
-                        width: 125,
+                        width: 135,
                         child: ElevatedButton(
                             onPressed: () {
-                                Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                          builder: (context) => Imaging(
-                                initialIndex: 0,
-                              )));
+                              Navigator.push(
+                                  context,
+                                  CupertinoPageRoute(
+                                      builder: (context) => Imaging(
+                                            initialIndex: 0,
+                                          )));
                             },
-                            child: Row(children: [
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
                               Text('View more',
                                   style: TextStyle(
                                     fontSize: 16,
@@ -553,9 +693,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                 elevation: MaterialStateProperty.all(0.2),
                                 backgroundColor: MaterialStateProperty.all(
                                     Colors.deepPurple[300]),
-                                shape: MaterialStateProperty.all(StadiumBorder()),
-                                padding:
-                                    MaterialStateProperty.all(EdgeInsets.all(10)),
+                                shape:
+                                    MaterialStateProperty.all(StadiumBorder()),
+                                padding: MaterialStateProperty.all(
+                                    EdgeInsets.all(12)),
                                 textStyle: MaterialStateProperty.all(TextStyle(
                                   fontSize: 16,
                                   color: Colors.white,
@@ -568,6 +709,65 @@ class _HomeScreenState extends State<HomeScreen> {
             )
           ]),
         ),
+      ),
+    );
+  }
+}
+
+class ShimmerLoader extends StatelessWidget {
+  const ShimmerLoader({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        height: 250,
+        width: width / 2,
+        child: Shimmer.fromColors(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    width: width / 2,
+                    height: 150.0,
+                    color: Colors.blueGrey,
+                  ),
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                Container(
+                  width: double.infinity,
+                  height: 8.0,
+                  color: Colors.blueGrey,
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 2.0),
+                ),
+                Container(
+                  width: double.infinity,
+                  height: 8.0,
+                  color: Colors.blueGrey,
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 2.0),
+                ),
+                Container(
+                  width: 40.0,
+                  height: 8.0,
+                  color: Colors.blueGrey,
+                ),
+              ],
+            ),
+            baseColor: Colors.grey[300],
+            highlightColor: Colors.grey[100],
+            enabled: true),
       ),
     );
   }

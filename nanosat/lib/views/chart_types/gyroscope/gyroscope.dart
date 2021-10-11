@@ -5,6 +5,8 @@ import 'package:nanosat/models/sensor_readings.dart';
 import 'package:nanosat/providers/sensor_readings_provider.dart';
 import 'dart:convert';
 import 'dart:async';
+
+import 'dart:html';
 import 'dart:io';
 import 'dart:ui' as dart_ui;
 import 'package:nanosat/services/themeprovider.dart';
@@ -972,6 +974,11 @@ class _ExpandedGyroscopeState extends State<ExpandedGyroscope> {
       content: Text('Chart has been exported as PDF document.'),
     ));
     final List<int> bytes = document.save();
+    AnchorElement(
+        href:
+            "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(bytes)}")
+      ..setAttribute("download", fileName1)
+      ..click();
     document.dispose();
     await FileSaveHelper.saveAndLaunchFile(bytes, fileName1);
   }
