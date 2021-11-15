@@ -4,6 +4,8 @@ import 'package:nanosat/providers/sensor_readings_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
 
+import '../view_picture.dart';
+
 class ThermalImaging extends StatefulWidget {
   @override
   _ThermalImagingState createState() => _ThermalImagingState();
@@ -30,6 +32,7 @@ class _ThermalImagingState extends State<ThermalImaging> {
     final width = MediaQuery.of(context).size.width;
     return Container(
       height: height,
+      padding: width > 600 ? EdgeInsets.symmetric(horizontal: 100): EdgeInsets.all(0),
       child: Padding(
           padding: const EdgeInsets.only(top: 8.0),
           child: Consumer<SensorReadingsProvider>(
@@ -55,35 +58,45 @@ class _ThermalImagingState extends State<ThermalImaging> {
                   itemBuilder: (BuildContext context, int index) {
                     return Padding(
                       padding: const EdgeInsets.all(4.0),
-                      child: Container(
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).cardColor,
-                              borderRadius: BorderRadius.circular(12)),
-                          child: Container(
-                            width: width,
-                            child: Column(children: [
-                              Container(
-                                width: width,
-                                height: 200,
-                                child: FadeInImage.memoryNetwork(
-                                    fit: BoxFit.cover,
-                                    alignment: Alignment.center,
-                                    placeholder: kTransparentImage,
-                                    image:
-                                        model.thermalImages[index].imageUrl),
-                              ),
-                              SizedBox(height: 20),
-                              Text('Thermal Image taken on ${model.thermalImages[index].date}'),
-                              SizedBox(height: 20),
-                            ]),
-                          )),
+                      child: GestureDetector(
+                        onTap: (){
+                            Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                            builder: (context) => ViewPic(
+                                  url:   model.thermalImages[index].imageUrl
+                                )));
+                        },
+                        child: Container(
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).cardColor,
+                                borderRadius: BorderRadius.circular(12)),
+                            child: Container(
+                              width: width,
+                              child: Column(children: [
+                                Container(
+                                  width: width> 600 ? width/2 : width,
+                                  height: width> 600 ? 300 : 200,
+                                  child: FadeInImage.memoryNetwork(
+                                      fit: BoxFit.cover,
+                                      alignment: Alignment.center,
+                                      placeholder: kTransparentImage,
+                                      image:
+                                          model.thermalImages[index].imageUrl),
+                                ),
+                                SizedBox(height: 20),
+                                Text('Thermal Image taken on ${model.thermalImages[index].date}'),
+                                SizedBox(height: 20),
+                              ]),
+                            )),
+                      ),
                     );
                   });
             } else if ((model.thermalImages.length == 0 &&
                 !model.isThermalLoading)) {
               content = Center(
                   child: Text(
-                'No open Orders',
+                'No images',
                 textAlign: TextAlign.center,
               ));
             }

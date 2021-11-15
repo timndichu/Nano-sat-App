@@ -23,7 +23,7 @@ class _AlertsDesktopState extends State<AlertsDesktop> {
           automaticallyImplyLeading: true,
           backgroundColor: Colors.deepPurple,
           centerTitle: true,
-          title: Text('AlertsDesktop'),
+          title: Text('Alerts'),
           actions: [
             IconButton(
                 color: Colors.deepPurple,

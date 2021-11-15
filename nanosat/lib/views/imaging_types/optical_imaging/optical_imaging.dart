@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nanosat/providers/sensor_readings_provider.dart';
+import 'package:nanosat/views/imaging_types/view_picture.dart';
 import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -30,6 +31,7 @@ class _OpticalImagingState extends State<OpticalImaging> {
     final width = MediaQuery.of(context).size.width;
     return Container(
       height: height,
+        padding: width > 600 ? EdgeInsets.symmetric(horizontal: 100): EdgeInsets.all(0),
       child: Padding(
           padding: const EdgeInsets.only(top: 8.0),
           child: Consumer<SensorReadingsProvider>(
@@ -55,35 +57,45 @@ class _OpticalImagingState extends State<OpticalImaging> {
                   itemBuilder: (BuildContext context, int index) {
                     return Padding(
                       padding: const EdgeInsets.all(4.0),
-                      child: Container(
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).cardColor,
-                              borderRadius: BorderRadius.circular(12)),
-                          child: Container(
-                            width: width,
-                            child: Column(children: [
-                              Container(
-                                width: width,
-                                height: 200,
-                                child: FadeInImage.memoryNetwork(
-                                    fit: BoxFit.cover,
-                                    alignment: Alignment.center,
-                                    placeholder: kTransparentImage,
-                                    image:
-                                        model.opticalImages[index].imageUrl),
-                              ),
-                              SizedBox(height: 20),
-                              Text('Optical Image taken on ${model.opticalImages[index].date}'),
-                              SizedBox(height: 20),
-                            ]),
-                          )),
+                      child: GestureDetector(
+                        onTap: (){
+                            Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                            builder: (context) => ViewPic(
+                                  url:  model.opticalImages[index].imageUrl
+                                )));
+                        },
+                        child: Container(
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).cardColor,
+                                borderRadius: BorderRadius.circular(12)),
+                            child: Container(
+                              width: width,
+                              child: Column(children: [
+                                  Container(
+                                  width: width> 600 ? width/2 : width,
+                                  height: width> 600 ? 300 : 200,
+                                  child: FadeInImage.memoryNetwork(
+                                      fit: BoxFit.cover,
+                                      alignment: Alignment.center,
+                                      placeholder: kTransparentImage,
+                                      image:
+                                          model.opticalImages[index].imageUrl),
+                                ),
+                                SizedBox(height: 20),
+                                Text('Optical Image taken on ${model.opticalImages[index].date}'),
+                                SizedBox(height: 20),
+                              ]),
+                            )),
+                      ),
                     );
                   });
             } else if ((model.opticalImages.length == 0 &&
                 !model.isOpticalLoading)) {
               content = Center(
                   child: Text(
-                'No open Orders',
+                'No images',
                 textAlign: TextAlign.center,
               ));
             }

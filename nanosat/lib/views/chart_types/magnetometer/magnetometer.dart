@@ -13,7 +13,7 @@ import 'package:nanosat/services/themeprovider.dart';
 import 'package:provider/provider.dart';
 import 'dart:math' as math;
 import 'package:intl/intl.dart';
-import 'package:nanosat/helper/helper.dart';
+import 'package:nanosat/helper/helper.dart' if(dart.library.html) 'package:nanosat/helper/web-helper.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -974,11 +974,7 @@ class _ExpandedMagnetometerState extends State<ExpandedMagnetometer> {
       content: Text('Chart has been exported as PDF document.'),
     ));
     final List<int> bytes = document.save();
-    AnchorElement(
-        href:
-            "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(bytes)}")
-      ..setAttribute("download", fileName1)
-      ..click();
+   
     document.dispose();
     await FileSaveHelper.saveAndLaunchFile(bytes, fileName1);
   }

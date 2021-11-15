@@ -23,7 +23,7 @@ class _AlertsMobileState extends State<AlertsMobile> {
           automaticallyImplyLeading: true,
           backgroundColor: Colors.deepPurple,
           centerTitle: true,
-          title: Text('AlertsMobile'),
+          title: Text('Alerts'),
           actions: [
             IconButton(
                 color: Colors.deepPurple,
