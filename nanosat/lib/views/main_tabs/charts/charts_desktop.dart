@@ -34,7 +34,7 @@ class _ChartsDesktopState extends State<ChartsDesktop> with TickerProviderStateM
     }
     _controller = TabController(
         vsync: this,
-        length: 5,
+        length: 6,
         initialIndex: widget.initialIndex ?? _activeTabIndex);
   }
 
@@ -159,7 +159,7 @@ class _ChartsDesktopState extends State<ChartsDesktop> with TickerProviderStateM
         //     onPressed: () => _showModalBottomSheet(),
         //     child: Icon(Icons.filter_alt_outlined)),
         body: DefaultTabController(
-          length: 5,
+          length: 6,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -194,6 +194,7 @@ class _ChartsDesktopState extends State<ChartsDesktop> with TickerProviderStateM
                     Tab(text: 'Magnetometer'),
                     Tab(text: 'Accelerometer'),
                     Tab(text: 'Gyroscope'),
+                      Tab(text: 'Battery Info'),
                   ],
                 ),
               ),
@@ -206,7 +207,8 @@ class _ChartsDesktopState extends State<ChartsDesktop> with TickerProviderStateM
                  
                     MagnetometerCharts(),
                     AccelerometerCharts(),
-                    GyroscopeCharts()
+                    GyroscopeCharts(),
+                    BatteryInfo()
                   ],
                 ),
               ),

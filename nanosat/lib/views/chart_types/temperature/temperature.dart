@@ -107,7 +107,15 @@ class _TemperatureState extends State<Temperature> {
             Provider.of<SensorReadingsProvider>(context, listen: false)
                 .getPastMonthTemp();
           });
-
+       Provider.of<SensorReadingsProvider>(context, listen: false)
+                .temperature
+                .length >
+            0
+        ? print('ALready fetched')
+        : Future.delayed(Duration.zero, () {
+            Provider.of<SensorReadingsProvider>(context, listen: false)
+                .getTempReadings();
+          });
     super.initState();
   }
 
@@ -388,6 +396,35 @@ class _TemperatureState extends State<Temperature> {
                       return content;
                     });
                   }),
+                   Consumer<SensorReadingsProvider>(
+                builder: (context, model, child) {
+                  Widget content = Center(
+                      child: Text(
+                          'Error fetching data. Check your Internet connection'));
+                 
+                    if (model.isTempLoading) {
+                  
+                      content = ShimmerLoader();
+                    } else if ((model.temperature.length == 0 &&
+                        !model.isTempLoading)) {
+                      content = Center(
+                          child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('No graph data available'),
+                      ));
+                    } else if ((model.temperature.length > 0 &&
+                        !model.isTempLoading)) {
+                      content = GraphWidget(
+                          readings: model.temperature,
+                          label: 'All-Time',
+                           title: 'All-Time Temperature Readings',
+                          dateType: '');
+                    }
+                 
+
+                  return content;
+                },
+              ),
               Consumer<SensorReadingsProvider>(
                 builder: (context, model, child) {
                   Widget content = Center(

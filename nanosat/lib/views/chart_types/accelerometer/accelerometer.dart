@@ -119,7 +119,15 @@ class _AccelerometerChartsState extends State<AccelerometerCharts> {
             Provider.of<SensorReadingsProvider>(context, listen: false)
                 .getPastMonthAccelerometer();
           });
-
+       Provider.of<SensorReadingsProvider>(context, listen: false)
+                .accelerometer
+                .length >
+            0
+        ? print('ALready fetched')
+        : Future.delayed(Duration.zero, () {
+            Provider.of<SensorReadingsProvider>(context, listen: false)
+                .getAccelerometerReadings();
+          });
     super.initState();
   }
 
@@ -433,6 +441,35 @@ class _AccelerometerChartsState extends State<AccelerometerCharts> {
                       return content;
                     });
                   }),
+                      Consumer<SensorReadingsProvider>(
+                builder: (context, model, child) {
+                  Widget content = Center(
+                      child: Text(
+                          'Error fetching data. Check your Internet connection'));
+                 
+                    if (model.isAccelerometerLoading){
+                  
+                      content = ShimmerLoader();
+                    } else if ((model.accelerometer.length == 0 &&
+                        !model.isAccelerometerLoading)) {
+                      content = Center(
+                          child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('No graph data available'),
+                      ));
+                    } else if ((model.accelerometer.length > 0 &&
+                        !model.isAccelerometerLoading)) {
+                      content = GraphWidget(
+                          readings: model.accelerometer,
+                          label: 'All-Time',
+                           title: 'All-Time Accelerometer Readings',
+                          dateType: '');
+                    }
+                 
+
+                  return content;
+                },
+              ),
               Consumer<SensorReadingsProvider>(
                 builder: (context, model, child) {
                   Widget content = Center(

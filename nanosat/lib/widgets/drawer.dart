@@ -157,6 +157,17 @@ class _MainDrawerState extends State<MainDrawer> {
                                 )));
                   },
                 ),
+                 ListTile(
+                  title: Text('Battery Level'),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                            builder: (context) => Charts(
+                                  initialIndex: 5,
+                                )));
+                  },
+                ),
                 ListTile(
                   title: Text(
                     'See All',
@@ -189,6 +200,7 @@ class _MainDrawerState extends State<MainDrawer> {
                                 )));
               },
             ),
+           
             ListTile(
               leading: Icon(
                 NanoIcons.water,

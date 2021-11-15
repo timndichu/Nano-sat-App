@@ -144,16 +144,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   var _initialCameraPosition = CameraPosition(
     target: LatLng(
-      -1.2921,
-      36.8219,
+      -1.261244,
+      36.8052171,
     ),
     zoom: 11.5,
   );
   
   var _defaultCameraPosition = CameraPosition(
     target: LatLng(
-      -1.2921,
-      36.8219,
+     -1.261244,
+      36.8052171,
     ),
     zoom: 11.5,
   );
@@ -162,8 +162,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Marker _origin;
   Marker _destination;
 
-  LatLng _center = LatLng(  -1.2921,
-      36.8219,);
+  LatLng _center = LatLng( -1.261244,
+      36.8052171,);
   LatLng _currentMapPosition;
 
 

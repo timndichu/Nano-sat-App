@@ -118,6 +118,17 @@ class _MagnetometerChartsState extends State<MagnetometerCharts> {
                 .getPastMonthMagnetometer();
           });
 
+           Provider.of<SensorReadingsProvider>(context, listen: false)
+                .magnetometer
+                .length >
+            0
+        ? print('ALready fetched')
+        : Future.delayed(Duration.zero, () {
+            Provider.of<SensorReadingsProvider>(context, listen: false)
+                .getMagnetometerReadings();
+          });
+
+
     super.initState();
   }
 
@@ -431,6 +442,35 @@ class _MagnetometerChartsState extends State<MagnetometerCharts> {
                       return content;
                     });
                   }),
+                      Consumer<SensorReadingsProvider>(
+                builder: (context, model, child) {
+                  Widget content = Center(
+                      child: Text(
+                          'Error fetching data. Check your Internet connection'));
+                 
+                    if (model.isMagnetometerLoading) {
+                  
+                      content = ShimmerLoader();
+                    } else if ((model.magnetometer.length == 0 &&
+                        !model.isMagnetometerLoading)) {
+                      content = Center(
+                          child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('No graph data available'),
+                      ));
+                    } else if ((model.magnetometer.length > 0 &&
+                        !model.isMagnetometerLoading)) {
+                      content = GraphWidget(
+                          readings: model.magnetometer,
+                          label: 'All-Time',
+                           title: 'All-Time Magnetometer Readings',
+                          dateType: '');
+                    }
+                 
+
+                  return content;
+                },
+              ),
               Consumer<SensorReadingsProvider>(
                 builder: (context, model, child) {
                   Widget content = Center(

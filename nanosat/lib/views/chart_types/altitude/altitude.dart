@@ -67,6 +67,17 @@ class _AltitudeState extends State<Altitude> {
             width: 10,
             markerVisibility: TrackballVisibilityMode.visible));
 
+
+      Provider.of<SensorReadingsProvider>(context, listen: false)
+                .altitude
+                .length >
+            0
+        ? print('ALready fetched')
+        : Future.delayed(Duration.zero, () {
+            Provider.of<SensorReadingsProvider>(context, listen: false)
+                .getAltitudeReadings();
+          });
+
     Provider.of<SensorReadingsProvider>(context, listen: false)
                 .pastHrAltitude
                 .length >
@@ -397,6 +408,35 @@ class _AltitudeState extends State<Altitude> {
                       return content;
                     });
                   }),
+                         Consumer<SensorReadingsProvider>(
+                builder: (context, model, child) {
+                  Widget content = Center(
+                      child: Text(
+                          'Error fetching data. Check your Internet connection'));
+                 
+                    if (model.isAltitudeLoading){
+                  
+                      content = ShimmerLoader();
+                    } else if ((model.altitude.length == 0 &&
+                        !model.isAltitudeLoading)) {
+                      content = Center(
+                          child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('No graph data available'),
+                      ));
+                    } else if ((model.altitude.length > 0 &&
+                        !model.isAltitudeLoading)) {
+                      content = GraphWidget(
+                          readings: model.altitude,
+                          label: 'All-Time',
+                           title: 'All-Time Altitide Readings',
+                          dateType: '');
+                    }
+                 
+
+                  return content;
+                },
+              ),
               Consumer<SensorReadingsProvider>(
                 builder: (context, model, child) {
                   Widget content = Center(

@@ -118,6 +118,17 @@ class _GyroscopeChartsState extends State<GyroscopeCharts> {
                 .getPastMonthGyroscope();
           });
 
+      Provider.of<SensorReadingsProvider>(context, listen: false)
+                .gyroscope
+                .length >
+            0
+        ? print('ALready fetched')
+        : Future.delayed(Duration.zero, () {
+            Provider.of<SensorReadingsProvider>(context, listen: false)
+                .getGyroscopeReadings();
+          });
+
+
     super.initState();
   }
 
@@ -431,6 +442,35 @@ class _GyroscopeChartsState extends State<GyroscopeCharts> {
                       return content;
                     });
                   }),
+                       Consumer<SensorReadingsProvider>(
+                builder: (context, model, child) {
+                  Widget content = Center(
+                      child: Text(
+                          'Error fetching data. Check your Internet connection'));
+                 
+                    if (model.isGyroscopeLoading){
+                  
+                      content = ShimmerLoader();
+                    } else if ((model.gyroscope.length == 0 &&
+                        !model.isGyroscopeLoading)) {
+                      content = Center(
+                          child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('No graph data available'),
+                      ));
+                    } else if ((model.gyroscope.length > 0 &&
+                        !model.isGyroscopeLoading)) {
+                      content = GraphWidget(
+                          readings: model.gyroscope,
+                          label: 'All-Time',
+                           title: 'All-Time Gyroscope Readings',
+                          dateType: '');
+                    }
+                 
+
+                  return content;
+                },
+              ),
               Consumer<SensorReadingsProvider>(
                 builder: (context, model, child) {
                   Widget content = Center(

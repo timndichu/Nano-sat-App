@@ -34,7 +34,7 @@ class _ChartsMobileState extends State<ChartsMobile> with TickerProviderStateMix
     }
     _controller = TabController(
         vsync: this,
-        length: 5,
+        length: 6,
         initialIndex: widget.initialIndex ?? _activeTabIndex);
   }
 
@@ -107,6 +107,9 @@ class _ChartsMobileState extends State<ChartsMobile> with TickerProviderStateMix
                 Provider.of<SensorReadingsProvider>(context, listen: false)
                 .getPastMonthGyroscope();
         }
+           if(_activeTabIndex == 5) { 
+         
+        }
        
     });
   }
@@ -158,7 +161,7 @@ class _ChartsMobileState extends State<ChartsMobile> with TickerProviderStateMix
         //     onPressed: () => _showModalBottomSheet(),
         //     child: Icon(Icons.filter_alt_outlined)),
         body: DefaultTabController(
-          length: 5,
+          length: 6,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -193,6 +196,7 @@ class _ChartsMobileState extends State<ChartsMobile> with TickerProviderStateMix
                     Tab(text: 'Magnetometer'),
                     Tab(text: 'Accelerometer'),
                     Tab(text: 'Gyroscope'),
+                     Tab(text: 'Battery Info'),
                   ],
                 ),
               ),
@@ -205,7 +209,8 @@ class _ChartsMobileState extends State<ChartsMobile> with TickerProviderStateMix
                   
                     MagnetometerCharts(),
                     AccelerometerCharts(),
-                    GyroscopeCharts()
+                    GyroscopeCharts(),
+                    BatteryInfo()
                   ],
                 ),
               ),
